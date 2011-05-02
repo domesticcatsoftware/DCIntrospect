@@ -9,9 +9,11 @@
 #import "DCIntrospectDemoViewController.h"
 
 @implementation DCIntrospectDemoViewController
+@synthesize activityIndicator;
 
 - (void)dealloc
 {
+    [activityIndicator release];
     [super dealloc];
 }
 
@@ -25,16 +27,15 @@
 
 #pragma mark - View lifecycle
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
 }
-*/
 
 - (void)viewDidUnload
 {
+    [self setActivityIndicator:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -42,8 +43,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
 
 @end

@@ -19,6 +19,9 @@
 	[self.window makeKeyAndVisible];
 	
 	[[DCIntrospect sharedIntrospector] start];
+	[[DCIntrospect sharedIntrospector] setOn:YES];
+	[[DCIntrospect sharedIntrospector] touchAtPoint:CGPointMake(121, 89)];
+
 	return YES;
 }
 
