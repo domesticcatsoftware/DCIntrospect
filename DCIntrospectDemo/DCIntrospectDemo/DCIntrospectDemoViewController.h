@@ -10,6 +10,8 @@
 
 @interface DCIntrospectDemoViewController : UIViewController {
     
+	UIActivityIndicatorView *activityIndicator;
 }
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
