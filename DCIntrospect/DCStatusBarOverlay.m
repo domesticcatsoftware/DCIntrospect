@@ -89,7 +89,7 @@
 	else if (orientation == UIDeviceOrientationPortraitUpsideDown)
 	{
 		self.transform = CGAffineTransformMakeRotation(pi);
-		self.frame = CGRectMake(0, screenHeight - self.frame.size.height, screenHeight, self.frame.size.height);
+		self.frame = CGRectMake(0, screenHeight - self.frame.size.height, screenWidth, self.frame.size.height);
 	}
 }
 

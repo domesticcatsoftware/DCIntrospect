@@ -98,6 +98,7 @@ DCIntrospect *sharedInstance = nil;
 		self.frameView.backgroundColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.1];
 		[mainWindow addSubview:self.frameView];
 		self.frameView.alpha = 0.0;
+		[self updateStatusBarFrame];
 	}
 
 	[mainWindow bringSubviewToFront:self.frameView];
@@ -134,27 +135,36 @@ DCIntrospect *sharedInstance = nil;
 	CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
 	CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
 	CGSize statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
+	CGSize toolbarSize = CGSizeMake(statusBarSize.width, 30.0);
 
 	CGFloat pi = (CGFloat)M_PI;
 	if (orientation == UIDeviceOrientationPortrait)
 	{
 		self.frameView.transform = CGAffineTransformIdentity;
 		self.frameView.frame = CGRectMake(0, statusBarSize.height, screenWidth, screenHeight);
+		self.toolbar.transform = self.frameView.transform;
+		self.toolbar.frame = CGRectMake(0, statusBarSize.height, self.toolbar.frame.size.width, self.toolbar.frame.size.height);
 	}
 	else if (orientation == UIDeviceOrientationLandscapeLeft)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (90) / 180.0f);
 		self.frameView.frame = CGRectMake(screenWidth - screenHeight, 0, screenHeight - statusBarSize.width, screenHeight);
+		self.toolbar.transform = self.frameView.transform;
+		self.toolbar.frame = CGRectMake(screenWidth - statusBarSize.width - toolbarSize.height, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationLandscapeRight)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (-90) / 180.0f);
 		self.frameView.frame = CGRectMake(statusBarSize.width, 0, screenWidth, screenHeight);
+		self.toolbar.transform = self.frameView.transform;
+		self.toolbar.frame = CGRectMake(statusBarSize.width, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationPortraitUpsideDown)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi);
 		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight - statusBarSize.height);
+		self.toolbar.transform = self.frameView.transform;
+		self.toolbar.frame = CGRectMake(0, screenHeight - statusBarSize.height - toolbarSize.height, screenWidth, toolbarSize.height);
 	}
 
 	[self updateFrameView];
@@ -197,6 +207,8 @@ DCIntrospect *sharedInstance = nil;
 		self.toolbar.backgroundColor = [UIColor blackColor];
 		self.toolbar.alpha = 0.0;
 		[mainWindow addSubview:self.toolbar];
+
+		[self updateStatusBarFrame];
 	}
 
 	// setup toolbar
@@ -249,6 +261,7 @@ DCIntrospect *sharedInstance = nil;
 		[button setTitleColor:[UIColor colorWithWhite:1.0 alpha:1.0] forState:UIControlStateHighlighted];
 		CGSize titleSize = [button.titleLabel.text sizeWithFont:button.titleLabel.font];
 		button.frame = CGRectMake(x, 0.0, titleSize.width + 10.0, 24.0);
+//		button.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
 		[self.toolbar addSubview:button];
 		x += button.frame.size.width;
 	}
@@ -344,6 +357,7 @@ DCIntrospect *sharedInstance = nil;
 		originalMask = (originalMask |= mask);
 	self.currentView.autoresizingMask = originalMask;
 	NSLog(@"after flexibleWidth %i", self.currentView.autoresizingMask & UIViewAutoresizingFlexibleWidth);
+	[self.currentView.superview setNeedsLayout];
 }
 
 - (void)toggleOutlines:(id)sender
