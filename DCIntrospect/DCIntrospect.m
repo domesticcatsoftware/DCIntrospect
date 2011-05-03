@@ -5,7 +5,6 @@
 //
 
 #import "DCIntrospect.h"
-#import "DCUIViewSwizzle.h"
 
 DCIntrospect *sharedInstance = nil;
 
@@ -37,8 +36,6 @@ DCIntrospect *sharedInstance = nil;
 		defaultGestureRecognizer.numberOfTapsRequired = 2;
 		defaultGestureRecognizer.numberOfTouchesRequired = 1;
 		sharedInstance.gestureRecognizer = defaultGestureRecognizer;
-
-		Swizzle(UILabel.class, @selector(drawRect:), @selector(flashDrawRect:));
 	}
 #endif
 
@@ -128,6 +125,7 @@ DCIntrospect *sharedInstance = nil;
 
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
+		self.currentView = nil;
 	}
 
 	if (aGestureRecognizer)
@@ -211,7 +209,7 @@ DCIntrospect *sharedInstance = nil;
 	if (orientation == UIDeviceOrientationPortrait)
 	{
 		self.frameView.transform = CGAffineTransformIdentity;
-		self.frameView.frame = CGRectMake(0, statusBarSize.height, screenWidth, screenHeight);
+		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
 		self.toolbar.transform = self.frameView.transform;
 		self.toolbar.frame = CGRectMake(0, statusBarSize.height, self.toolbar.frame.size.width, self.toolbar.frame.size.height);
 	}
@@ -236,12 +234,17 @@ DCIntrospect *sharedInstance = nil;
 		self.toolbar.transform = self.frameView.transform;
 		self.toolbar.frame = CGRectMake(0, screenHeight - statusBarSize.height - toolbarSize.height, screenWidth, toolbarSize.height);
 	}
+
+	self.currentView = nil;
+	[self updateFrameView];
 }
 
 - (void)touchAtPoint:(CGPoint)point
 {
 	NSMutableArray *views = [[NSMutableArray new] autorelease];
-	[views addObjectsFromArray:[self viewsAtPoint:point inView:[self mainWindow]]];
+	CGPoint newTouchPoint = point;
+	newTouchPoint = [[self mainWindow] convertPoint:newTouchPoint fromView:self.frameView];
+	[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:[self mainWindow]]];
 	if (views.count == 0)
 		return;
 
@@ -398,6 +401,21 @@ DCIntrospect *sharedInstance = nil;
 	[self.frameView setNeedsDisplay];
 }
 
+- (void)addOutlinesToFrameViewFromSubview:(UIView *)view
+{
+	for (UIView *subview in view.subviews)
+	{
+		if (subview == self.toolbar || subview == self.frameView)
+			continue;
+		
+		CGRect rect = [subview.superview convertRect:subview.frame toView:frameView];
+		
+		NSValue *rectValue = [NSValue valueWithCGRect:rect];
+		[self.frameView.rectsToOutline addObject:rectValue];
+		[self addOutlinesToFrameViewFromSubview:subview];
+	}
+}
+
 - (void)toggleOpaqueViews
 {
 	self.highlightOpaqueViews = !self.highlightOpaqueViews;
@@ -436,25 +454,7 @@ DCIntrospect *sharedInstance = nil;
 		if ([self ignoreView:subview])
 			continue;
 
-		[subview setFlashOnRedraw:redrawFlash];
-		[subview setNeedsDisplay];
-
 		[self setRedrawFlash:redrawFlash inViewsInSubview:subview];
-	}
-}
-
-- (void)addOutlinesToFrameViewFromSubview:(UIView *)view
-{
-	for (UIView *subview in view.subviews)
-	{
-		if (subview == self.toolbar || subview == self.frameView)
-			continue;
-
-		CGRect rect = [subview.superview convertRect:subview.frame toView:frameView];
-
-		NSValue *rectValue = [NSValue valueWithCGRect:rect];
-		[self.frameView.rectsToOutline addObject:rectValue];
-		[self addOutlinesToFrameViewFromSubview:subview];
 	}
 }
 
@@ -563,7 +563,7 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)showHelp
 {
-	NSLog(@"Shjowing help");
+	NSLog(@"Showing help");
 }
 
 #pragma mark Experimental
@@ -597,7 +597,7 @@ DCIntrospect *sharedInstance = nil;
 	
 	// print out generic uiview properties
 	[outputString appendString:@"  ** UIView properties **\n"];
-	[outputString appendFormat:@"    tag: %i", self.currentView.tag];
+	[outputString appendFormat:@"    tag: %i\n", self.currentView.tag];
 	[outputString appendFormat:@"    frame: %@ | ", NSStringFromCGRect(self.currentView.frame)];
 	[outputString appendFormat:@"bounds: %@ | ", NSStringFromCGRect(self.currentView.bounds)];
 	[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(self.currentView.center)];
@@ -636,7 +636,7 @@ DCIntrospect *sharedInstance = nil;
 		{
 			[outputString appendFormat:@"%f", returnObject];
 		}
-		else if ([returnType isEqualToString:@"i"])
+		else if ([returnType isEqualToString:@"i"] || [returnType isEqualToString:@"I"])
 		{
 			NSString *prettyDescription = [self describeProperty:propertyName value:(int)returnObject];
 			if (prettyDescription)
@@ -799,6 +799,10 @@ DCIntrospect *sharedInstance = nil;
 		[self toggleRedrawFlashing];
 		return NO;
 	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleShowCoordinates])
+	{
+		self.frameView.touchPointLabel.alpha = !self.frameView.touchPointLabel.alpha;
+	}
 
 	if (self.on && self.currentView)
 	{
@@ -912,18 +916,22 @@ DCIntrospect *sharedInstance = nil;
 		CGRect rect = subview.frame;
 		if ([self ignoreView:subview])
 			continue;
-		
+
 		if (CGRectContainsPoint(rect, touchPoint))
 		{
 			[views addObject:subview];
-			
-			// convert the point to differing transforms as needed
+
+			// convert the point to it's superview
 			CGPoint newTouchPoint = touchPoint;
-			if (view != [self mainWindow])
-			{
-				newTouchPoint.x -= subview.frame.origin.x;
-				newTouchPoint.y -= subview.frame.origin.y;
-			}
+			newTouchPoint = [view convertPoint:newTouchPoint toView:subview];
+//			if (view.superview == [self mainWindow])
+//				newTouchPoint.y += [[UIApplication sharedApplication] statusBarFrame].size.height;
+//			if (view != [subview superview])
+//			{
+//				newTouchPoint.x -= subview.frame.origin.x;
+//				newTouchPoint.y -= subview.frame.origin.y;
+//			}
+
 			[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:subview]];
 		}
 	}

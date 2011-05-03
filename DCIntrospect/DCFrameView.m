@@ -41,7 +41,7 @@
 		self.touchPointLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.7];
 		self.touchPointLabel.layer.cornerRadius = 4.5;
 		self.touchPointLabel.layer.masksToBounds = YES;
-		self.touchPointLabel.alpha = 0.0;
+		self.touchPointLabel.hidden = YES;
 		[self addSubview:self.touchPointLabel];
 
 		self.rectsToOutline = [[[NSMutableArray alloc] init] autorelease];
@@ -202,14 +202,15 @@
 	else if (CGRectGetMaxX(frame) > self.bounds.size.width)
 		frame.origin.x = self.bounds.size.width - frame.size.width;
 
-	if (frame.origin.y < [UIApplication sharedApplication].statusBarFrame.size.height)
+	if (frame.origin.y < 0)
 		frame.origin.y = touchPoint.y + stringSize.height + 4.0;
 	else if (CGRectGetMaxY(frame) > self.bounds.size.height)
 		frame.origin.y = self.bounds.size.height - frame.size.height;
 
 	self.touchPointLabel.frame = frame;
 	self.touchPointView.center = CGPointMake(touchPoint.x + 0.5, touchPoint.y + 0.5);
-	self.touchPointLabel.alpha = self.touchPointView.alpha = 1.0;
+	self.touchPointLabel.hidden = NO;
+	self.touchPointView.alpha = 1.0;
 
 	[self.delegate touchAtPoint:touchPoint];
 }
@@ -221,7 +222,8 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	self.touchPointLabel.alpha = self.touchPointView.alpha = 0.0;
+	self.touchPointLabel.hidden = YES;
+	self.touchPointView.alpha = 0.0;
 }
 
 @end

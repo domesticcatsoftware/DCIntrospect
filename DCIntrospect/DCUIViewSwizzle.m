@@ -44,7 +44,6 @@ void Swizzle(Class c, SEL orig, SEL new)
 {
 	if (self.flashOnRedraw)
 	{
-		NSLog(@"SWIZ");
 		UIView *view = [[[UIView alloc] initWithFrame:rect] autorelease];
 		view.backgroundColor = [UIColor redColor];
 		[self addSubview:view];

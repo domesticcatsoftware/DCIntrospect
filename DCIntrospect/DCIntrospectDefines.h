@@ -14,6 +14,7 @@
 #define kDCIntrospectKeysShowNonOpaqueViews			@"i"
 #define kDCIntrospectKeysShowHelp					@"?"
 #define kDCIntrospectKeysFlashViewRedraws			@"f"
+#define kDCIntrospectKeysToggleShowCoordinates		@"c"
 
 // When introspector is invoked and a view is selected
 #define kDCIntrospectKeysNudgeViewLeft				@"4"
