@@ -1,12 +1,12 @@
 //
 //  DCFrameView.h
-//  DCIntrospect
 //
 //  Created by Domestic Cat on 29/04/11.
 //
 
 #import "DCIntrospectDefines.h"
 #import <QuartzCore/QuartzCore.h>
+#import "DCCrossHairView.h"
 
 @protocol DCFrameViewDelegate <NSObject>
 
@@ -26,7 +26,7 @@
 @property (nonatomic) CGRect superRect;
 @property (nonatomic, retain) UILabel *touchPointLabel;
 @property (nonatomic, retain) NSMutableArray *rectsToOutline;
-@property (nonatomic, retain) UIImageView *touchPointView;
+@property (nonatomic, retain) DCCrossHairView *touchPointView;
 
 // Setup //
 

@@ -11,8 +11,10 @@
 @interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate> {
     
 	UIActivityIndicatorView *activityIndicator;
+	UILabel *label;
 }
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) IBOutlet UILabel *label;
 
 - (IBAction)sliderDidChange:(id)sender;
 - (IBAction)switchDidChange:(id)sender;

@@ -10,10 +10,12 @@
 
 @implementation DCIntrospectDemoViewController
 @synthesize activityIndicator;
+@synthesize label;
 
 - (void)dealloc
 {
     [activityIndicator release];
+	[label release];
     [super dealloc];
 }
 
@@ -36,6 +38,7 @@
 - (void)viewDidUnload
 {
     [self setActivityIndicator:nil];
+	[self setLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;

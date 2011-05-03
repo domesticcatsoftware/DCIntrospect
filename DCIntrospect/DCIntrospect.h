@@ -1,5 +1,5 @@
 //
-//  DCIntrospect
+//  DCIntrospect.h
 //
 //  Created by Domestic Cat on 29/04/11.
 //
@@ -11,6 +11,16 @@
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
 
+#ifdef DEBUG
+
+@interface UIView (debug)
+
+- (NSString *)recursiveDescription;
+
+@end
+
+#endif
+
 @interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextFieldDelegate>
 {
 
@@ -21,8 +31,9 @@
 @property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;
 
 @property (nonatomic) BOOL on;
-@property (nonatomic) BOOL outlinesOn;
-@property (nonatomic) BOOL opaqueViewsOn;
+@property (nonatomic) BOOL viewOutlines;
+@property (nonatomic) BOOL highlightOpaqueViews;
+@property (nonatomic) BOOL flashOnRedraw;
 @property (nonatomic, retain) DCFrameView *frameView;
 @property (nonatomic, retain) UIScrollView *toolbar;
 @property (nonatomic, retain) UITextField *inputField;
@@ -51,7 +62,7 @@
 // Tools //
 ///////////
 
-- (void)toggleTools;
+- (void)statusBarTapped;
 - (void)updateToolbar;
 - (void)logRecursiveDescriptionForCurrentView;
 - (void)forceSetNeedsDisplay;
@@ -60,6 +71,8 @@
 - (void)toggleOutlines;
 - (void)toggleOpaqueViews;
 - (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
+- (void)toggleRedrawFlashing;
+- (void)setRedrawFlash:(BOOL)redrawFlash inViewsInSubview:(UIView *)view;
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
 
 //////////////////
@@ -82,6 +95,12 @@
 
 - (NSString *)describeProperty:(NSString *)propertyName value:(int)value;
 - (NSString *)describeColor:(UIColor *)color;
+
+/////////////////////////
+// DCIntrospector Help //
+/////////////////////////
+
+- (void)showHelp;
 
 ////////////////////
 // Helper Methods //

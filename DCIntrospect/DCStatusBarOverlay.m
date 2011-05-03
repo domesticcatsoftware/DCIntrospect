@@ -1,6 +1,5 @@
 //
 //  DCStatusBarOverlay.m
-//  DCIntrospectDemo
 //
 //  Copyright 2011 Domestic Cat. All rights reserved.
 //
@@ -8,7 +7,7 @@
 #import "DCStatusBarOverlay.h"
 
 @implementation DCStatusBarOverlay
-@synthesize leftLabel, rightLabel;
+@synthesize leftLabel, rightLabel, infoButton;
 
 - (void)dealloc
 {
@@ -19,6 +18,8 @@
 
 	[super dealloc];
 }
+
+#pragma mark Setup
 
 - (id)init
 {
@@ -49,7 +50,12 @@
 		self.rightLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[self addSubview:self.rightLabel];
 
-		UIGestureRecognizer *gestureRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped)] autorelease];
+		self.infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+		self.infoButton.frame = (CGRect) { self.frame.size.width - 17, 4.0, 12.0, 12.0 };
+		self.infoButton.hidden = YES;
+		[self addSubview:self.infoButton];
+		UITapGestureRecognizer *gestureRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped)] autorelease];
+		gestureRecognizer.cancelsTouchesInView = NO;
 		[self addGestureRecognizer:gestureRecognizer];
 
 		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -57,11 +63,6 @@
 	}
 
 	return self;
-}
-
-- (void)tapped
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationShowTools object:nil];
 }
 
 - (void)updateBarFrame
@@ -91,6 +92,13 @@
 		self.transform = CGAffineTransformMakeRotation(pi);
 		self.frame = CGRectMake(0, screenHeight - self.frame.size.height, screenWidth, self.frame.size.height);
 	}
+}
+
+#pragma mark Actions
+
+- (void)tapped
+{
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationStatusBarTapped object:nil];
 }
 
 @end

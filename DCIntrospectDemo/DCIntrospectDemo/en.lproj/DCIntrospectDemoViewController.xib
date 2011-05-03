@@ -76,7 +76,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{20, 210}, {108, 64}}</string>
 						<reference key="NSSuperview" ref="774585933"/>
-						<reference key="NSNextKeyView" ref="415983164"/>
+						<reference key="NSNextKeyView" ref="464261143"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MSAwIDAAA</bytes>
@@ -162,7 +162,7 @@
 					<object class="IBUILabel" id="496487176">
 						<reference key="NSNextResponder" ref="774585933"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{173, 99}, {96, 23}}</string>
+						<string key="NSFrame">{{129, 96}, {96, 23}}</string>
 						<reference key="NSSuperview" ref="774585933"/>
 						<reference key="NSNextKeyView" ref="996161445"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -197,7 +197,7 @@
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<bool key="IBUIOn">YES</bool>
 					</object>
-					<object class="IBUITextField" id="415983164">
+					<object class="IBUITextField" id="464261143">
 						<reference key="NSNextResponder" ref="774585933"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{146, 214}, {97, 31}}</string>
@@ -273,10 +273,18 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
-						<reference key="source" ref="415983164"/>
+						<reference key="source" ref="464261143"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">24</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">label</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="496487176"/>
+					</object>
+					<int key="connectionID">25</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -304,7 +312,6 @@
 						<reference key="object" ref="774585933"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="496487176"/>
 							<reference ref="38099050"/>
 							<reference ref="996161445"/>
 							<reference ref="671196768"/>
@@ -313,7 +320,8 @@
 							<reference ref="776048794"/>
 							<reference ref="238948838"/>
 							<reference ref="827774905"/>
-							<reference ref="415983164"/>
+							<reference ref="464261143"/>
+							<reference ref="496487176"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -364,7 +372,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">23</int>
-						<reference key="object" ref="415983164"/>
+						<reference key="object" ref="464261143"/>
 						<reference key="parent" ref="774585933"/>
 					</object>
 				</object>
@@ -418,7 +426,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">24</int>
+			<int key="maxID">25</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

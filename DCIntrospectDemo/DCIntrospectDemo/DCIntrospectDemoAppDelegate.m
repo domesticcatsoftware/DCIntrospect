@@ -15,9 +15,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	self.window.rootViewController = self.viewController;
-	[self.window makeKeyAndVisible];
-	
 	[[DCIntrospect sharedIntrospector] start];
 
 	UITapGestureRecognizer *defaultGestureRecognizer = [[[UITapGestureRecognizer alloc] init] autorelease];
@@ -27,6 +24,9 @@
 	defaultGestureRecognizer.numberOfTapsRequired = 3;
 	defaultGestureRecognizer.numberOfTouchesRequired = 2;
 	[DCIntrospect sharedIntrospector].gestureRecognizer = defaultGestureRecognizer;
+
+	self.window.rootViewController = self.viewController;
+	[self.window makeKeyAndVisible];
 
 	return YES;
 }

@@ -2,7 +2,7 @@
 // Notifications //
 ///////////////////
 
-#define kDCIntrospectNotificationShowTools @"kDCIntrospectNotificationShowTools"
+#define kDCIntrospectNotificationStatusBarTapped @"kDCIntrospectNotificationStatusBarTapped"
 
 ////////////////////////
 // Keyboard Shortcuts //
@@ -12,6 +12,8 @@
 #define kDCIntrospectKeysInvoke						@" "
 #define kDCIntrospectKeysShowViewOutlines			@"o"
 #define kDCIntrospectKeysShowNonOpaqueViews			@"i"
+#define kDCIntrospectKeysShowHelp					@"?"
+#define kDCIntrospectKeysFlashViewRedraws			@"f"
 
 // When introspector is invoked and a view is selected
 #define kDCIntrospectKeysNudgeViewLeft				@"4"

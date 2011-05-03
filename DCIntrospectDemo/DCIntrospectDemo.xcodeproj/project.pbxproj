@@ -20,8 +20,8 @@
 		AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0213136A9E8D00962171 /* DCIntrospect.m */; };
 		AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D021E136A9FE000962171 /* DCFrameView.m */; };
 		ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */; };
-		ABDA506A136E6FA200339835 /* crosshair.png in Resources */ = {isa = PBXBuildFile; fileRef = ABDA5068136E6FA200339835 /* crosshair.png */; };
-		ABDA506B136E6FA200339835 /* crosshair@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABDA5069136E6FA200339835 /* crosshair@2x.png */; };
+		ABDA509D136FCE4300339835 /* DCUIViewSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */; };
+		ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509F136FDD9300339835 /* DCCrossHairView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,8 +47,10 @@
 		ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCStatusBarOverlay.h; path = ../../DCIntrospect/DCStatusBarOverlay.h; sourceTree = "<group>"; };
 		ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCStatusBarOverlay.m; path = ../../DCIntrospect/DCStatusBarOverlay.m; sourceTree = "<group>"; };
 		ABDA505C136E277C00339835 /* DCIntrospectDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectDefines.h; path = ../../DCIntrospect/DCIntrospectDefines.h; sourceTree = "<group>"; };
-		ABDA5068136E6FA200339835 /* crosshair.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = crosshair.png; path = ../../DCIntrospect/crosshair.png; sourceTree = "<group>"; };
-		ABDA5069136E6FA200339835 /* crosshair@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "crosshair@2x.png"; path = "../../DCIntrospect/crosshair@2x.png"; sourceTree = "<group>"; };
+		ABDA509B136FCE4200339835 /* DCUIViewSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUIViewSwizzle.h; path = ../../DCIntrospect/DCUIViewSwizzle.h; sourceTree = "<group>"; };
+		ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUIViewSwizzle.m; path = ../../DCIntrospect/DCUIViewSwizzle.m; sourceTree = "<group>"; };
+		ABDA509E136FDD9300339835 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCCrossHairView.h; path = ../../DCIntrospect/DCCrossHairView.h; sourceTree = "<group>"; };
+		ABDA509F136FDD9300339835 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCCrossHairView.m; path = ../../DCIntrospect/DCCrossHairView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,25 +125,19 @@
 		AB0D01F7136A79A800962171 /* DCIntrospect */ = {
 			isa = PBXGroup;
 			children = (
-				ABDA505D136E520E00339835 /* Resources */,
 				ABDA505C136E277C00339835 /* DCIntrospectDefines.h */,
 				AB0D0212136A9E8D00962171 /* DCIntrospect.h */,
 				AB0D0213136A9E8D00962171 /* DCIntrospect.m */,
 				AB0D021D136A9FE000962171 /* DCFrameView.h */,
 				AB0D021E136A9FE000962171 /* DCFrameView.m */,
+				ABDA509E136FDD9300339835 /* DCCrossHairView.h */,
+				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
 				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
 				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
+				ABDA509B136FCE4200339835 /* DCUIViewSwizzle.h */,
+				ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */,
 			);
 			name = DCIntrospect;
-			sourceTree = "<group>";
-		};
-		ABDA505D136E520E00339835 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				ABDA5068136E6FA200339835 /* crosshair.png */,
-				ABDA5069136E6FA200339835 /* crosshair@2x.png */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,8 +190,6 @@
 				AB0D01DF136A778000962171 /* InfoPlist.strings in Resources */,
 				AB0D01E8136A778000962171 /* MainWindow.xib in Resources */,
 				AB0D01EE136A778000962171 /* DCIntrospectDemoViewController.xib in Resources */,
-				ABDA506A136E6FA200339835 /* crosshair.png in Resources */,
-				ABDA506B136E6FA200339835 /* crosshair@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,6 +206,8 @@
 				AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */,
 				AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */,
 				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
+				ABDA509D136FCE4300339835 /* DCUIViewSwizzle.m in Sources */,
+				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +255,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -274,6 +271,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
