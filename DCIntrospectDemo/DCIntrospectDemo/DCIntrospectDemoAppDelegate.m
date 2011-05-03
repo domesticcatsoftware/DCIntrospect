@@ -19,8 +19,14 @@
 	[self.window makeKeyAndVisible];
 	
 	[[DCIntrospect sharedIntrospector] start];
-	[[DCIntrospect sharedIntrospector] setOn:YES];
-	[[DCIntrospect sharedIntrospector] touchAtPoint:CGPointMake(121, 89)];
+
+	UITapGestureRecognizer *defaultGestureRecognizer = [[[UITapGestureRecognizer alloc] init] autorelease];
+	defaultGestureRecognizer.cancelsTouchesInView = NO;
+	defaultGestureRecognizer.delaysTouchesBegan = NO;
+	defaultGestureRecognizer.delaysTouchesEnded = NO;
+	defaultGestureRecognizer.numberOfTapsRequired = 3;
+	defaultGestureRecognizer.numberOfTouchesRequired = 2;
+	[DCIntrospect sharedIntrospector].gestureRecognizer = defaultGestureRecognizer;
 
 	return YES;
 }

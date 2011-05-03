@@ -95,6 +95,8 @@
 		return;
 	}
 
+	if (CGRectIsEmpty(self.mainRect))
+		return;
 	CGRect mainRectOffset = CGRectOffset(mainRect, -superRect.origin.x, -superRect.origin.y);
 
 	BOOL showAntialiasingWarning = NO;
@@ -122,7 +124,7 @@
 	CGContextMoveToPoint(context, self.superRect.origin.x, floorf(CGRectGetMidY(newMainRect)) + 0.5);
 	CGContextAddLineToPoint(context, newMainRect.origin.x - 2.0, floorf(CGRectGetMidY(newMainRect)) + 0.5);
 	CGContextStrokePath(context);
-	NSLog(@"%f", self.mainRect.origin.x);
+
 	if (self.mainRect.origin.x > 0)
 	{
 		NSString *leftDistanceString = (showAntialiasingWarning) ? [NSString stringWithFormat:@"%.1f", mainRectOffset.origin.x] : [NSString stringWithFormat:@"%.0f", mainRectOffset.origin.x];
@@ -150,16 +152,20 @@
 	}
 
 	// edge->top side
-	CGContextMoveToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, self.superRect.origin.y);
-	CGContextAddLineToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, CGRectGetMinY(newMainRect));
-	CGContextStrokePath(context);
-	NSString *topDistanceString = (showAntialiasingWarning) ? [NSString stringWithFormat:@"%.1f",  mainRectOffset.origin.y] : [NSString stringWithFormat:@"%.0f", mainRectOffset.origin.y];
-	CGSize topDistanceStringSize = [topDistanceString sizeWithFont:font];
-	[topDistanceString drawInRect:CGRectMake(floorf(CGRectGetMidX(newMainRect)) + 3.0,
-											   floorf(CGRectGetMinY(self.superRect)),
-											   topDistanceStringSize.width,
-											   topDistanceStringSize.height)
-						   withFont:font];
+	NSLog(@"mro: %f", mainRectOffset.origin.y);
+	if (mainRectOffset.origin.y > 0)
+	{
+		CGContextMoveToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, self.superRect.origin.y);
+		CGContextAddLineToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, CGRectGetMinY(newMainRect));
+		CGContextStrokePath(context);
+		NSString *topDistanceString = (showAntialiasingWarning) ? [NSString stringWithFormat:@"%.1f",  mainRectOffset.origin.y] : [NSString stringWithFormat:@"%.0f", mainRectOffset.origin.y];
+		CGSize topDistanceStringSize = [topDistanceString sizeWithFont:font];
+		[topDistanceString drawInRect:CGRectMake(floorf(CGRectGetMidX(newMainRect)) + 3.0,
+												   floorf(CGRectGetMinY(self.superRect)),
+												   topDistanceStringSize.width,
+												   topDistanceStringSize.height)
+							   withFont:font];
+	}
 
 	// bottom side->edge
 	if (CGRectGetMaxY(newMainRect) < CGRectGetMaxY(self.superRect))
@@ -168,7 +174,6 @@
 		CGContextAddLineToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, CGRectGetMaxY(self.superRect));
 		CGContextStrokePath(context);
 		NSString *bottomDistanceString = (showAntialiasingWarning) ? [NSString stringWithFormat:@"%.1f",  CGRectGetMaxY(self.superRect) - CGRectGetMaxY(mainRectOffset)] : [NSString stringWithFormat:@"%.0f", self.superRect.size.height - mainRectOffset.origin.y - mainRectOffset.size.height];
-		NSLog(@"super: %@ mainRectOffset: %@", NSStringFromCGRect(self.superRect), NSStringFromCGRect(mainRectOffset));
 		CGSize bottomDistanceStringSize = [bottomDistanceString sizeWithFont:font];
 		[bottomDistanceString drawInRect:CGRectMake(floorf(CGRectGetMidX(newMainRect)) + 3.0,
 												 floorf(CGRectGetMaxY(self.superRect)) - bottomDistanceStringSize.height - 1.0,

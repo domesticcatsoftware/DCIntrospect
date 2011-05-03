@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DCIntrospectDemoViewController : UIViewController {
+@interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate> {
     
 	UIActivityIndicatorView *activityIndicator;
 }
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+- (IBAction)sliderDidChange:(id)sender;
+- (IBAction)switchDidChange:(id)sender;
 
 @end
