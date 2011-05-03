@@ -69,11 +69,11 @@
 - (void)forceSetNeedsLayout;
 - (void)forceReload;
 - (void)toggleOutlines;
+- (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
 - (void)toggleOpaqueViews;
 - (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
 - (void)toggleRedrawFlashing;
 - (void)setRedrawFlash:(BOOL)redrawFlash inViewsInSubview:(UIView *)view;
-- (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
 
 //////////////////
 // Experimental //

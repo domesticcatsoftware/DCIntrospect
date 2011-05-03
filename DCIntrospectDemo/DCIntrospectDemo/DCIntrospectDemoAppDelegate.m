@@ -15,7 +15,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[DCIntrospect sharedIntrospector] start];
 
 	UITapGestureRecognizer *defaultGestureRecognizer = [[[UITapGestureRecognizer alloc] init] autorelease];
 	defaultGestureRecognizer.cancelsTouchesInView = NO;
@@ -27,6 +26,9 @@
 
 	self.window.rootViewController = self.viewController;
 	[self.window makeKeyAndVisible];
+
+	// insert this AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
+	[[DCIntrospect sharedIntrospector] start];
 
 	return YES;
 }
