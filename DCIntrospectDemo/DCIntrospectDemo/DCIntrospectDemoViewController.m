@@ -46,4 +46,16 @@
 	return YES;
 }
 
+- (IBAction)sliderDidChange:(id)sender {
+}
+
+- (IBAction)switchDidChange:(id)sender {
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	[textField resignFirstResponder];
+	return YES;
+}
+
 @end

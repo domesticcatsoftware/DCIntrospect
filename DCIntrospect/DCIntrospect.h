@@ -16,8 +16,13 @@
 
 }
 
+@property (nonatomic) BOOL keyboardShortcuts;			// default: YES
+@property (nonatomic) BOOL showStatusBarOverlay;		// default: YES
+@property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;
+
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL outlinesOn;
+@property (nonatomic) BOOL opaqueViewsOn;
 @property (nonatomic, retain) DCFrameView *frameView;
 @property (nonatomic, retain) UIScrollView *toolbar;
 @property (nonatomic, retain) UITextField *inputField;
@@ -35,19 +40,48 @@
 // Introspector //
 //////////////////
 
-- (void)introspectorInvoked:(UIGestureRecognizer *)gestureRecognizer;
+- (void)introspectorInvoked:(UIGestureRecognizer *)aGestureRecognizer;	// can be manually invoked with nil ([[DCIntrospect sharedIntrospector introspectorInvoked:nil];)
 - (void)updateFrameView;
 - (void)updateStatusBar;
+- (void)updateStatusBarFrame;
 - (void)touchAtPoint:(CGPoint)point;
+- (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
 
 ///////////
 // Tools //
 ///////////
 
 - (void)toggleTools;
-- (void)logDescriptionForCurrentView;
-- (void)toggleOutlines:(id)sender;
+- (void)updateToolbar;
+- (void)logRecursiveDescriptionForCurrentView;
+- (void)forceSetNeedsDisplay;
+- (void)forceSetNeedsLayout;
+- (void)forceReload;
+- (void)toggleOutlines;
+- (void)toggleOpaqueViews;
+- (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
+
+//////////////////
+// Experimental //
+//////////////////
+
+- (void)logPropertiesForCurrentView;
+- (BOOL)ignoreView:(UIView *)view;
+- (NSArray *)subclassesOfClass:(Class)parentClass;
+
+//////////////////////
+// Keyboard Capture //
+//////////////////////
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+
+/////////////////////////
+// Description Methods //
+/////////////////////////
+
+- (NSString *)describeProperty:(NSString *)propertyName value:(int)value;
+- (NSString *)describeColor:(UIColor *)color;
 
 ////////////////////
 // Helper Methods //
@@ -57,10 +91,5 @@
 - (NSMutableArray *)viewsAtPoint:(CGPoint)touchPoint inView:(UIView *)view;
 - (void)fadeView:(UIView *)view toAlpha:(CGFloat)alpha;
 
-// Unused/experimental
-
-- (void)describePropertiesForCurrentView;
-- (NSString *)prettyDescriptionForProperty:(NSString *)propertyName value:(int)value;
-- (BOOL)ignoreView:(UIView *)view;
 
 @end
