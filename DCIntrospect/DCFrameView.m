@@ -1,9 +1,7 @@
 //
 //  DCFrameView.m
-//  DCIntrospectDemo
 //
 //  Created by Domestic Cat on 29/04/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "DCFrameView.h"
@@ -48,7 +46,7 @@
 
 		self.rectsToOutline = [[[NSMutableArray alloc] init] autorelease];
 
-		self.touchPointView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"crosshair"]] autorelease];
+		self.touchPointView = [[[DCCrossHairView alloc] initWithFrame:CGRectMake(0, 0, 17.0, 17.0) color:[UIColor blueColor]] autorelease];
 		self.touchPointView.alpha = 0.0;
 		[self addSubview:self.touchPointView];
 	}
@@ -74,7 +72,6 @@
 - (void)drawRect:(CGRect)rect
 {
 	CGContextRef context = UIGraphicsGetCurrentContext();
-//	CGContextClearRect(context, self.bounds);
 
 	if (self.rectsToOutline.count > 0)
 	{
@@ -97,6 +94,7 @@
 
 	if (CGRectIsEmpty(self.mainRect))
 		return;
+
 	CGRect mainRectOffset = CGRectOffset(mainRect, -superRect.origin.x, -superRect.origin.y);
 
 	BOOL showAntialiasingWarning = NO;
@@ -105,9 +103,14 @@
 		showAntialiasingWarning = YES;
 
 	if (showAntialiasingWarning)
+	{
 		[[UIColor redColor] set];
+		NSLog(@"*** DCIntrospect: WARNING: One or more values of this view's frame are non-integer values. This view may draw incorrectly. ***");
+	}
 	else
+	{
 		[[UIColor blueColor] set];
+	}
 
 	CGRect newMainRect = CGRectMake(self.mainRect.origin.x + 0.5,
 									self.mainRect.origin.y + 0.5,
@@ -152,7 +155,6 @@
 	}
 
 	// edge->top side
-	NSLog(@"mro: %f", mainRectOffset.origin.y);
 	if (mainRectOffset.origin.y > 0)
 	{
 		CGContextMoveToPoint(context, floorf(CGRectGetMidX(newMainRect)) + 0.5, self.superRect.origin.y);

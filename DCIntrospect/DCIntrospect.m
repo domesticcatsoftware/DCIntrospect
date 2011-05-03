@@ -1,17 +1,18 @@
 //
-//  DCIntrospect
+//  DCIntrospect.m
 //
 //  Created by Domestic Cat on 29/04/11.
 //
 
 #import "DCIntrospect.h"
+#import "DCUIViewSwizzle.h"
 
 DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
 @synthesize keyboardShortcuts, showStatusBarOverlay, gestureRecognizer;
 @synthesize on;
-@synthesize outlinesOn, opaqueViewsOn;
+@synthesize viewOutlines, highlightOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
 @synthesize inputField;
 @synthesize toolbar;
@@ -22,6 +23,7 @@ DCIntrospect *sharedInstance = nil;
 
 + (DCIntrospect *)sharedIntrospector
 {
+#ifdef DEBUG
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
@@ -35,7 +37,10 @@ DCIntrospect *sharedInstance = nil;
 		defaultGestureRecognizer.numberOfTapsRequired = 2;
 		defaultGestureRecognizer.numberOfTouchesRequired = 1;
 		sharedInstance.gestureRecognizer = defaultGestureRecognizer;
+
+		Swizzle(UILabel.class, @selector(drawRect:), @selector(flashDrawRect:));
 	}
+#endif
 
 	return sharedInstance;
 }
@@ -79,21 +84,21 @@ DCIntrospect *sharedInstance = nil;
 	if (keyboardShortcuts)
 		[self.inputField becomeFirstResponder];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleTools) name:kDCIntrospectNotificationShowTools object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarTapped) name:kDCIntrospectNotificationStatusBarTapped object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification
 													  object:nil
 													   queue:nil
 												  usingBlock:^(NSNotification *notification) {
-													  NSLog(@"Becoming first responder");
+													  // needs to be done after a delay or else it doesn't work.
 													  [self.inputField performSelector:@selector(becomeFirstResponder)
 																			withObject:nil
 																			afterDelay:0.1];
-//													  [self.inputField becomeFirstResponder];
 												  }];
 
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStatusBarFrame) name:UIDeviceOrientationDidChangeNotification object:nil];
+
 }
 
 #pragma mark Introspector
@@ -116,9 +121,9 @@ DCIntrospect *sharedInstance = nil;
 	else
 	{
 		self.toolbar.alpha = 0;
-		if (self.outlinesOn)
+		if (self.viewOutlines)
 			[self toggleOutlines];
-		if (self.opaqueViewsOn)
+		if (self.highlightOpaqueViews)
 			[self toggleOpaqueViews];
 
 		self.statusBarOverlay.hidden = YES;
@@ -179,10 +184,12 @@ DCIntrospect *sharedInstance = nil;
 			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", [self.currentView class]];
 
 		self.statusBarOverlay.rightLabel.text = NSStringFromCGRect(self.currentView.frame);
+		self.statusBarOverlay.infoButton.hidden = YES;
 	}
 	else
 	{
 		self.statusBarOverlay.leftLabel.text = @"DCIntrospector";
+		self.statusBarOverlay.infoButton.hidden = NO;
 	}
 
 	if (self.showStatusBarOverlay)
@@ -245,7 +252,7 @@ DCIntrospect *sharedInstance = nil;
 		{
 			[self.frameView.rectsToOutline removeAllObjects];
 			[self.frameView setNeedsDisplay];
-			self.outlinesOn = NO;
+			self.viewOutlines = NO;
 		}
 
 		self.currentView = [views lastObject];
@@ -259,31 +266,40 @@ DCIntrospect *sharedInstance = nil;
 
 #pragma mark Tools
 
-- (void)toggleTools
+- (void)statusBarTapped
 {
 	UIWindow *mainWindow = [self mainWindow];
-	if (!self.toolbar)
+
+	// if a view is selected, show the toolbar, otherwise show help
+	if (self.currentView)
 	{
-		CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
-		self.toolbar = [[[UIScrollView alloc] initWithFrame:rect] autorelease];
-		self.toolbar.backgroundColor = [UIColor blackColor];
-		self.toolbar.alpha = 0.0;
-		[mainWindow addSubview:self.toolbar];
+		if (!self.toolbar)
+		{
+			CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
+			self.toolbar = [[[UIScrollView alloc] initWithFrame:rect] autorelease];
+			self.toolbar.backgroundColor = [UIColor blackColor];
+			self.toolbar.alpha = 0.0;
+			[mainWindow addSubview:self.toolbar];
 
-		[self updateStatusBarFrame];
-	}
+			[self updateStatusBarFrame];
+		}
 
-	[self updateToolbar];
+		[self updateToolbar];
 
-	if (self.toolbar.alpha == 1)
-	{
-		[self fadeView:self.toolbar toAlpha:0.0];
-		
+		if (self.toolbar.alpha == 1)
+		{
+			[self fadeView:self.toolbar toAlpha:0.0];
+			
+		}
+		else
+		{
+			[mainWindow bringSubviewToFront:self.toolbar];
+			[self fadeView:self.toolbar toAlpha:1.0];
+		}
 	}
 	else
 	{
-		[mainWindow bringSubviewToFront:self.toolbar];
-		[self fadeView:self.toolbar toAlpha:1.0];
+		[self showHelp];
 	}
 }
 
@@ -347,7 +363,10 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)logRecursiveDescriptionForCurrentView
 {
+#ifdef DEBUG
+	// [UIView recursiveDescription] is a private method.
 	NSLog(@"%@", [self.currentView recursiveDescription]);
+#endif
 }
 
 - (void)forceSetNeedsDisplay
@@ -369,9 +388,9 @@ DCIntrospect *sharedInstance = nil;
 - (void)toggleOutlines
 {
 	UIWindow *mainWindow = [self mainWindow];
-	self.outlinesOn = !self.outlinesOn;
+	self.viewOutlines = !self.viewOutlines;
 
-	if (self.outlinesOn)
+	if (self.viewOutlines)
 		[self addOutlinesToFrameViewFromSubview:mainWindow];
 	else
 		[self.frameView.rectsToOutline removeAllObjects];
@@ -381,10 +400,10 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)toggleOpaqueViews
 {
-	self.opaqueViewsOn = !self.opaqueViewsOn;
+	self.highlightOpaqueViews = !self.highlightOpaqueViews;
 
 	UIWindow *mainWindow = [self mainWindow];
-	[self setBackgroundColor:(self.opaqueViewsOn) ? [UIColor redColor] : [UIColor clearColor]
+	[self setBackgroundColor:(self.highlightOpaqueViews) ? [UIColor redColor] : [UIColor clearColor]
 	  ofOpaqueViewsInSubview:mainWindow];
 }
 
@@ -394,17 +413,38 @@ DCIntrospect *sharedInstance = nil;
 	{
 		if ([self ignoreView:subview])
 			continue;
-
+		
 		if (!subview.opaque)
 			subview.backgroundColor = color;
-
+		
 		[self setBackgroundColor:color ofOpaqueViewsInSubview:subview];
+	}
+}
+
+- (void)toggleRedrawFlashing
+{
+	self.flashOnRedraw = !self.flashOnRedraw;
+
+	UIWindow *mainWindow = [self mainWindow];
+	[self setRedrawFlash:self.flashOnRedraw inViewsInSubview:mainWindow];
+}
+
+- (void)setRedrawFlash:(BOOL)redrawFlash inViewsInSubview:(UIView *)view
+{
+	for (UIView *subview in view.subviews)
+	{
+		if ([self ignoreView:subview])
+			continue;
+
+		[subview setFlashOnRedraw:redrawFlash];
+		[subview setNeedsDisplay];
+
+		[self setRedrawFlash:redrawFlash inViewsInSubview:subview];
 	}
 }
 
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view
 {
-	UIWindow *mainWindow = [self mainWindow];
 	for (UIView *subview in view.subviews)
 	{
 		if (subview == self.toolbar || subview == self.frameView)
@@ -519,6 +559,13 @@ DCIntrospect *sharedInstance = nil;
 	return returnString;
 }
 
+#pragma mark DCIntrospector Help
+
+- (void)showHelp
+{
+	NSLog(@"Shjowing help");
+}
+
 #pragma mark Experimental
 
 - (void)logPropertiesForCurrentView
@@ -533,7 +580,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 
 	unsigned int count;
-	Method *methods = class_copyPropertyList(currentViewClass, &count);
+	objc_property_t *properties = class_copyPropertyList(currentViewClass, &count);
     size_t buf_size = 1024;
     char *buffer = malloc(buf_size);
 	NSMutableString *outputString = [[[NSMutableString alloc] initWithFormat:@"\n\n** %@", className] autorelease];
@@ -574,11 +621,10 @@ DCIntrospect *sharedInstance = nil;
 	for (unsigned int i = 0; i < count; ++i)
 	{
 		// get the property name and selector name
-		NSString *propertyName = [NSString stringWithCString:sel_getName(method_getName(methods[i])) encoding:NSUTF8StringEncoding];
-		NSString *selectorName = [NSString stringWithCString:sel_getName(method_getName(methods[i])) encoding:NSUTF8StringEncoding];
+		NSString *propertyName = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding];
 		
 		// get the return object and type for the selector
-		SEL sel = NSSelectorFromString(selectorName);
+		SEL sel = NSSelectorFromString(propertyName);
 		Method method = class_getInstanceMethod([self.currentView class], sel);
 		id returnObject = ([self.currentView respondsToSelector:sel]) ? [self.currentView performSelector:sel] : nil;
 		method_getReturnType(method, buffer, buf_size);
@@ -592,7 +638,7 @@ DCIntrospect *sharedInstance = nil;
 		}
 		else if ([returnType isEqualToString:@"i"])
 		{
-			NSString *prettyDescription = [self describeProperty:propertyName value:returnObject];
+			NSString *prettyDescription = [self describeProperty:propertyName value:(int)returnObject];
 			if (prettyDescription)
 				[outputString appendFormat:@"%@", prettyDescription];
 			else
@@ -636,7 +682,7 @@ DCIntrospect *sharedInstance = nil;
 		{
 			// some properties have different getter names, often starting with is (for example: UILabel highlighed)
 			// attempt to find the selector name
-			NSString *newSelectorName = [NSString stringWithFormat:@"is%@%@", [[selectorName substringToIndex:1] uppercaseString], [selectorName substringFromIndex:1]];
+			NSString *newSelectorName = [NSString stringWithFormat:@"is%@%@", [[propertyName substringToIndex:1] uppercaseString], [propertyName substringFromIndex:1]];
 			sel = NSSelectorFromString(newSelectorName);
 			if ([self.currentView respondsToSelector:sel])
 			{
@@ -649,7 +695,7 @@ DCIntrospect *sharedInstance = nil;
 		}
 		else
 		{
-			[outputString appendString:@"(unknown type)"];
+			[outputString appendFormat:@"(unknown type: %@)", returnType];
 		}
 		[outputString appendString:@"\n"];
 	}
@@ -674,7 +720,7 @@ DCIntrospect *sharedInstance = nil;
 	[outputString appendString:@"\n"];
 	NSLog(@"%@", outputString);
 	
-	free(methods);
+	free(properties);
     free(buffer);
 }
 
@@ -727,18 +773,18 @@ DCIntrospect *sharedInstance = nil;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-	NSLog(@"%@", string);
-	if ([string isEqualToString:@""])
-		NSLog(@"1");
-	else if ([string isEqualToString:@""])
-		NSLog(@"2");
-
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
 		[self introspectorInvoked:nil];
 		return NO;
 	}
-	else if ([string isEqualToString:kDCIntrospectKeysShowViewOutlines])
+
+	if (!self.on)
+	{
+		return NO;
+	}
+
+	if ([string isEqualToString:kDCIntrospectKeysShowViewOutlines])
 	{
 		[self toggleOutlines];
 		return NO;
@@ -746,6 +792,11 @@ DCIntrospect *sharedInstance = nil;
 	else if ([string isEqualToString:kDCIntrospectKeysShowNonOpaqueViews])
 	{
 		[self toggleOpaqueViews];
+		return NO;
+	}
+	else if ([string isEqualToString:kDCIntrospectKeysFlashViewRedraws])
+	{
+		[self toggleRedrawFlashing];
 		return NO;
 	}
 
@@ -812,7 +863,10 @@ DCIntrospect *sharedInstance = nil;
 			return NO;
 		}
 
-		self.currentView.frame = frame;
+		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
+											floorf(frame.origin.y),
+											floorf(frame.size.width),
+											floorf(frame.size.height));
 	}
 
 	[self updateFrameView];
