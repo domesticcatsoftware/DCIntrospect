@@ -7,7 +7,7 @@
 #import "DCStatusBarOverlay.h"
 
 @implementation DCStatusBarOverlay
-@synthesize leftLabel, rightLabel, infoButton;
+@synthesize leftLabel, rightLabel;
 
 - (void)dealloc
 {
@@ -15,7 +15,6 @@
 
 	[leftLabel release];
 	[rightLabel release];
-	[infoButton release];
 
 	[super dealloc];
 }
@@ -51,12 +50,7 @@
 		self.rightLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[self addSubview:self.rightLabel];
 
-		self.infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
-		self.infoButton.frame = (CGRect) { self.frame.size.width - 17, 4.0, 12.0, 12.0 };
-		self.infoButton.hidden = YES;
-		[self addSubview:self.infoButton];
 		UITapGestureRecognizer *gestureRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped)] autorelease];
-		gestureRecognizer.cancelsTouchesInView = NO;
 		[self addGestureRecognizer:gestureRecognizer];
 
 		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];

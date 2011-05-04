@@ -11,7 +11,6 @@
 
 @interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 {
-    
 	UIActivityIndicatorView *activityIndicator;
 	UILabel *label;
 	CustomDrawnView *customDrawnView;

@@ -14,6 +14,8 @@
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 
+typedef void (^Block)();
+
 #ifdef DEBUG
 
 @interface UIView (debug)
@@ -28,7 +30,7 @@
 {
 }
 
-@property (nonatomic) BOOL keyboardShortcuts;							// default: YES
+@property (nonatomic) BOOL keyboardBindingsOn;							// default: YES
 @property (nonatomic) BOOL showStatusBarOverlay;						// default: YES
 @property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;	// default: nil
 
@@ -42,6 +44,10 @@
 @property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
 
 @property (nonatomic, retain) NSMutableDictionary *objectNames;
+
+@property (nonatomic, retain) NSMutableArray *blockActions;
+@property (nonatomic) BOOL waitingForBlockKey;
+
 @property (nonatomic, assign) UIView *currentView;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
@@ -55,13 +61,12 @@
 + (DCIntrospect *)sharedIntrospector;		// this returns nil when DEBUG is not defined.
 - (void)setup;								// call setup AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
 
-
 ////////////////////
 // Custom Setters //
 ////////////////////
 
 - (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
-- (void)setKeyboardShortcuts:(BOOL)keyboardShortCutsOn;
+- (void)setKeyboardBindingsOn:(BOOL)keyboardBindingsOn;
 
 //////////////////
 // Main Actions //
@@ -89,9 +94,17 @@
 - (void)removeNamesForViewsInView:(UIView *)view;
 - (void)removeNameForObject:(id)object;
 
-//////////////////
-// Tools/Layout //
-//////////////////
+////////////
+// Blocks //
+////////////
+
+- (void)addBlock:(void (^)(void))block withName:(NSString *)name keyBinding:(NSString *)keyBinding;
+- (void)enterBlockMode;
+- (NSDictionary *)blockForKeyBinding:(NSString *)keyBinding;
+
+////////////
+// Layout //
+////////////
 
 - (void)updateFrameView;
 - (void)updateStatusBar;
@@ -104,6 +117,7 @@
 /////////////
 
 - (void)logRecursiveDescriptionForCurrentView;
+- (void)logRecursiveDescriptionForView:(UIView *)view;
 - (void)forceSetNeedsDisplay;
 - (void)forceSetNeedsLayout;
 - (void)forceReloadOfView;
@@ -119,6 +133,7 @@
 // (Somewhat) Experimental //
 /////////////////////////////
 
+- (void)logPropertiesForCurrentView;
 - (void)logPropertiesForObject:(id)object;
 - (BOOL)ignoreView:(UIView *)view;
 - (NSArray *)subclassesOfClass:(Class)parentClass;

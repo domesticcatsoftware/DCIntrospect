@@ -39,6 +39,15 @@
     [super viewDidLoad];
 	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
 	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessDirectly:YES];
+
+	[[DCIntrospect sharedIntrospector] addBlock:^{
+		if ([self.activityIndicator isAnimating])
+			[self.activityIndicator stopAnimating];
+		else
+			[self.activityIndicator startAnimating];
+	}
+											 withName:@"Toggle Activity Indicator"
+										   keyBinding:@"a"];
 }
 
 - (void)viewDidUnload

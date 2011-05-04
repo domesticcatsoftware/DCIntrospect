@@ -2,27 +2,28 @@
 // Settings //
 //////////////
 
-#define kDCIntrospectShortcutsOn YES															// BOOL (can also be set at runtime using shortcutsOn accessor)
+#define kDCIntrospectKeyboardBindingsOn YES															// BOOL (can also be set at runtime using keyboardBindingsOn accessor)
 #define kDCIntrospectStatusBarOverlayOn YES														// BOOL (can also be set at runtime using statusBarOverlayOn accessor)
 
 #define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]		// UIColor
 #define kDCIntrospectFlashOnRedrawFlashLength 0.03												// NSTimeInterval
 
-////////////////////////
-// Keyboard Shortcuts //
-////////////////////////
+//////////////////
+// Key Bindings //
+//////////////////
 
 // '' is equivalent to page up
 
-// Global
+// Global //
 #define kDCIntrospectKeysInvoke						@" "		// starts introspector
 #define kDCIntrospectKeysToggleViewOutlines			@"o"		// shows outlines for all views
 #define kDCIntrospectKeysToggleNonOpaqueViews		@"O"		// changes all non-opaque view background colours to red (destructive)
 #define kDCIntrospectKeysToggleHelp					@"?"		// shows help
 #define kDCIntrospectKeysToggleFlashViewRedraws		@"f"		// toggle flashing on redraw for all views that implement [[DCIntrospect sharedIntrospector] flashRect:inView:] in drawRect:
 #define kDCIntrospectKeysToggleShowCoordinates		@"c"		// toggles the coordinates display
+#define kDCIntrospectKeysEnterBlockMode				@"b"		// enters block action mode
 
-// When introspector is invoked and a view is selected
+// When introspector is invoked and a view is selected //
 #define kDCIntrospectKeysNudgeViewLeft				@"4"		// nudges the selected view in given direction
 #define kDCIntrospectKeysNudgeViewRight				@"6"		//
 #define kDCIntrospectKeysNudgeViewUp				@"8"		//
