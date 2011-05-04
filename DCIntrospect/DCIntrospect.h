@@ -7,9 +7,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 
-#import "DCIntrospectDefines.h"
+#import "DCIntrospectSettings.h"
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
+
+#define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
+#define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 
 #ifdef DEBUG
 
@@ -21,14 +24,13 @@
 
 #endif
 
-@interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextFieldDelegate>
+@interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextFieldDelegate, UIWebViewDelegate>
 {
-
 }
 
-@property (nonatomic) BOOL keyboardShortcuts;			// default: YES
-@property (nonatomic) BOOL showStatusBarOverlay;		// default: YES
-@property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;
+@property (nonatomic) BOOL keyboardShortcuts;							// default: YES
+@property (nonatomic) BOOL showStatusBarOverlay;						// default: YES
+@property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;	// default: nil
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL viewOutlines;
@@ -39,68 +41,101 @@
 @property (nonatomic, retain) UITextField *inputField;
 @property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
 
+@property (nonatomic, retain) NSMutableDictionary *objectNames;
 @property (nonatomic, assign) UIView *currentView;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
 
+@property (nonatomic) BOOL showingHelp;
 
-+ (DCIntrospect *)sharedIntrospector;
-- (void)start;
+///////////
+// Setup //
+///////////
 
-//////////////////
-// Introspector //
-//////////////////
++ (DCIntrospect *)sharedIntrospector;		// this returns nil when DEBUG is not defined.
+- (void)setup;								// call setup AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
 
-- (void)introspectorInvoked:(UIGestureRecognizer *)aGestureRecognizer;	// can be manually invoked with nil ([[DCIntrospect sharedIntrospector introspectorInvoked:nil];)
-- (void)updateFrameView;
-- (void)updateStatusBar;
-- (void)updateStatusBarFrame;
-- (void)touchAtPoint:(CGPoint)point;
+
+////////////////////
+// Custom Setters //
+////////////////////
+
 - (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
+- (void)setKeyboardShortcuts:(BOOL)keyboardShortCutsOn;
 
-///////////
-// Tools //
-///////////
+//////////////////
+// Main Actions //
+//////////////////
 
+- (void)invokeIntrospector;					// can be called manually
+- (void)touchAtPoint:(CGPoint)point;		// can be called manually
 - (void)statusBarTapped;
-- (void)updateToolbar;
-- (void)logRecursiveDescriptionForCurrentView;
-- (void)forceSetNeedsDisplay;
-- (void)forceSetNeedsLayout;
-- (void)forceReload;
-- (void)toggleOutlines;
-- (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
-- (void)toggleOpaqueViews;
-- (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
-- (void)toggleRedrawFlashing;
-- (void)setRedrawFlash:(BOOL)redrawFlash inViewsInSubview:(UIView *)view;
-
-//////////////////
-// Experimental //
-//////////////////
-
-- (void)logPropertiesForCurrentView;
-- (BOOL)ignoreView:(UIView *)view;
-- (NSArray *)subclassesOfClass:(Class)parentClass;
 
 //////////////////////
 // Keyboard Capture //
 //////////////////////
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+- (BOOL)textFieldShouldReturn:(UITextField *)textField;
+
+//////////////////
+// Object Names //
+//////////////////
+
+// make sure all names that are added are removed at dealloc or else they will be retained here!
+
+- (void)setName:(NSString *)name forObject:(id)object accessDirectly:(BOOL)accessDirectly;
+- (NSString *)nameForObject:(id)object;
+- (void)removeNamesForViewsInView:(UIView *)view;
+- (void)removeNameForObject:(id)object;
+
+//////////////////
+// Tools/Layout //
+//////////////////
+
+- (void)updateFrameView;
+- (void)updateStatusBar;
+- (void)updateViews;
+- (void)updateToolbar;
+- (void)showTemporaryStringInStatusBar:(NSString *)string;
+
+/////////////
+// Actions //
+/////////////
+
+- (void)logRecursiveDescriptionForCurrentView;
+- (void)forceSetNeedsDisplay;
+- (void)forceSetNeedsLayout;
+- (void)forceReloadOfView;
+- (void)toggleOutlines;
+- (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
+- (void)toggleOpaqueViews;
+- (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
+- (void)toggleRedrawFlashing;
+- (void)callDrawRectOnViewsInSubview:(UIView *)subview;
+- (void)flashRect:(CGRect)rect inView:(UIView *)view;
+
+/////////////////////////////
+// (Somewhat) Experimental //
+/////////////////////////////
+
+- (void)logPropertiesForObject:(id)object;
+- (BOOL)ignoreView:(UIView *)view;
+- (NSArray *)subclassesOfClass:(Class)parentClass;
 
 /////////////////////////
 // Description Methods //
 /////////////////////////
 
-- (NSString *)describeProperty:(NSString *)propertyName value:(int)value;
+- (NSString *)describeProperty:(NSString *)propertyName type:(NSString *)type value:(id)value;
 - (NSString *)describeColor:(UIColor *)color;
 
 /////////////////////////
 // DCIntrospector Help //
 /////////////////////////
 
-- (void)showHelp;
+- (void)toggleHelp;
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
 
 ////////////////////
 // Helper Methods //
@@ -109,6 +144,6 @@
 - (UIWindow *)mainWindow;
 - (NSMutableArray *)viewsAtPoint:(CGPoint)touchPoint inView:(UIView *)view;
 - (void)fadeView:(UIView *)view toAlpha:(CGFloat)alpha;
-
+- (BOOL)view:(UIView *)view containsSubview:(UIView *)subview;
 
 @end

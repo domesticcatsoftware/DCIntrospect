@@ -7,16 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomDrawnView.h"
 
-@interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate> {
+@interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
+{
     
 	UIActivityIndicatorView *activityIndicator;
 	UILabel *label;
+	CustomDrawnView *customDrawnView;
 }
+
+@property (nonatomic, retain) IBOutlet CustomDrawnView *customDrawnView;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UILabel *label;
 
 - (IBAction)sliderDidChange:(id)sender;
 - (IBAction)switchDidChange:(id)sender;
+- (IBAction)removeAllObjectNames:(id)sender;
 
 @end
