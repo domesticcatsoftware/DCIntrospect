@@ -189,26 +189,34 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	CGFloat labelDistance = 16.0;
 	CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+	CGFloat minY = UIInterfaceOrientationIsPortrait(orientation) ? [UIApplication sharedApplication].statusBarFrame.size.height : [UIApplication sharedApplication].statusBarFrame.size.width;
+	minY += 1.0;
 	NSString *touchPontLabelString = [NSString stringWithFormat:@"%.0f, %.0f", touchPoint.x, touchPoint.y];
-	self.touchPointLabel.text = touchPontLabelString;
 	CGSize stringSize = [touchPontLabelString sizeWithFont:touchPointLabel.font];
+
+	self.touchPointLabel.text = touchPontLabelString;
 	CGRect frame = CGRectMake(touchPoint.x - floorf(stringSize.width / 2) - 5.0,
-							  touchPoint.y - stringSize.height - 14.0,
+							  touchPoint.y - stringSize.height - labelDistance,
 							  stringSize.width + 11.0,
 							  stringSize.height + 4.0);
+
 	if (frame.origin.x < 0)
 		frame.origin.x = 0;
 	else if (CGRectGetMaxX(frame) > self.bounds.size.width)
 		frame.origin.x = self.bounds.size.width - frame.size.width;
 
-	if (frame.origin.y < [UIApplication sharedApplication].statusBarFrame.size.height)
+
+	if (frame.origin.y < minY)
 		frame.origin.y = touchPoint.y + stringSize.height + 4.0;
 	else if (CGRectGetMaxY(frame) > self.bounds.size.height)
 		frame.origin.y = self.bounds.size.height - frame.size.height;
 
+
 	self.touchPointLabel.frame = frame;
-	self.touchPointView.center = CGPointMake(touchPoint.x - 0.5, touchPoint.y - 0.5);
+	self.touchPointView.center = CGPointMake(touchPoint.x + 0.5, touchPoint.y + 0.5);
 	self.touchPointLabel.hidden = NO;
 	self.touchPointView.alpha = 1.0;
 

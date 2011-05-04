@@ -9,7 +9,7 @@
 DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
-@synthesize keyboardShortcuts, showStatusBarOverlay, gestureRecognizer;
+@synthesize keyboardBindingsOn, showStatusBarOverlay, gestureRecognizer;
 @synthesize on;
 @synthesize viewOutlines, highlightOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
@@ -17,6 +17,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize toolbar;
 @synthesize frameView;
 @synthesize objectNames;
+@synthesize blockActions, waitingForBlockKey;
 @synthesize currentView, originalFrame, originalAlpha;
 @synthesize showingHelp;
 
@@ -28,7 +29,7 @@ DCIntrospect *sharedInstance = nil;
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
-		sharedInstance.keyboardShortcuts = kDCIntrospectShortcutsOn;
+		sharedInstance.keyboardBindingsOn = kDCIntrospectKeyboardBindingsOn;
 		sharedInstance.showStatusBarOverlay = kDCIntrospectStatusBarOverlayOn;
 	}
 //#endif
@@ -59,7 +60,7 @@ DCIntrospect *sharedInstance = nil;
 		[mainWindow addSubview:self.inputField];
 	}
 
-	if (self.keyboardShortcuts)
+	if (self.keyboardBindingsOn)
 	{
 		if (![self.inputField becomeFirstResponder])
 		{
@@ -75,7 +76,7 @@ DCIntrospect *sharedInstance = nil;
 													   queue:nil
 												  usingBlock:^(NSNotification *notification) {
 													  // needs to be done after a delay or else it doesn't work.
-													  if (self.keyboardShortcuts)
+													  if (self.keyboardBindingsOn)
 														  [self.inputField performSelector:@selector(becomeFirstResponder)
 																				withObject:nil
 																				afterDelay:0.1];
@@ -89,7 +90,7 @@ DCIntrospect *sharedInstance = nil;
 - (void)takeFirstResponder
 {
 	if (![self.inputField becomeFirstResponder])
-		NSLog(@"DCIntrospect: Couldn't initiate keyboard shortcut field.  Is the keyboard used elsewhere?");
+		NSLog(@"DCIntrospect: Couldn't initiate keyboard field.  Is the keyboard used elsewhere?");
 }
 
 #pragma mark Custom Setters
@@ -106,10 +107,10 @@ DCIntrospect *sharedInstance = nil;
 	[mainWindow addGestureRecognizer:newGestureRecognizer];
 }
 
-- (void)setKeyboardShortcuts:(BOOL)keyboardShortCutsOn
+- (void)setKeyboardBindingsOn:(BOOL)newKeyboardBindingsOn
 {
-	keyboardShortcuts = keyboardShortCutsOn;
-	if (self.keyboardShortcuts)
+	keyboardBindingsOn = newKeyboardBindingsOn;
+	if (self.keyboardBindingsOn)
 		[self.inputField becomeFirstResponder];
 	else
 		[self.inputField resignFirstResponder];
@@ -127,7 +128,7 @@ DCIntrospect *sharedInstance = nil;
 		[self updateStatusBar];
 		[self updateFrameView];
 
-		if (keyboardShortcuts)
+		if (keyboardBindingsOn)
 			[self.inputField becomeFirstResponder];
 		else
 			[self.inputField resignFirstResponder];
@@ -148,6 +149,7 @@ DCIntrospect *sharedInstance = nil;
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
 		self.currentView = nil;
+		self.waitingForBlockKey = NO;
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidEnd
 															object:nil];
@@ -184,6 +186,12 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)statusBarTapped
 {
+	if (self.showingHelp)
+	{
+		[self toggleHelp];
+		return;
+	}
+
 	UIWindow *mainWindow = [self mainWindow];
 
 	// if a view is selected, show the toolbar, otherwise show help
@@ -212,16 +220,18 @@ DCIntrospect *sharedInstance = nil;
 			[self fadeView:self.toolbar toAlpha:1.0];
 		}
 	}
-	else
-	{
-		[self toggleHelp];
-	}
 }
 
 #pragma mark Keyboard Capture
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+	if (self.showingHelp)
+	{
+		[self toggleHelp];
+		return NO;
+	}
+
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
 		[self invokeIntrospector];
@@ -229,7 +239,37 @@ DCIntrospect *sharedInstance = nil;
 	}
 
 	if (!self.on)
+		return NO;
+
+	if (self.waitingForBlockKey)
 	{
+		self.waitingForBlockKey = NO;
+
+		NSDictionary *blockAction = [self blockForKeyBinding:string];
+		NSString *statusString = nil;
+		if (blockAction)
+		{
+			statusString = [NSString stringWithFormat:@"Running block: %@", [blockAction objectForKey:@"name"]];
+			Block block = [blockAction objectForKey:@"block"];
+			block();
+		}
+		else
+		{
+			statusString = [NSString stringWithFormat:@"No block for key binding %@", string];
+		}
+
+		if (self.showStatusBarOverlay)
+			[self showTemporaryStringInStatusBar:statusString];
+		else
+			NSLog(@"%@", statusString);
+
+		return NO;
+	}
+
+	if ([string isEqualToString:kDCIntrospectKeysEnterBlockMode])
+	{
+		self.waitingForBlockKey = YES;
+		[self enterBlockMode];
 		return NO;
 	}
 
@@ -279,7 +319,7 @@ DCIntrospect *sharedInstance = nil;
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysLogViewRecursive])
 		{
-			[self logRecursiveDescriptionForCurrentView];
+			[self logRecursiveDescriptionForView:self.currentView];
 			return NO;
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsDisplay])
@@ -438,7 +478,64 @@ DCIntrospect *sharedInstance = nil;
 	[self.objectNames removeObjectForKey:objectName];
 }
 
-#pragma mark Tools/Layout
+#pragma mark Block Actions
+
+- (void)addBlock:(void (^)(void))block withName:(NSString *)name keyBinding:(NSString *)keyBinding
+{
+	if (!self.blockActions)
+		self.blockActions = [[NSMutableArray new] autorelease];
+
+	NSDictionary *blockAndName = [NSDictionary dictionaryWithObjectsAndKeys:
+								  [[block copy] autorelease], @"block",
+								  name, @"name",
+								  keyBinding, @"binding",
+								  nil];
+	[self.blockActions addObject:blockAndName];
+}
+
+- (void)enterBlockMode
+{
+	if (!self.blockActions)
+	{
+		self.waitingForBlockKey = NO;
+		NSString *string = @"No block actions have been added.";
+		if (self.showStatusBarOverlay)
+			[self showTemporaryStringInStatusBar:string];
+		else
+			NSLog(@"%@", string);
+		return;
+	}
+
+	[self updateStatusBar];
+
+	NSMutableString *outputString = [[[NSMutableString alloc] initWithString:@"** Block Actions **\n"] autorelease];
+	for (NSDictionary *blockAction in self.blockActions)
+	{
+
+		NSString *name = [blockAction objectForKey:@"name"];
+		NSString *binding = [blockAction objectForKey:@"binding"];
+		[outputString appendFormat:@"  %@: %@\n", binding, name];
+	}
+
+	[outputString appendString:@"\nWaiting for block key binding...\n\n"];
+	printf("%s", [outputString cStringUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (NSDictionary *)blockForKeyBinding:(NSString *)keyBinding
+{
+	for (NSDictionary *blockAction in self.blockActions)
+	{
+		NSString *binding = [blockAction objectForKey:@"binding"];
+		if ([binding isEqualToString:keyBinding])
+		{
+			return blockAction;
+		}
+	}
+
+	return nil;
+}
+
+#pragma mark Layout
 
 - (void)updateFrameView
 {
@@ -479,6 +576,13 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)updateStatusBar
 {
+	if (self.waitingForBlockKey)
+	{
+		self.statusBarOverlay.leftLabel.text = @"Waiting for block key binding...";
+		self.statusBarOverlay.rightLabel.text = nil;
+		return;
+	}
+
 	if (self.currentView)
 	{
 		NSString *nameForObject = [self nameForObject:self.currentView];
@@ -493,13 +597,11 @@ DCIntrospect *sharedInstance = nil;
 			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", nameForObject];
 		
 		self.statusBarOverlay.rightLabel.text = NSStringFromCGRect(self.currentView.frame);
-		self.statusBarOverlay.infoButton.hidden = YES;
 	}
 	else
 	{
 		self.statusBarOverlay.leftLabel.text = @"DCIntrospect";
 		self.statusBarOverlay.rightLabel.text = nil;
-		self.statusBarOverlay.infoButton.hidden = NO;
 	}
 	
 	if (self.showStatusBarOverlay)
@@ -528,21 +630,21 @@ DCIntrospect *sharedInstance = nil;
 	else if (orientation == UIDeviceOrientationLandscapeLeft)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (90) / 180.0f);
-		self.frameView.frame = CGRectMake(screenWidth - screenHeight, 0, screenHeight - statusBarSize.width, screenHeight);
+		self.frameView.frame = CGRectMake(screenWidth - screenHeight, 0, screenHeight, screenHeight);
 		self.toolbar.transform = self.frameView.transform;
 		self.toolbar.frame = CGRectMake(screenWidth - statusBarSize.width - toolbarSize.height, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationLandscapeRight)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (-90) / 180.0f);
-		self.frameView.frame = CGRectMake(statusBarSize.width, 0, screenWidth, screenHeight);
+		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
 		self.toolbar.transform = self.frameView.transform;
 		self.toolbar.frame = CGRectMake(statusBarSize.width, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationPortraitUpsideDown)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi);
-		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight - statusBarSize.height);
+		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
 		self.toolbar.transform = self.frameView.transform;
 		self.toolbar.frame = CGRectMake(0, screenHeight - statusBarSize.height - toolbarSize.height, screenWidth, toolbarSize.height);
 	}
@@ -596,7 +698,7 @@ DCIntrospect *sharedInstance = nil;
 	CGFloat x = 0;
 	for (UIButton *button in buttons)
 	{
-		button.titleLabel.font = [UIFont systemFontOfSize:12.0];
+		button.titleLabel.font = [UIFont boldSystemFontOfSize:13.0];
 		button.titleLabel.textColor = [UIColor colorWithWhite:0.8 alpha:1.0];
 		[button setTitleColor:[UIColor colorWithWhite:0.78 alpha:1.0] forState:UIControlStateNormal];
 		[button setTitleColor:[UIColor colorWithWhite:1.0 alpha:1.0] forState:UIControlStateHighlighted];
@@ -619,11 +721,17 @@ DCIntrospect *sharedInstance = nil;
 }
 
 #pragma mark Actions
+
 - (void)logRecursiveDescriptionForCurrentView
+{
+	[self logRecursiveDescriptionForView:self.currentView];
+}
+
+- (void)logRecursiveDescriptionForView:(UIView *)view
 {
 //#ifdef DEBUG
 	// [UIView recursiveDescription] is a private method.
-	NSLog(@"%@", [self.currentView recursiveDescription]);
+	NSLog(@"%@", [view recursiveDescription]);
 //#endif
 }
 
@@ -1071,7 +1179,6 @@ DCIntrospect *sharedInstance = nil;
 	{
 		self.statusBarOverlay.leftLabel.text = @"Help";
 		self.statusBarOverlay.rightLabel.text = @"Close";
-		self.statusBarOverlay.infoButton.hidden = YES;
 		UIView *backingView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)] autorelease];
 		backingView.tag = 1548;
 		backingView.alpha = 0;
@@ -1086,16 +1193,20 @@ DCIntrospect *sharedInstance = nil;
 
 		NSMutableString *helpString = [[[NSMutableString alloc] initWithString:@"<html>"] autorelease];
 		[helpString appendString:@"<head><style>"];
-		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:white; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { font-weight:bold; margin-left: 7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
+		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; line-height: 15px margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:white; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { margin-left:7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
+
+		if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+			[helpString appendString:@"body { font-size:11pt; width:500px; margin:0 auto; }"];
+
 		[helpString appendString:@"</style></head><body><h1>DCIntrospect</h1>"];
 		[helpString appendString:@"<p>Created by <a href='http://domesticcat.com.au'>Domestic Cat Software</a> 2011.</p>"];
 		[helpString appendString:@"<p>More info and full documentation: <a href='http://domesticcat.com.au/introspect'>domesticcat.com.au/introspect</a></p>"];
 		[helpString appendString:@"<p>GitHub project: <a href='https://github.com/domesticcatsoftware/DCIntrospect'>github.com/domesticcatsoftware/DCIntrospect/</a></p>"];
 
-		[helpString appendString:@"<h1>Keyboard Shortcuts</h1>"];
-		[helpString appendString:@"<p>Edit DCIntrospectSettings.h to change shortcut keys.</div>"];
+		[helpString appendString:@"<div class='bindings'><h1>Key Bindings</h1>"];
+		[helpString appendString:@"<p>Edit DCIntrospectSettings.h to change key bindings.</p>"];
 
-		[helpString appendString:@"<h2>General Shortcuts</h2>"];
+		[helpString appendString:@"<h2>General</h2>"];
 
 		[helpString appendFormat:@"<div><span class='name'>Invoke Introspector</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysInvoke isEqualToString:@" "]) ? @"spacebar" : kDCIntrospectKeysInvoke];
 		[helpString appendFormat:@"<div><span class='name'>Toggle View Outlines</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleViewOutlines];
@@ -1103,6 +1214,7 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendFormat:@"<div><span class='name'>Toggle Help</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleHelp];
 		[helpString appendFormat:@"<div><span class='name'>Toggle flash on <span class='code'>drawRect:</span> (see below)</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleFlashViewRedraws];
 		[helpString appendFormat:@"<div><span class='name'>Toggle coordinates</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleShowCoordinates];
+		[helpString appendFormat:@"<div><span class='name'>Block mode</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterBlockMode];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
 		[helpString appendString:@"<h2>When a view is selected</h2>"];
@@ -1127,10 +1239,16 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendFormat:@"<div><span class='name'>Call setNeedsDisplay</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsDisplay];
 		[helpString appendFormat:@"<div><span class='name'>Call setNeedsLayout</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsLayout];
 		[helpString appendFormat:@"<div><span class='name'>Call reloadData (UITableView only)</span><div class='key'>%@</div></div>",kDCIntrospectKeysReloadData];
+		[helpString appendString:@"</div>"];
 
-		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (shortcut: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
+		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (binding: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
+
+		[helpString appendFormat:@"<h1>Block mode</h1><p>Add blocks using <span class='code'>[[DCIntrospect sharedIntrospector] addBlock:withName:keyBinding:]</span></p><p>After entering Block mode (key binding: <span class='code'>%@</span>), push the key binding set for the block to run the block.</p>", kDCIntrospectKeysEnterBlockMode];
 
 		[helpString appendString:@"<h1>License</h1><p>DCIntrospect is made available under the <a href='http://en.wikipedia.org/wiki/MIT_License'>MIT license</a>.</p>"];
+
+		[helpString appendString:@"<h2 style='text-align:center;'><a href='http://close'>Close Help</h2>"];
+		[helpString appendString:@"<div class='spacer'></div>"];
 
 		[UIView animateWithDuration:0.1
 						 animations:^{
@@ -1154,8 +1272,11 @@ DCIntrospect *sharedInstance = nil;
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-	if ([[[request URL] absoluteString] isEqualToString:@"about:blank"])
+	NSString *requestString = [[request URL] absoluteString];
+	if ([requestString isEqualToString:@"about:blank"])
 		return YES;
+	else if ([requestString isEqualToString:@"http://close/"])
+		[self toggleHelp];
 	else
 		[[UIApplication sharedApplication] openURL:[request URL]];
 
@@ -1163,6 +1284,11 @@ DCIntrospect *sharedInstance = nil;
 }
 
 #pragma mark Experimental
+
+- (void)logPropertiesForCurrentView
+{
+	[self logPropertiesForObject:self.currentView];
+}
 
 - (void)logPropertiesForObject:(id)object
 {

@@ -15,13 +15,13 @@
 		AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
 		AB0D01E8136A778000962171 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
 		AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
-		AB0D01EE136A778000962171 /* DCIntrospectDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01EC136A778000962171 /* DCIntrospectDemoViewController.xib */; };
 		AB0D0201136A841400962171 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D0200136A841400962171 /* QuartzCore.framework */; };
 		AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0213136A9E8D00962171 /* DCIntrospect.m */; };
 		AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D021E136A9FE000962171 /* DCFrameView.m */; };
 		ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */; };
 		ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509F136FDD9300339835 /* DCCrossHairView.m */; };
 		ABDA50FC1370C18C00339835 /* CustomDrawnView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA50FB1370C18B00339835 /* CustomDrawnView.m */; };
+		ABDA5134137131A500339835 /* MainWindowiPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABDA5133137131A400339835 /* MainWindowiPad.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +38,6 @@
 		AB0D01E7136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntrospectDemoViewController.h; sourceTree = "<group>"; };
 		AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectDemoViewController.m; sourceTree = "<group>"; };
-		AB0D01ED136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DCIntrospectDemoViewController.xib; sourceTree = "<group>"; };
 		AB0D0200136A841400962171 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AB0D0212136A9E8D00962171 /* DCIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospect.h; path = ../../DCIntrospect/DCIntrospect.h; sourceTree = "<group>"; };
 		AB0D0213136A9E8D00962171 /* DCIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCIntrospect.m; path = ../../DCIntrospect/DCIntrospect.m; sourceTree = "<group>"; };
@@ -51,6 +50,7 @@
 		ABDA50FA1370C18B00339835 /* CustomDrawnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDrawnView.h; sourceTree = "<group>"; };
 		ABDA50FB1370C18B00339835 /* CustomDrawnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDrawnView.m; sourceTree = "<group>"; };
 		ABDA51091370E79100339835 /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectSettings.h; path = ../../DCIntrospect/DCIntrospectSettings.h; sourceTree = "<group>"; };
+		ABDA5133137131A400339835 /* MainWindowiPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindowiPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,9 +103,9 @@
 				AB0D01E3136A778000962171 /* DCIntrospectDemoAppDelegate.h */,
 				AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */,
 				AB0D01E6136A778000962171 /* MainWindow.xib */,
+				ABDA5133137131A400339835 /* MainWindowiPad.xib */,
 				AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */,
 				AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */,
-				AB0D01EC136A778000962171 /* DCIntrospectDemoViewController.xib */,
 				ABDA50FA1370C18B00339835 /* CustomDrawnView.h */,
 				ABDA50FB1370C18B00339835 /* CustomDrawnView.m */,
 				AB0D01DB136A778000962171 /* Supporting Files */,
@@ -130,12 +130,12 @@
 				ABDA51091370E79100339835 /* DCIntrospectSettings.h */,
 				AB0D0212136A9E8D00962171 /* DCIntrospect.h */,
 				AB0D0213136A9E8D00962171 /* DCIntrospect.m */,
+				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
+				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
 				AB0D021D136A9FE000962171 /* DCFrameView.h */,
 				AB0D021E136A9FE000962171 /* DCFrameView.m */,
 				ABDA509E136FDD9300339835 /* DCCrossHairView.h */,
 				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
-				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
-				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
 			);
 			name = DCIntrospect;
 			sourceTree = "<group>";
@@ -189,7 +189,7 @@
 			files = (
 				AB0D01DF136A778000962171 /* InfoPlist.strings in Resources */,
 				AB0D01E8136A778000962171 /* MainWindow.xib in Resources */,
-				AB0D01EE136A778000962171 /* DCIntrospectDemoViewController.xib in Resources */,
+				ABDA5134137131A500339835 /* MainWindowiPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,14 +230,6 @@
 			name = MainWindow.xib;
 			sourceTree = "<group>";
 		};
-		AB0D01EC136A778000962171 /* DCIntrospectDemoViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AB0D01ED136A778000962171 /* en */,
-			);
-			name = DCIntrospectDemoViewController.xib;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -257,6 +249,7 @@
 				OTHER_CFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -273,6 +266,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

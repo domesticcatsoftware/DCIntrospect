@@ -10,12 +10,10 @@
 
 @interface DCStatusBarOverlay : UIWindow
 {
-    
 }
 
 @property (nonatomic, retain) UILabel *leftLabel;
 @property (nonatomic, retain) UILabel *rightLabel;
-@property (nonatomic, retain) UIButton *infoButton;
 
 ///////////
 // Setup //
