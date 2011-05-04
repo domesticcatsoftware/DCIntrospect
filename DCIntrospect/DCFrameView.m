@@ -35,11 +35,11 @@
 
 		self.touchPointLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
 		self.touchPointLabel.text = @"X 320 Y 480";
-		self.touchPointLabel.font = [UIFont boldSystemFontOfSize:11.0];
+		self.touchPointLabel.font = [UIFont boldSystemFontOfSize:12.0];
 		self.touchPointLabel.textAlignment = UITextAlignmentCenter;
 		self.touchPointLabel.textColor = [UIColor whiteColor];
-		self.touchPointLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.7];
-		self.touchPointLabel.layer.cornerRadius = 4.5;
+		self.touchPointLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.65];
+		self.touchPointLabel.layer.cornerRadius = 5.5;
 		self.touchPointLabel.layer.masksToBounds = YES;
 		self.touchPointLabel.hidden = YES;
 		[self addSubview:self.touchPointLabel];
@@ -190,25 +190,25 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	CGPoint touchPoint = [[touches anyObject] locationInView:self];
-	NSString *touchPontLabelString = [NSString stringWithFormat:@"X %.0f Y %.0f", touchPoint.x, touchPoint.y];
+	NSString *touchPontLabelString = [NSString stringWithFormat:@"%.0f, %.0f", touchPoint.x, touchPoint.y];
 	self.touchPointLabel.text = touchPontLabelString;
 	CGSize stringSize = [touchPontLabelString sizeWithFont:touchPointLabel.font];
 	CGRect frame = CGRectMake(touchPoint.x - floorf(stringSize.width / 2) - 5.0,
-							  touchPoint.y - stringSize.height - 12.0,
-							  stringSize.width + 10.0,
+							  touchPoint.y - stringSize.height - 14.0,
+							  stringSize.width + 11.0,
 							  stringSize.height + 4.0);
 	if (frame.origin.x < 0)
 		frame.origin.x = 0;
 	else if (CGRectGetMaxX(frame) > self.bounds.size.width)
 		frame.origin.x = self.bounds.size.width - frame.size.width;
 
-	if (frame.origin.y < 0)
+	if (frame.origin.y < [UIApplication sharedApplication].statusBarFrame.size.height)
 		frame.origin.y = touchPoint.y + stringSize.height + 4.0;
 	else if (CGRectGetMaxY(frame) > self.bounds.size.height)
 		frame.origin.y = self.bounds.size.height - frame.size.height;
 
 	self.touchPointLabel.frame = frame;
-	self.touchPointView.center = CGPointMake(touchPoint.x + 0.5, touchPoint.y + 0.5);
+	self.touchPointView.center = CGPointMake(touchPoint.x - 0.5, touchPoint.y - 0.5);
 	self.touchPointLabel.hidden = NO;
 	self.touchPointView.alpha = 1.0;
 

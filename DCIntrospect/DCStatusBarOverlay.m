@@ -15,6 +15,7 @@
 
 	[leftLabel release];
 	[rightLabel release];
+	[infoButton release];
 
 	[super dealloc];
 }

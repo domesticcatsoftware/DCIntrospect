@@ -4,7 +4,9 @@
 //  Copyright 2011 Domestic Cat. All rights reserved.
 //
 
-#import "DCIntrospectDefines.h"
+#import "DCIntrospectSettings.h"
+
+#define kDCIntrospectNotificationStatusBarTapped @"kDCIntrospectNotificationStatusBarTapped"
 
 @interface DCStatusBarOverlay : UIWindow
 {

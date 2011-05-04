@@ -20,8 +20,8 @@
 		AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0213136A9E8D00962171 /* DCIntrospect.m */; };
 		AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D021E136A9FE000962171 /* DCFrameView.m */; };
 		ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */; };
-		ABDA509D136FCE4300339835 /* DCUIViewSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */; };
 		ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509F136FDD9300339835 /* DCCrossHairView.m */; };
+		ABDA50FC1370C18C00339835 /* CustomDrawnView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA50FB1370C18B00339835 /* CustomDrawnView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,11 +46,11 @@
 		AB0D021E136A9FE000962171 /* DCFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCFrameView.m; path = ../../DCIntrospect/DCFrameView.m; sourceTree = "<group>"; };
 		ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCStatusBarOverlay.h; path = ../../DCIntrospect/DCStatusBarOverlay.h; sourceTree = "<group>"; };
 		ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCStatusBarOverlay.m; path = ../../DCIntrospect/DCStatusBarOverlay.m; sourceTree = "<group>"; };
-		ABDA505C136E277C00339835 /* DCIntrospectDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectDefines.h; path = ../../DCIntrospect/DCIntrospectDefines.h; sourceTree = "<group>"; };
-		ABDA509B136FCE4200339835 /* DCUIViewSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUIViewSwizzle.h; path = ../../DCIntrospect/DCUIViewSwizzle.h; sourceTree = "<group>"; };
-		ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUIViewSwizzle.m; path = ../../DCIntrospect/DCUIViewSwizzle.m; sourceTree = "<group>"; };
 		ABDA509E136FDD9300339835 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCCrossHairView.h; path = ../../DCIntrospect/DCCrossHairView.h; sourceTree = "<group>"; };
 		ABDA509F136FDD9300339835 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCCrossHairView.m; path = ../../DCIntrospect/DCCrossHairView.m; sourceTree = "<group>"; };
+		ABDA50FA1370C18B00339835 /* CustomDrawnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDrawnView.h; sourceTree = "<group>"; };
+		ABDA50FB1370C18B00339835 /* CustomDrawnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDrawnView.m; sourceTree = "<group>"; };
+		ABDA51091370E79100339835 /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectSettings.h; path = ../../DCIntrospect/DCIntrospectSettings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +106,8 @@
 				AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */,
 				AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */,
 				AB0D01EC136A778000962171 /* DCIntrospectDemoViewController.xib */,
+				ABDA50FA1370C18B00339835 /* CustomDrawnView.h */,
+				ABDA50FB1370C18B00339835 /* CustomDrawnView.m */,
 				AB0D01DB136A778000962171 /* Supporting Files */,
 			);
 			path = DCIntrospectDemo;
@@ -125,7 +127,7 @@
 		AB0D01F7136A79A800962171 /* DCIntrospect */ = {
 			isa = PBXGroup;
 			children = (
-				ABDA505C136E277C00339835 /* DCIntrospectDefines.h */,
+				ABDA51091370E79100339835 /* DCIntrospectSettings.h */,
 				AB0D0212136A9E8D00962171 /* DCIntrospect.h */,
 				AB0D0213136A9E8D00962171 /* DCIntrospect.m */,
 				AB0D021D136A9FE000962171 /* DCFrameView.h */,
@@ -134,8 +136,6 @@
 				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
 				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
 				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
-				ABDA509B136FCE4200339835 /* DCUIViewSwizzle.h */,
-				ABDA509C136FCE4200339835 /* DCUIViewSwizzle.m */,
 			);
 			name = DCIntrospect;
 			sourceTree = "<group>";
@@ -206,8 +206,8 @@
 				AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */,
 				AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */,
 				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
-				ABDA509D136FCE4300339835 /* DCUIViewSwizzle.m in Sources */,
 				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
+				ABDA50FC1370C18C00339835 /* CustomDrawnView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

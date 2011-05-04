@@ -16,50 +16,31 @@ DCIntrospect *sharedInstance = nil;
 @synthesize inputField;
 @synthesize toolbar;
 @synthesize frameView;
+@synthesize objectNames;
+@synthesize currentView, originalFrame, originalAlpha;
+@synthesize showingHelp;
 
-@synthesize currentView;
-@synthesize originalFrame, originalAlpha;
+#pragma mark Setup
 
 + (DCIntrospect *)sharedIntrospector
 {
-#ifdef DEBUG
+//#ifdef DEBUG
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
-		sharedInstance.keyboardShortcuts = YES;
-		sharedInstance.showStatusBarOverlay = YES;
-
-		UITapGestureRecognizer *defaultGestureRecognizer = [[[UITapGestureRecognizer alloc] init] autorelease];
-		defaultGestureRecognizer.cancelsTouchesInView = NO;
-		defaultGestureRecognizer.delaysTouchesBegan = NO;
-		defaultGestureRecognizer.delaysTouchesEnded = NO;
-		defaultGestureRecognizer.numberOfTapsRequired = 2;
-		defaultGestureRecognizer.numberOfTouchesRequired = 1;
-		sharedInstance.gestureRecognizer = defaultGestureRecognizer;
+		sharedInstance.keyboardShortcuts = kDCIntrospectShortcutsOn;
+		sharedInstance.showStatusBarOverlay = kDCIntrospectStatusBarOverlayOn;
 	}
-#endif
-
+//#endif
 	return sharedInstance;
 }
 
-- (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer
-{
-	UIWindow *mainWindow = [self mainWindow];
-	[mainWindow removeGestureRecognizer:gestureRecognizer];
-
-	[gestureRecognizer release];
-	gestureRecognizer = nil;
-	gestureRecognizer = [newGestureRecognizer retain];
-	[gestureRecognizer addTarget:self action:@selector(introspectorInvoked:)];
-	[mainWindow addGestureRecognizer:newGestureRecognizer];
-}
-
-- (void)start
+- (void)setup
 {
 	UIWindow *mainWindow = [self mainWindow];
 	if (!mainWindow)
 	{
-		NSLog(@"DCIntrospector: Couldn't start.  No main window?");
+		NSLog(@"DCIntrospect: Couldn't setup.  No main window?");
 		return;
 	}
 
@@ -78,35 +59,71 @@ DCIntrospect *sharedInstance = nil;
 		[mainWindow addSubview:self.inputField];
 	}
 
-	if (keyboardShortcuts)
-		[self.inputField becomeFirstResponder];
+	if (self.keyboardShortcuts)
+	{
+		if (![self.inputField becomeFirstResponder])
+		{
+			[self performSelector:@selector(takeFirstResponder) withObject:nil afterDelay:0.5];
+		}
+	}
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarTapped) name:kDCIntrospectNotificationStatusBarTapped object:nil];
 
+	// reclaim the keyboard if it is taken
 	[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification
 													  object:nil
 													   queue:nil
 												  usingBlock:^(NSNotification *notification) {
 													  // needs to be done after a delay or else it doesn't work.
-													  [self.inputField performSelector:@selector(becomeFirstResponder)
-																			withObject:nil
-																			afterDelay:0.1];
+													  if (self.keyboardShortcuts)
+														  [self.inputField performSelector:@selector(becomeFirstResponder)
+																				withObject:nil
+																				afterDelay:0.1];
 												  }];
 
+	// listen for device orientation changes to adjust the status bar
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStatusBarFrame) name:UIDeviceOrientationDidChangeNotification object:nil];
-
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
-#pragma mark Introspector
+- (void)takeFirstResponder
+{
+	if (![self.inputField becomeFirstResponder])
+		NSLog(@"DCIntrospect: Couldn't initiate keyboard shortcut field.  Is the keyboard used elsewhere?");
+}
 
-- (void)introspectorInvoked:(UIGestureRecognizer *)aGestureRecognizer
+#pragma mark Custom Setters
+
+- (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer
+{
+	UIWindow *mainWindow = [self mainWindow];
+	[mainWindow removeGestureRecognizer:gestureRecognizer];
+
+	[gestureRecognizer release];
+	gestureRecognizer = nil;
+	gestureRecognizer = [newGestureRecognizer retain];
+	[gestureRecognizer addTarget:self action:@selector(invokeIntrospector)];
+	[mainWindow addGestureRecognizer:newGestureRecognizer];
+}
+
+- (void)setKeyboardShortcuts:(BOOL)keyboardShortCutsOn
+{
+	keyboardShortcuts = keyboardShortCutsOn;
+	if (self.keyboardShortcuts)
+		[self.inputField becomeFirstResponder];
+	else
+		[self.inputField resignFirstResponder];
+}
+
+#pragma mark Main Actions
+
+- (void)invokeIntrospector
 {
 	self.on = !self.on;
 
 	if (self.on)
 	{
-		[self updateStatusBarFrame];
+		[self updateViews];
 		[self updateStatusBar];
 		[self updateFrameView];
 
@@ -114,6 +131,9 @@ DCIntrospect *sharedInstance = nil;
 			[self.inputField becomeFirstResponder];
 		else
 			[self.inputField resignFirstResponder];
+
+		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidStart
+															object:nil];
 	}
 	else
 	{
@@ -122,18 +142,303 @@ DCIntrospect *sharedInstance = nil;
 			[self toggleOutlines];
 		if (self.highlightOpaqueViews)
 			[self toggleOpaqueViews];
-
+		if (self.showingHelp)
+			[self toggleHelp];
+	
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
 		self.currentView = nil;
-	}
 
-	if (aGestureRecognizer)
-	{
-		CGPoint touchPoint = [gestureRecognizer locationInView:nil];
-		[self touchAtPoint:touchPoint];
+		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidEnd
+															object:nil];
 	}
 }
+
+- (void)touchAtPoint:(CGPoint)point
+{
+	NSMutableArray *views = [[NSMutableArray new] autorelease];
+	CGPoint newTouchPoint = point;
+	newTouchPoint = [[self mainWindow] convertPoint:newTouchPoint fromView:self.frameView];
+	[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:[self mainWindow]]];
+	if (views.count == 0)
+		return;
+
+	UIView *newView = [views lastObject];
+	if (newView != self.currentView)
+	{
+		if (self.frameView.rectsToOutline.count > 0)
+		{
+			[self.frameView.rectsToOutline removeAllObjects];
+			[self.frameView setNeedsDisplay];
+			self.viewOutlines = NO;
+		}
+
+		self.currentView = [views lastObject];
+		self.originalFrame = self.currentView.frame;
+		self.originalAlpha = self.currentView.alpha;
+		[self updateFrameView];
+		[self updateStatusBar];
+		[self updateToolbar];
+	}
+}
+
+- (void)statusBarTapped
+{
+	UIWindow *mainWindow = [self mainWindow];
+
+	// if a view is selected, show the toolbar, otherwise show help
+	if (self.currentView)
+	{
+		if (!self.toolbar)
+		{
+			CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
+			self.toolbar = [[[UIScrollView alloc] initWithFrame:rect] autorelease];
+			self.toolbar.backgroundColor = [UIColor blackColor];
+			self.toolbar.alpha = 0.0;
+			[mainWindow addSubview:self.toolbar];
+
+			[self updateViews];
+		}
+
+		[self updateToolbar];
+
+		if (self.toolbar.alpha == 1)
+		{
+			[self fadeView:self.toolbar toAlpha:0.0];
+		}
+		else
+		{
+			[mainWindow bringSubviewToFront:self.toolbar];
+			[self fadeView:self.toolbar toAlpha:1.0];
+		}
+	}
+	else
+	{
+		[self toggleHelp];
+	}
+}
+
+#pragma mark Keyboard Capture
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+	if ([string isEqualToString:kDCIntrospectKeysInvoke])
+	{
+		[self invokeIntrospector];
+		return NO;
+	}
+
+	if (!self.on)
+	{
+		return NO;
+	}
+
+	if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
+	{
+		[self toggleOutlines];
+		return NO;
+	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleNonOpaqueViews])
+	{
+		[self toggleOpaqueViews];
+		return NO;
+	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleFlashViewRedraws])
+	{
+		[self toggleRedrawFlashing];
+		return NO;
+	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleShowCoordinates])
+	{
+		[UIView animateWithDuration:0.15
+							  delay:0
+							options:UIViewAnimationOptionAllowUserInteraction
+						 animations:^{
+							 self.frameView.touchPointLabel.alpha = !self.frameView.touchPointLabel.alpha;
+						 } completion:^(BOOL finished) {
+							 NSString *string = [NSString stringWithFormat:@"Coordinates are %@", (self.frameView.touchPointLabel.alpha) ? @"on" : @"off"];
+							 if (self.showStatusBarOverlay)
+								 [self showTemporaryStringInStatusBar:string];
+							 else
+								 NSLog(@"%@", string);
+						 }];
+		return NO;
+	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleHelp])
+	{
+		[self toggleHelp];
+		return NO;
+	}
+
+	if (self.on && self.currentView)
+	{
+		if ([string isEqualToString:kDCIntrospectKeysLogProperties])
+		{
+			[self logPropertiesForObject:self.currentView];
+			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysLogViewRecursive])
+		{
+			[self logRecursiveDescriptionForCurrentView];
+			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsDisplay])
+		{
+			[self forceSetNeedsDisplay];
+			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsLayout])
+		{
+			[self forceSetNeedsLayout];
+			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysReloadData])
+		{
+			[self forceReloadOfView];
+			return NO;
+		}
+
+		if ([string isEqualToString:kDCIntrospectKeysSelectMoveUpViewHeirachy])
+		{
+			if (self.currentView.superview)
+			{
+				self.currentView = self.currentView.superview;
+				[self updateFrameView];
+				[self updateStatusBar];
+				[self updateToolbar];
+			}
+			return NO;
+		}
+
+		CGRect frame = self.currentView.frame;
+		if ([string isEqualToString:kDCIntrospectKeysNudgeViewLeft])
+			frame.origin.x -= 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewRight])
+			frame.origin.x += 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewUp])
+			frame.origin.y -= 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewDown])
+			frame.origin.y += 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysCenterInSuperview])
+			frame = CGRectMake(floorf((self.currentView.superview.frame.size.width - frame.size.width) / 2.0),
+							   floorf((self.currentView.superview.frame.size.height - frame.size.height) / 2.0),
+							   frame.size.width,
+							   frame.size.height);
+		else if ([string isEqualToString:kDCIntrospectKeysIncreaseWidth])
+			frame.size.width += 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysDecreaseWidth])
+			frame.size.width -= 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysIncreaseHeight])
+			frame.size.height += 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysDecreaseHeight])
+			frame.size.height -= 1.0;
+		else if ([string isEqualToString:kDCIntrospectKeysIncreaseViewAlpha])
+			self.currentView.alpha += 0.05;
+		else if ([string isEqualToString:kDCIntrospectKeysDecreaseViewAlpha])
+			self.currentView.alpha -= 0.05;
+
+		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
+											floorf(frame.origin.y),
+											floorf(frame.size.width),
+											floorf(frame.size.height));
+
+		[self updateFrameView];
+		[self updateStatusBar];
+	}
+
+	return NO;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	if (!self.currentView)
+		return YES;
+
+	NSString *varName = [self nameForObject:self.currentView];
+	if ([varName isEqualToString:[NSString stringWithFormat:@"%@", self.currentView.class]])
+		varName = @"<#view#>";
+
+	NSMutableString *outputString = [[[NSMutableString alloc] init] autorelease];
+	if (!CGRectEqualToRect(self.originalFrame, self.currentView.frame))
+	{
+		[outputString appendFormat:@"%@.frame = CGRectMake(%.0f, %.0f, %.0f, %.0f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
+	}
+
+	if (self.originalAlpha != self.currentView.alpha)
+	{
+		[outputString appendFormat:@"%@.alpha = %.2f;\n", varName, self.currentView.alpha];
+	}
+
+	if (outputString.length == 0)
+		NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
+	else
+		printf("\n\n%s\n", [outputString cStringUsingEncoding:1]);
+
+	return YES;
+}
+
+
+#pragma mark Object Names
+
+- (void)setName:(NSString *)name forObject:(id)object accessDirectly:(BOOL)accessDirectly
+{
+	if (!self.objectNames)
+		self.objectNames = [[[NSMutableDictionary alloc] init] autorelease];
+
+	if (accessDirectly)
+		name = [@"self." stringByAppendingString:name];
+
+	[self.objectNames setValue:object forKey:name];
+}
+
+- (NSString *)nameForObject:(id)object
+{
+	__block NSString *objectName = [NSString stringWithFormat:@"%@", [object class]];
+	if (!self.objectNames)
+		return objectName;
+
+	[self.objectNames enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		if (obj == object)
+		{
+			objectName = (NSString *)key;
+			*stop = YES;
+		}
+	}];
+
+	return objectName;
+}
+
+- (void)removeNamesForViewsInView:(UIView *)view
+{
+	if (!self.objectNames)
+		return;
+
+	NSMutableArray *objectsToRemove = [[NSMutableArray new] autorelease];
+	[self.objectNames enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		if ([[obj class] isSubclassOfClass:[UIView class]])
+		{
+			UIView *subview = (UIView *)obj;
+			if ([self view:view containsSubview:subview])
+				[objectsToRemove addObject:key];
+		}
+	}];
+
+	[objectsToRemove enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSString *key = (NSString *)obj;
+		[self.objectNames removeObjectForKey:key];
+	}];
+}
+
+- (void)removeNameForObject:(id)object
+{
+	if (!self.objectNames)
+		return;
+
+	NSString *objectName = [self nameForObject:object];
+	[self.objectNames removeObjectForKey:objectName];
+}
+
+#pragma mark Tools/Layout
 
 - (void)updateFrameView
 {
@@ -143,12 +448,12 @@ DCIntrospect *sharedInstance = nil;
 		self.frameView = [[[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self] autorelease];
 		[mainWindow addSubview:self.frameView];
 		self.frameView.alpha = 0.0;
-		[self updateStatusBarFrame];
+		[self updateViews];
 	}
-
+	
 	[mainWindow bringSubviewToFront:self.frameView];
 	[mainWindow bringSubviewToFront:self.toolbar];
-
+	
 	if (self.on)
 	{
 		if (self.currentView)
@@ -163,7 +468,7 @@ DCIntrospect *sharedInstance = nil;
 		{
 			self.frameView.mainRect = CGRectZero;
 		}
-
+		
 		[self fadeView:self.frameView toAlpha:1.0];
 	}
 	else
@@ -176,27 +481,34 @@ DCIntrospect *sharedInstance = nil;
 {
 	if (self.currentView)
 	{
-		if (self.currentView.tag != 0)
-			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@ (tag: %i)", [self.currentView class], self.currentView.tag];
-		else
-			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", [self.currentView class]];
+		NSString *nameForObject = [self nameForObject:self.currentView];
 
+		// remove the 'self.' if it's there to save space
+		if ([nameForObject hasPrefix:@"self."])
+			nameForObject = [nameForObject substringFromIndex:@"self.".length];
+	
+		if (self.currentView.tag != 0)
+			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@ (tag: %i)", nameForObject, self.currentView.tag];
+		else
+			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", nameForObject];
+		
 		self.statusBarOverlay.rightLabel.text = NSStringFromCGRect(self.currentView.frame);
 		self.statusBarOverlay.infoButton.hidden = YES;
 	}
 	else
 	{
-		self.statusBarOverlay.leftLabel.text = @"DCIntrospector";
+		self.statusBarOverlay.leftLabel.text = @"DCIntrospect";
+		self.statusBarOverlay.rightLabel.text = nil;
 		self.statusBarOverlay.infoButton.hidden = NO;
 	}
-
+	
 	if (self.showStatusBarOverlay)
 		self.statusBarOverlay.hidden = NO;
 	else
 		self.statusBarOverlay.hidden = YES;
 }
 
-- (void)updateStatusBarFrame
+- (void)updateViews
 {
 	// current interface orientation
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -239,73 +551,6 @@ DCIntrospect *sharedInstance = nil;
 	[self updateFrameView];
 }
 
-- (void)touchAtPoint:(CGPoint)point
-{
-	NSMutableArray *views = [[NSMutableArray new] autorelease];
-	CGPoint newTouchPoint = point;
-	newTouchPoint = [[self mainWindow] convertPoint:newTouchPoint fromView:self.frameView];
-	[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:[self mainWindow]]];
-	if (views.count == 0)
-		return;
-
-	UIView *newView = [views lastObject];
-	if (newView != self.currentView)
-	{
-		if (self.frameView.rectsToOutline.count > 0)
-		{
-			[self.frameView.rectsToOutline removeAllObjects];
-			[self.frameView setNeedsDisplay];
-			self.viewOutlines = NO;
-		}
-
-		self.currentView = [views lastObject];
-		self.originalFrame = self.currentView.frame;
-		self.originalAlpha = self.currentView.alpha;
-		[self updateFrameView];
-		[self updateStatusBar];
-		[self updateToolbar];
-	}
-}
-
-#pragma mark Tools
-
-- (void)statusBarTapped
-{
-	UIWindow *mainWindow = [self mainWindow];
-
-	// if a view is selected, show the toolbar, otherwise show help
-	if (self.currentView)
-	{
-		if (!self.toolbar)
-		{
-			CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
-			self.toolbar = [[[UIScrollView alloc] initWithFrame:rect] autorelease];
-			self.toolbar.backgroundColor = [UIColor blackColor];
-			self.toolbar.alpha = 0.0;
-			[mainWindow addSubview:self.toolbar];
-
-			[self updateStatusBarFrame];
-		}
-
-		[self updateToolbar];
-
-		if (self.toolbar.alpha == 1)
-		{
-			[self fadeView:self.toolbar toAlpha:0.0];
-			
-		}
-		else
-		{
-			[mainWindow bringSubviewToFront:self.toolbar];
-			[self fadeView:self.toolbar toAlpha:1.0];
-		}
-	}
-	else
-	{
-		[self showHelp];
-	}
-}
-
 - (void)updateToolbar
 {
 	// setup toolbar
@@ -344,7 +589,7 @@ DCIntrospect *sharedInstance = nil;
 		UIButton *reloadTableView = [UIButton buttonWithType:UIButtonTypeCustom];
 		title = [NSString stringWithFormat:@"reloadData (%@)", kDCIntrospectKeysReloadData];
 		[reloadTableView setTitle:title forState:UIControlStateNormal];
-		[reloadTableView addTarget:self action:@selector(forceReload) forControlEvents:UIControlEventTouchUpInside];
+		[reloadTableView addTarget:self action:@selector(forceReloadOfView) forControlEvents:UIControlEventTouchUpInside];
 		[buttons addObject:reloadTableView];
 	}
 
@@ -364,12 +609,22 @@ DCIntrospect *sharedInstance = nil;
 	self.toolbar.contentSize = CGSizeMake(x, self.toolbar.frame.size.height);
 }
 
+- (void)showTemporaryStringInStatusBar:(NSString *)string
+{
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateStatusBar) object:nil];
+
+	self.statusBarOverlay.leftLabel.text = string;
+	self.statusBarOverlay.rightLabel.text = nil;
+	[self performSelector:@selector(updateStatusBar) withObject:nil afterDelay:0.75];
+}
+
+#pragma mark Actions
 - (void)logRecursiveDescriptionForCurrentView
 {
-#ifdef DEBUG
+//#ifdef DEBUG
 	// [UIView recursiveDescription] is a private method.
 	NSLog(@"%@", [self.currentView recursiveDescription]);
-#endif
+//#endif
 }
 
 - (void)forceSetNeedsDisplay
@@ -382,7 +637,7 @@ DCIntrospect *sharedInstance = nil;
 	[self.currentView setNeedsLayout];
 }
 
-- (void)forceReload
+- (void)forceReloadOfView
 {
 	if ([self.currentView class] == [UITableView class])
 		[(UITableView *)self.currentView reloadData];
@@ -399,6 +654,12 @@ DCIntrospect *sharedInstance = nil;
 		[self.frameView.rectsToOutline removeAllObjects];
 
 	[self.frameView setNeedsDisplay];
+
+	NSString *string = [NSString stringWithFormat:@"Showing all view outlines is %@", (self.viewOutlines) ? @"on" : @"off"];
+	if (self.showStatusBarOverlay)
+		[self showTemporaryStringInStatusBar:string];
+	else
+		NSLog(@"%@", string);
 }
 
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view
@@ -423,6 +684,12 @@ DCIntrospect *sharedInstance = nil;
 	UIWindow *mainWindow = [self mainWindow];
 	[self setBackgroundColor:(self.highlightOpaqueViews) ? [UIColor redColor] : [UIColor clearColor]
 	  ofOpaqueViewsInSubview:mainWindow];
+
+	NSString *string = [NSString stringWithFormat:@"Highlighting opaque views is %@", (self.highlightOpaqueViews) ? @"on" : @"off"];
+	if (self.showStatusBarOverlay)
+		[self showTemporaryStringInStatusBar:string];
+	else
+		NSLog(@"%@", string);
 }
 
 - (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view
@@ -442,29 +709,47 @@ DCIntrospect *sharedInstance = nil;
 - (void)toggleRedrawFlashing
 {
 	self.flashOnRedraw = !self.flashOnRedraw;
+	NSString *string = [NSString stringWithFormat:@"Flashing on redraw is %@", (self.flashOnRedraw) ? @"on" : @"off"];
+	if (self.showStatusBarOverlay)
+		[self showTemporaryStringInStatusBar:string];
+	else
+		NSLog(@"%@", string);
 
-	UIWindow *mainWindow = [self mainWindow];
-	[self setRedrawFlash:self.flashOnRedraw inViewsInSubview:mainWindow];
+	// flash all views to show what is working
+	[self callDrawRectOnViewsInSubview:[self mainWindow]];
 }
 
-- (void)setRedrawFlash:(BOOL)redrawFlash inViewsInSubview:(UIView *)view
+- (void)callDrawRectOnViewsInSubview:(UIView *)subview
 {
-	for (UIView *subview in view.subviews)
+	for (UIView *view in subview.subviews)
 	{
-		if ([self ignoreView:subview])
-			continue;
+		if (![self ignoreView:view])
+		{
+			[view setNeedsDisplay];
+			[self callDrawRectOnViewsInSubview:view];
+		}
+	}
+}
 
-		[self setRedrawFlash:redrawFlash inViewsInSubview:subview];
+- (void)flashRect:(CGRect)rect inView:(UIView *)view
+{
+	if (self.flashOnRedraw)
+	{
+		CALayer *layer = [CALayer layer];
+		layer.frame = rect;
+		layer.backgroundColor = kDCIntrospectFlashOnRedrawColor.CGColor;
+		[view.layer addSublayer:layer];
+		[layer performSelector:@selector(removeFromSuperlayer) withObject:nil afterDelay:kDCIntrospectFlashOnRedrawFlashLength];
 	}
 }
 
 #pragma mark Description Methods
 
-- (NSString *)describeProperty:(NSString *)propertyName value:(int)value
+- (NSString *)describeProperty:(NSString *)propertyName type:(NSString *)type value:(id)value
 {
 	if ([propertyName isEqualToString:@"contentMode"])
 	{
-		switch (value)
+		switch ((int)value)
 		{
 			case 0: return @"UIViewContentModeScaleToFill";
 			case 1: return @"UIViewContentModeScaleAspectFit";
@@ -484,7 +769,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"textAlignment"])
 	{
-		switch (value)
+		switch ((int)value)
 		{
 			case 0: return @"UITextAlignmentLeft";
 			case 1: return @"UITextAlignmentCenter";
@@ -494,7 +779,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"lineBreakMode"])
 	{
-		switch (value)
+		switch ((int)value)
 		{
 			case 0: return @"UILineBreakModeWordWrap";
 			case 1: return @"UILineBreakModeCharacterWrap";
@@ -507,7 +792,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"activityIndicatorViewStyle"])
 	{
-		switch (value)
+		switch ((int)value)
 		{
 			case 0: return @"UIActivityIndicatorViewStyleWhiteLarge";
 			case 1: return @"UIActivityIndicatorViewStyleWhite";
@@ -515,9 +800,156 @@ DCIntrospect *sharedInstance = nil;
 			default: return nil;
 		}
 	}
+	else if ([propertyName isEqualToString:@"returnKeyType"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UIReturnKeyDefault";
+			case 1: return @"UIReturnKeyGo";
+			case 2: return @"UIReturnKeyGoogle";
+			case 3: return @"UIReturnKeyJoin";
+			case 4: return @"UIReturnKeyNext";
+			case 5: return @"UIReturnKeyRoute";
+			case 6: return @"UIReturnKeySearch";
+			case 7: return @"UIReturnKeyYahoo";
+			case 8: return @"UIReturnKeyDone";
+			case 9: return @"UIReturnKeyEmergencyCall";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"keyboardAppearance"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UIKeyboardAppearanceDefault";
+			case 1: return @"UIKeyboardAppearanceAlert";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"keyboardType"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UIKeyboardTypeDefault";
+			case 1: return @"UIKeyboardTypeASCIICapable";
+			case 2: return @"UIKeyboardTypeNumbersAndPunctuation";
+			case 3: return @"UIKeyboardTypeURL";
+			case 4: return @"UIKeyboardTypeNumberPad";
+			case 5: return @"UIKeyboardTypePhonePad";
+			case 6: return @"UIKeyboardTypeNamePhonePad";
+			case 7: return @"UIKeyboardTypeEmailAddress";
+			case 8: return @"UIKeyboardTypeDecimalPad";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"autocorrectionType"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UIKeyboardTypeDefault";
+			case 1: return @"UITextAutocorrectionTypeDefault";
+			case 2: return @"UITextAutocorrectionTypeNo";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"autocapitalizationType"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITextAutocapitalizationTypeNone";
+			case 1: return @"UITextAutocapitalizationTypeWords";
+			case 2: return @"UITextAutocapitalizationTypeSentences";
+			case 3: return @"UITextAutocapitalizationTypeAllCharacters";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"clearButtonMode"] ||
+			 [propertyName isEqualToString:@"leftViewMode"] ||
+			 [propertyName isEqualToString:@"rightViewMode"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITextFieldViewModeNever";
+			case 1: return @"UITextFieldViewModeWhileEditing";
+			case 2: return @"UITextFieldViewModeUnlessEditing";
+			case 3: return @"UITextFieldViewModeAlways";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"borderStyle"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITextBorderStyleNone";
+			case 1: return @"UITextBorderStyleLine";
+			case 2: return @"UITextBorderStyleBezel";
+			case 3: return @"UITextBorderStyleRoundedRect";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"progressViewStyle"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UIProgressViewStyleBar";
+			case 1: return @"UIProgressViewStyleDefault";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"separatorStyle"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITableViewCellSeparatorStyleNone";
+			case 1: return @"UITableViewCellSeparatorStyleSingleLine";
+			case 2: return @"UITableViewCellSeparatorStyleSingleLineEtched";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"selectionStyle"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITableViewCellSelectionStyleNone";
+			case 1: return @"UITableViewCellSelectionStyleBlue";
+			case 2: return @"UITableViewCellSelectionStyleGray";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"editingStyle"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITableViewCellEditingStyleNone";
+			case 1: return @"UITableViewCellEditingStyleDelete";
+			case 2: return @"UITableViewCellEditingStyleInsert";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"accessoryType"] || [propertyName isEqualToString:@"editingAccessoryType"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITableViewCellAccessoryNone";
+			case 1: return @"UITableViewCellAccessoryDisclosureIndicator";
+			case 2: return @"UITableViewCellAccessoryDetailDisclosureButton";
+			case 3: return @"UITableViewCellAccessoryCheckmark";
+			default: return nil;
+		}
+	}
+	else if ([propertyName isEqualToString:@"style"])
+	{
+		switch ((int)value)
+		{
+			case 0: return @"UITableViewStylePlain";
+			case 1: return @"UITableViewStyleGrouped";
+			default: return nil;
+		}
+
+	}
 	else if ([propertyName isEqualToString:@"autoresizingMask"])
 	{
-		UIViewAutoresizing mask = value;
+		UIViewAutoresizing mask = (int)value;
 		NSMutableString *string = [[NSMutableString new] autorelease];
 		if (mask & UIViewAutoresizingFlexibleLeftMargin)
 			[string appendFormat:@"UIViewAutoresizingFlexibleLeftMargin"];
@@ -537,6 +969,75 @@ DCIntrospect *sharedInstance = nil;
 
 		return string;
 	}
+	else if ([propertyName isEqualToString:@"userInteractionEnabled"] ||
+			 [propertyName isEqualToString:@"enabled"] ||
+			 [propertyName isEqualToString:@"highlighted"] ||
+			 [propertyName isEqualToString:@"selected"] ||
+			 [propertyName isEqualToString:@"continuous"] ||
+			 [propertyName isEqualToString:@"on"] ||
+			 [propertyName isEqualToString:@"secureTextEntry"] ||
+			 [propertyName isEqualToString:@"enablesReturnKeyAutomatically"] ||
+			 [propertyName isEqualToString:@"keepsFirstResponderVisibleOnBoundsChange"] ||
+			 [propertyName isEqualToString:@"editing"] ||
+			 [propertyName isEqualToString:@"needsSetup"] ||
+			 [propertyName isEqualToString:@"drawsTopShadow"])
+	{
+		return ((int)value) ? @"YES" : @"NO";
+	}
+
+	// print out the return for each value depending on type
+	if ([type isEqualToString:@"f"])
+	{
+		return [NSString stringWithFormat:@"%f", value];
+	}
+	else if ([type isEqualToString:@"d"])
+	{
+		return [NSString stringWithFormat:@"%d", value];
+	}
+	else if ([type isEqualToString:@"i"] || [type isEqualToString:@"I"])
+	{
+		return [NSString stringWithFormat:@"%i", value];
+	}
+	else if ([type isEqualToString:@"c"])
+	{
+		return [NSString stringWithFormat:@"%@", (value) ? @"YES" : @"NO"];
+	}
+	else if ([type isEqualToString:@"@"])
+	{
+		if ([NSStringFromClass([value class]) isEqualToString:@"UIDeviceRGBColor"])
+		{
+			UIColor *color = (UIColor *)value;
+			return [self describeColor:color];
+		}
+		else if ([NSStringFromClass([value class]) isEqualToString:@"UICFFont"])
+		{
+			UIFont *font = (UIFont *)value;
+			return [NSString stringWithFormat:@"%.0fpx %@", font.pointSize, font.fontName];
+		}
+		else
+		{
+			return [NSString stringWithFormat:@"%@", value];
+		}
+	}
+	else if ([type isEqualToString:@"{CGSize=ff}"])
+	{
+		NSValue *sizeValue = (NSValue *)value;
+		if (!sizeValue)
+			return @"CGSizeZero";
+		CGSize size = [sizeValue CGSizeValue];
+		return [NSString stringWithFormat:@"%@", NSStringFromCGSize(size)];
+	}
+	else if ([type isEqualToString:@"{UIEdgeInsets=ffff}"])
+	{
+		NSValue *editInsetsValue = (NSValue *)value;
+		UIEdgeInsets edgeInsets = [editInsetsValue UIEdgeInsetsValue];
+		return [NSString stringWithFormat:@"%@", NSStringFromUIEdgeInsets(edgeInsets)];
+	}
+	else
+	{
+		return [NSString stringWithFormat:@"(unknown type: %@)", type];
+	}
+
 	return nil;
 }
 
@@ -561,150 +1062,188 @@ DCIntrospect *sharedInstance = nil;
 
 #pragma mark DCIntrospector Help
 
-- (void)showHelp
+- (void)toggleHelp
 {
-	NSLog(@"Showing help");
+	UIWindow *mainWindow = [self mainWindow];
+	self.showingHelp = !self.showingHelp;
+
+	if (self.showingHelp)
+	{
+		self.statusBarOverlay.leftLabel.text = @"Help";
+		self.statusBarOverlay.rightLabel.text = @"Close";
+		self.statusBarOverlay.infoButton.hidden = YES;
+		UIView *backingView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)] autorelease];
+		backingView.tag = 1548;
+		backingView.alpha = 0;
+		backingView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.85];
+		[mainWindow addSubview:backingView];
+
+		UIWebView *webView = [[[UIWebView alloc] initWithFrame:backingView.frame] autorelease];
+		webView.opaque = NO;
+		webView.backgroundColor = [UIColor clearColor];
+		webView.delegate = self;
+		[backingView addSubview:webView];
+
+		NSMutableString *helpString = [[[NSMutableString alloc] initWithString:@"<html>"] autorelease];
+		[helpString appendString:@"<head><style>"];
+		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:white; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { font-weight:bold; margin-left: 7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
+		[helpString appendString:@"</style></head><body><h1>DCIntrospect</h1>"];
+		[helpString appendString:@"<p>Created by <a href='http://domesticcat.com.au'>Domestic Cat Software</a> 2011.</p>"];
+		[helpString appendString:@"<p>More info and full documentation: <a href='http://domesticcat.com.au/introspect'>domesticcat.com.au/introspect</a></p>"];
+		[helpString appendString:@"<p>GitHub project: <a href='https://github.com/domesticcatsoftware/DCIntrospect'>github.com/domesticcatsoftware/DCIntrospect/</a></p>"];
+
+		[helpString appendString:@"<h1>Keyboard Shortcuts</h1>"];
+		[helpString appendString:@"<p>Edit DCIntrospectSettings.h to change shortcut keys.</div>"];
+
+		[helpString appendString:@"<h2>General Shortcuts</h2>"];
+
+		[helpString appendFormat:@"<div><span class='name'>Invoke Introspector</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysInvoke isEqualToString:@" "]) ? @"spacebar" : kDCIntrospectKeysInvoke];
+		[helpString appendFormat:@"<div><span class='name'>Toggle View Outlines</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleViewOutlines];
+		[helpString appendFormat:@"<div><span class='name'>Toggle Highlighting Non-Opaque Views</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleNonOpaqueViews];
+		[helpString appendFormat:@"<div><span class='name'>Toggle Help</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleHelp];
+		[helpString appendFormat:@"<div><span class='name'>Toggle flash on <span class='code'>drawRect:</span> (see below)</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleFlashViewRedraws];
+		[helpString appendFormat:@"<div><span class='name'>Toggle coordinates</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleShowCoordinates];
+		[helpString appendString:@"<div class='spacer'></div>"];
+
+		[helpString appendString:@"<h2>When a view is selected</h2>"];
+		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>",kDCIntrospectKeysLogProperties];
+		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>",kDCIntrospectKeysLogViewRecursive];
+		[helpString appendFormat:@"<div><span class='name'>Select View's Superview</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysSelectMoveUpViewHeirachy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysSelectMoveUpViewHeirachy];
+		[helpString appendString:@"<div class='spacer'></div>"];
+
+		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewLeft];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Right</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewRight];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Up</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewUp];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Down</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewDown];
+		[helpString appendFormat:@"<div><span class='name'>Center in Superview</span><div class='key'>%@</div></div>",kDCIntrospectKeysCenterInSuperview];
+		[helpString appendFormat:@"<div><span class='name'>Increase Width</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Width</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Increase Height</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Height</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Increase Alpha</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseViewAlpha];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Alpha</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseViewAlpha];
+		[helpString appendString:@"<div class='spacer'></div>"];
+
+		[helpString appendFormat:@"<div><span class='name'>Call setNeedsDisplay</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsDisplay];
+		[helpString appendFormat:@"<div><span class='name'>Call setNeedsLayout</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsLayout];
+		[helpString appendFormat:@"<div><span class='name'>Call reloadData (UITableView only)</span><div class='key'>%@</div></div>",kDCIntrospectKeysReloadData];
+
+		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (shortcut: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
+
+		[helpString appendString:@"<h1>License</h1><p>DCIntrospect is made available under the <a href='http://en.wikipedia.org/wiki/MIT_License'>MIT license</a>.</p>"];
+
+		[UIView animateWithDuration:0.1
+						 animations:^{
+							 backingView.alpha = 1.0;
+						 } completion:^(BOOL finished) {
+							 [webView loadHTMLString:helpString baseURL:nil];
+						 }];
+	}
+	else
+	{
+		UIView *backingView = (UIView *)[mainWindow viewWithTag:1548];
+		[UIView animateWithDuration:0.1
+						 animations:^{
+							 backingView.alpha = 0;
+						 } completion:^(BOOL finished) {
+							 [backingView removeFromSuperview];
+						 }];
+		[self updateStatusBar];
+	}
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+	if ([[[request URL] absoluteString] isEqualToString:@"about:blank"])
+		return YES;
+	else
+		[[UIApplication sharedApplication] openURL:[request URL]];
+
+	return NO;
 }
 
 #pragma mark Experimental
 
-- (void)logPropertiesForCurrentView
+- (void)logPropertiesForObject:(id)object
 {
-	NSString *className = [NSString stringWithFormat:@"%@", [self.currentView class]];
-	Class currentViewClass = [self.currentView class];
-
-	if (currentViewClass == [UIScrollView class])
-	{
-		NSLog(@"DCIntrospect: Logging properties not supported for this view.");
-		return;
-	}
+	Class objectClass = [object class];
+	NSString *className = [NSString stringWithFormat:@"%@", objectClass];
 
 	unsigned int count;
-	objc_property_t *properties = class_copyPropertyList(currentViewClass, &count);
+	objc_property_t *properties = class_copyPropertyList(objectClass, &count);
     size_t buf_size = 1024;
     char *buffer = malloc(buf_size);
 	NSMutableString *outputString = [[[NSMutableString alloc] initWithFormat:@"\n\n** %@", className] autorelease];
-	
-	// list the class heirachy
-	Class class = [currentViewClass superclass];
-	while (class)
-	{
-		[outputString appendFormat:@" : %@", class];
-		class = [class superclass];
-	}
-	
-	[outputString appendString:@" ** \n\n"];
-	
-	// print out generic uiview properties
-	[outputString appendString:@"  ** UIView properties **\n"];
-	[outputString appendFormat:@"    tag: %i\n", self.currentView.tag];
-	[outputString appendFormat:@"    frame: %@ | ", NSStringFromCGRect(self.currentView.frame)];
-	[outputString appendFormat:@"bounds: %@ | ", NSStringFromCGRect(self.currentView.bounds)];
-	[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(self.currentView.center)];
-	[outputString appendFormat:@"    transform: %@\n", NSStringFromCGAffineTransform(self.currentView.transform)];
-	[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" value:self.currentView.autoresizingMask]];
-	[outputString appendFormat:@"    autoresizesSubviews: %@\n", (self.currentView.autoresizesSubviews) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" value:self.currentView.contentMode]];
-	[outputString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(self.currentView.contentStretch)];
-	[outputString appendFormat:@"    backgroundColor: %@\n", [self describeColor:self.currentView.backgroundColor]];
-	[outputString appendFormat:@"    alpha: %.2f | ", self.currentView.alpha];
-	[outputString appendFormat:@"opaque: %@ | ", (self.currentView.opaque) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"hidden: %@ | ", (self.currentView.hidden) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"clips to bounds: %@ | ", (self.currentView.clipsToBounds) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", (self.currentView.clearsContextBeforeDrawing) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"    userInteractionEnabled: %@ | ", (self.currentView.userInteractionEnabled) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"multipleTouchEnabled: %@\n", (self.currentView.multipleTouchEnabled) ? @"YES" : @"NO"];
-	[outputString appendFormat:@"    gestureRecognizers: %@\n", self.currentView.gestureRecognizers];
 
-	[outputString appendString:@"\n"];
-	[outputString appendFormat:@"  ** %@ properties **\n", currentViewClass];
-	for (unsigned int i = 0; i < count; ++i)
+	// list the class heirachy
+	Class superClass = [objectClass superclass];
+	while (superClass)
 	{
-		// get the property name and selector name
-		NSString *propertyName = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding];
-		
-		// get the return object and type for the selector
-		SEL sel = NSSelectorFromString(propertyName);
-		Method method = class_getInstanceMethod([self.currentView class], sel);
-		id returnObject = ([self.currentView respondsToSelector:sel]) ? [self.currentView performSelector:sel] : nil;
-		method_getReturnType(method, buffer, buf_size);
-		NSString *returnType = [NSString stringWithFormat:@"%s", buffer];
-		
-		[outputString appendFormat:@"    %@: ", propertyName];
-		// print out the return for each value depending on type
-		if ([returnType isEqualToString:@"f"])
-		{
-			[outputString appendFormat:@"%f", returnObject];
-		}
-		else if ([returnType isEqualToString:@"i"] || [returnType isEqualToString:@"I"])
-		{
-			NSString *prettyDescription = [self describeProperty:propertyName value:(int)returnObject];
-			if (prettyDescription)
-				[outputString appendFormat:@"%@", prettyDescription];
-			else
-				[outputString appendFormat:@"%i", returnObject];
-		}
-		else if ([returnType isEqualToString:@"c"])
-		{
-			[outputString appendFormat:@"%@", (returnObject) ? @"YES" : @"NO"];
-		}
-		else if ([returnType isEqualToString:@"@"])
-		{
-			id returnObject = [self.currentView performSelector:sel];
-			if ([NSStringFromClass([returnObject class]) isEqualToString:@"UIDeviceRGBColor"])
-			{
-				UIColor *color = (UIColor *)returnObject;
-				[outputString appendString:[self describeColor:color]];
-			}
-			else if ([NSStringFromClass([returnObject class]) isEqualToString:@"UICFFont"])
-			{
-				UIFont *font = (UIFont *)returnObject;
-				[outputString appendFormat:@"%.0fpx %@", font.pointSize, font.fontName];
-			}
-			else
-			{
-				[outputString appendFormat:@"%@", returnObject];
-			}
-		}
-		else if ([returnType isEqualToString:@"{CGSize=ff}"])
-		{
-			NSValue *value = (NSValue *)returnObject;
-			CGSize size = [value CGSizeValue];
-			[outputString appendFormat:@"%@", NSStringFromCGSize(size)];
-		}
-		else if ([returnType isEqualToString:@"{UIEdgeInsets=ffff}"])
-		{
-			NSValue *value = (NSValue *)returnObject;
-			UIEdgeInsets insets = [value UIEdgeInsetsValue];
-			[outputString appendFormat:@"%@", NSStringFromUIEdgeInsets(insets)];
-		}
-		else if (returnType.length == 0)
-		{
-			// some properties have different getter names, often starting with is (for example: UILabel highlighed)
-			// attempt to find the selector name
-			NSString *newSelectorName = [NSString stringWithFormat:@"is%@%@", [[propertyName substringToIndex:1] uppercaseString], [propertyName substringFromIndex:1]];
-			sel = NSSelectorFromString(newSelectorName);
-			if ([self.currentView respondsToSelector:sel])
-			{
-				[outputString appendFormat:@"%@", ([self.currentView performSelector:sel]) ? @"YES" : @"NO"];
-			}
-			else
-			{
-				[outputString appendString:@"(unknown type)"];
-			}
-		}
-		else
-		{
-			[outputString appendFormat:@"(unknown type: %@)", returnType];
-		}
+		[outputString appendFormat:@" : %@", superClass];
+		superClass = [superClass superclass];
+	}
+
+	[outputString appendString:@" ** \n\n"];
+
+	if ([objectClass isSubclassOfClass:UIView.class])
+	{
+		UIView *view = (UIView *)object;
+		// print out generic uiview properties
+		[outputString appendString:@"  ** UIView properties **\n"];
+		[outputString appendFormat:@"    tag: %i\n", view.tag];
+		[outputString appendFormat:@"    frame: %@ | ", NSStringFromCGRect(view.frame)];
+		[outputString appendFormat:@"bounds: %@ | ", NSStringFromCGRect(view.bounds)];
+		[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(view.center)];
+		[outputString appendFormat:@"    transform: %@\n", NSStringFromCGAffineTransform(view.transform)];
+		[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" type:@"autoresizingMask" value:(id)view.autoresizingMask]];
+		[outputString appendFormat:@"    autoresizesSubviews: %@\n", (view.autoresizesSubviews) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" type:nil value:(id)view.contentMode]];
+		[outputString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(view.contentStretch)];
+		[outputString appendFormat:@"    backgroundColor: %@\n", [self describeColor:view.backgroundColor]];
+		[outputString appendFormat:@"    alpha: %.2f | ", view.alpha];
+		[outputString appendFormat:@"opaque: %@ | ", (view.opaque) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"hidden: %@ | ", (view.hidden) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"clips to bounds: %@ | ", (view.clipsToBounds) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", (view.clearsContextBeforeDrawing) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", (view.userInteractionEnabled) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"multipleTouchEnabled: %@\n", (view.multipleTouchEnabled) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"    gestureRecognizers: %@\n", view.gestureRecognizers];
+
 		[outputString appendString:@"\n"];
 	}
-	
+
+	[outputString appendFormat:@"  ** %@ properties **\n", objectClass];
+
+	if (objectClass == UIScrollView.class || objectClass == UIButton.class)
+	{
+		[outputString appendString:@"    Logging properties not currently supported for this view.\n"];
+	}
+	else
+	{
+
+		for (unsigned int i = 0; i < count; ++i)
+		{
+			// get the property name and selector name
+			NSString *propertyName = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding];
+			
+			// get the return object and type for the selector
+			SEL sel = NSSelectorFromString(propertyName);
+			Method method = class_getInstanceMethod(objectClass, sel);
+			id returnObject = ([object respondsToSelector:sel]) ? [object performSelector:sel] : nil;
+			method_getReturnType(method, buffer, buf_size);
+			NSString *returnType = [NSString stringWithFormat:@"%s", buffer];
+			
+			[outputString appendFormat:@"    %@: ", propertyName];
+			NSString *propertyDescription = [self describeProperty:propertyName type:returnType value:returnObject];
+			[outputString appendFormat:@"%@\n", propertyDescription];
+		}
+	}
+
 	// list all targets if there are any
-	if ([self.currentView respondsToSelector:@selector(allTargets)])
+	if ([object respondsToSelector:@selector(allTargets)])
 	{
 		[outputString appendString:@"\n  ** Targets & Actions **\n"];
-		UIControl *control = (UIControl *)self.currentView;
+		UIControl *control = (UIControl *)object;
 		UIControlEvents controlEvents = [control allControlEvents];
 		NSSet *allTargets = [control allTargets];
 		[allTargets enumerateObjectsUsingBlock:^(id target, BOOL *stop)
@@ -769,134 +1308,6 @@ DCIntrospect *sharedInstance = nil;
     return result;
 }
 
-#pragma mark Keyboard Capture
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-	if ([string isEqualToString:kDCIntrospectKeysInvoke])
-	{
-		[self introspectorInvoked:nil];
-		return NO;
-	}
-
-	if (!self.on)
-	{
-		return NO;
-	}
-
-	if ([string isEqualToString:kDCIntrospectKeysShowViewOutlines])
-	{
-		[self toggleOutlines];
-		return NO;
-	}
-	else if ([string isEqualToString:kDCIntrospectKeysShowNonOpaqueViews])
-	{
-		[self toggleOpaqueViews];
-		return NO;
-	}
-	else if ([string isEqualToString:kDCIntrospectKeysFlashViewRedraws])
-	{
-		[self toggleRedrawFlashing];
-		return NO;
-	}
-	else if ([string isEqualToString:kDCIntrospectKeysToggleShowCoordinates])
-	{
-		self.frameView.touchPointLabel.alpha = !self.frameView.touchPointLabel.alpha;
-	}
-
-	if (self.on && self.currentView)
-	{
-		if ([string isEqualToString:kDCIntrospectKeysLogProperties])
-		{
-			[self logPropertiesForCurrentView];
-			return NO;
-		}
-		else if ([string isEqualToString:kDCIntrospectKeysLogViewRecursive])
-		{
-			[self logRecursiveDescriptionForCurrentView];
-			return NO;
-		}
-		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsDisplay])
-		{
-			[self forceSetNeedsDisplay];
-			return NO;
-		}
-		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsLayout])
-		{
-			[self forceSetNeedsLayout];
-			return NO;
-		}
-		else if ([string isEqualToString:kDCIntrospectKeysReloadData])
-		{
-			[self forceReload];
-			return NO;
-		}
-		
-		CGRect frame = self.currentView.frame;
-		if ([string isEqualToString:kDCIntrospectKeysNudgeViewLeft])
-			frame.origin.x -= 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewRight])
-			frame.origin.x += 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewUp])
-			frame.origin.y -= 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewDown])
-			frame.origin.y += 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysCenterInSuperview])
-			frame = CGRectMake(floorf((self.currentView.superview.frame.size.width - frame.size.width) / 2.0),
-							   floorf((self.currentView.superview.frame.size.height - frame.size.height) / 2.0),
-							   frame.size.width,
-							   frame.size.height);
-		else if ([string isEqualToString:kDCIntrospectKeysIncreaseWidth])
-			frame.size.width += 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysDecreaseWidth])
-			frame.size.width -= 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysIncreaseHeight])
-			frame.size.height += 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysDecreaseHeight])
-			frame.size.height -= 1.0;
-		else if ([string isEqualToString:kDCIntrospectKeysIncreaseViewAlpha])
-			self.currentView.alpha += 0.05;
-		else if ([string isEqualToString:kDCIntrospectKeysDecreaseViewAlpha])
-			self.currentView.alpha -= 0.05;
-		else if ([string isEqualToString:kDCIntrospectKeysSelectMoveUpViewHeirachy])
-		{
-			self.currentView = self.currentView.superview;
-			[self updateFrameView];
-			[self updateStatusBar];
-			[self updateToolbar];
-			return NO;
-		}
-
-		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
-											floorf(frame.origin.y),
-											floorf(frame.size.width),
-											floorf(frame.size.height));
-	}
-
-	[self updateFrameView];
-	[self updateStatusBar];
-
-	return NO;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-	NSMutableString *outputString = [[[NSMutableString alloc] init] autorelease];
-	if (!CGRectEqualToRect(self.originalFrame, self.currentView.frame))
-	{
-		[outputString appendFormat:@"<#view#>.frame = CGRectMake(%.0f, %.0f, %.0f, %.0f);\n", self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
-	}
-
-	if (self.originalAlpha != self.currentView.alpha)
-	{
-		[outputString appendFormat:@"<#view#>.alpha = %.2f;\n", self.currentView.alpha];
-	}
-	
-	printf("\n\n%s\n\n", [outputString cStringUsingEncoding:1]);
-
-	return YES;
-}
-
 #pragma mark Helper Methods
 
 - (UIWindow *)mainWindow
@@ -924,14 +1335,6 @@ DCIntrospect *sharedInstance = nil;
 			// convert the point to it's superview
 			CGPoint newTouchPoint = touchPoint;
 			newTouchPoint = [view convertPoint:newTouchPoint toView:subview];
-//			if (view.superview == [self mainWindow])
-//				newTouchPoint.y += [[UIApplication sharedApplication] statusBarFrame].size.height;
-//			if (view != [subview superview])
-//			{
-//				newTouchPoint.x -= subview.frame.origin.x;
-//				newTouchPoint.y -= subview.frame.origin.y;
-//			}
-
 			[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:subview]];
 		}
 	}
@@ -950,5 +1353,18 @@ DCIntrospect *sharedInstance = nil;
 					 completion:nil];
 }
 
+- (BOOL)view:(UIView *)view containsSubview:(UIView *)subview
+{
+	for (UIView *aView in view.subviews)
+	{
+		if (aView == subview)
+			return YES;
+
+		if ([self view:aView containsSubview:subview])
+			return YES;
+	}
+
+	return NO;
+}
 
 @end
