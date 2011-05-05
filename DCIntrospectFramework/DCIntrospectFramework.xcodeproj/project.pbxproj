@@ -1,0 +1,211 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ABDA51801371F37A00339835 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDA517F1371F37A00339835 /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		ABDA517C1371F37A00339835 /* libDCIntrospectFramework.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCIntrospectFramework.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABDA517F1371F37A00339835 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		ABDA51831371F37A00339835 /* DCIntrospectFramework-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCIntrospectFramework-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ABDA51791371F37A00339835 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABDA51801371F37A00339835 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ABDA51711371F37A00339835 = {
+			isa = PBXGroup;
+			children = (
+				ABDA51811371F37A00339835 /* DCIntrospectFramework */,
+				ABDA517E1371F37A00339835 /* Frameworks */,
+				ABDA517D1371F37A00339835 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ABDA517D1371F37A00339835 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ABDA517C1371F37A00339835 /* libDCIntrospectFramework.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ABDA517E1371F37A00339835 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ABDA517F1371F37A00339835 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ABDA51811371F37A00339835 /* DCIntrospectFramework */ = {
+			isa = PBXGroup;
+			children = (
+				ABDA51821371F37A00339835 /* Supporting Files */,
+			);
+			path = DCIntrospectFramework;
+			sourceTree = "<group>";
+		};
+		ABDA51821371F37A00339835 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ABDA51831371F37A00339835 /* DCIntrospectFramework-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		ABDA517A1371F37A00339835 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		ABDA517B1371F37A00339835 /* DCIntrospectFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ABDA51861371F37A00339835 /* Build configuration list for PBXNativeTarget "DCIntrospectFramework" */;
+			buildPhases = (
+				ABDA51781371F37A00339835 /* Sources */,
+				ABDA51791371F37A00339835 /* Frameworks */,
+				ABDA517A1371F37A00339835 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DCIntrospectFramework;
+			productName = DCIntrospectFramework;
+			productReference = ABDA517C1371F37A00339835 /* libDCIntrospectFramework.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ABDA51731371F37A00339835 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = ABDA51761371F37A00339835 /* Build configuration list for PBXProject "DCIntrospectFramework" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = ABDA51711371F37A00339835;
+			productRefGroup = ABDA517D1371F37A00339835 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ABDA517B1371F37A00339835 /* DCIntrospectFramework */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ABDA51781371F37A00339835 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		ABDA51841371F37A00339835 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		ABDA51851371F37A00339835 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		ABDA51871371F37A00339835 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/DCIntrospectFramework.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectFramework/DCIntrospectFramework-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		ABDA51881371F37A00339835 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/DCIntrospectFramework.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectFramework/DCIntrospectFramework-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ABDA51761371F37A00339835 /* Build configuration list for PBXProject "DCIntrospectFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABDA51841371F37A00339835 /* Debug */,
+				ABDA51851371F37A00339835 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ABDA51861371F37A00339835 /* Build configuration list for PBXNativeTarget "DCIntrospectFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABDA51871371F37A00339835 /* Debug */,
+				ABDA51881371F37A00339835 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ABDA51731371F37A00339835 /* Project object */;
+}

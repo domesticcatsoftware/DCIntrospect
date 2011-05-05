@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>DCIntrospectDemo.xcscheme</key>
+		<key>DCIntrospectFramework.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,12 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>AB0D01CF136A778000962171</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>ABDA518C1371F3A700339835</key>
+		<key>ABDA517B1371F37A00339835</key>
 		<dict>
 			<key>primary</key>
 			<true/>

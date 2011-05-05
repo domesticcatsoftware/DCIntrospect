@@ -44,7 +44,7 @@
 		self.touchPointLabel.hidden = YES;
 		[self addSubview:self.touchPointLabel];
 
-		self.rectsToOutline = [[[NSMutableArray alloc] init] autorelease];
+		self.rectsToOutline = [NSMutableArray array];
 
 		self.touchPointView = [[[DCCrossHairView alloc] initWithFrame:CGRectMake(0, 0, 17.0, 17.0) color:[UIColor blueColor]] autorelease];
 		self.touchPointView.alpha = 0.0;

@@ -2,9 +2,6 @@
 // Settings //
 //////////////
 
-#define kDCIntrospectKeyboardBindingsOn YES															// BOOL (can also be set at runtime using keyboardBindingsOn accessor)
-#define kDCIntrospectStatusBarOverlayOn YES														// BOOL (can also be set at runtime using statusBarOverlayOn accessor)
-
 #define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]		// UIColor
 #define kDCIntrospectFlashOnRedrawFlashLength 0.03												// NSTimeInterval
 
