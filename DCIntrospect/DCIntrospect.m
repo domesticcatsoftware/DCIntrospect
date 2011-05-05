@@ -25,14 +25,14 @@ DCIntrospect *sharedInstance = nil;
 
 + (DCIntrospect *)sharedIntrospector
 {
-//#ifdef DEBUG
+#ifdef DEBUG
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
-		sharedInstance.keyboardBindingsOn = kDCIntrospectKeyboardBindingsOn;
-		sharedInstance.showStatusBarOverlay = kDCIntrospectStatusBarOverlayOn;
+		sharedInstance.keyboardBindingsOn = YES;
+		sharedInstance.showStatusBarOverlay = YES;
 	}
-//#endif
+#endif
 	return sharedInstance;
 }
 
@@ -158,7 +158,7 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)touchAtPoint:(CGPoint)point
 {
-	NSMutableArray *views = [[NSMutableArray new] autorelease];
+	NSMutableArray *views = [NSMutableArray array];
 	CGPoint newTouchPoint = point;
 	newTouchPoint = [[self mainWindow] convertPoint:newTouchPoint fromView:self.frameView];
 	[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:[self mainWindow]]];
@@ -398,7 +398,7 @@ DCIntrospect *sharedInstance = nil;
 	if ([varName isEqualToString:[NSString stringWithFormat:@"%@", self.currentView.class]])
 		varName = @"<#view#>";
 
-	NSMutableString *outputString = [[[NSMutableString alloc] init] autorelease];
+	NSMutableString *outputString = [NSMutableString string];
 	if (!CGRectEqualToRect(self.originalFrame, self.currentView.frame))
 	{
 		[outputString appendFormat:@"%@.frame = CGRectMake(%.0f, %.0f, %.0f, %.0f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
@@ -412,7 +412,7 @@ DCIntrospect *sharedInstance = nil;
 	if (outputString.length == 0)
 		NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
 	else
-		printf("\n\n%s\n", [outputString cStringUsingEncoding:1]);
+		printf("\n\n%s\n", [outputString UTF8String]);
 
 	return YES;
 }
@@ -423,7 +423,7 @@ DCIntrospect *sharedInstance = nil;
 - (void)setName:(NSString *)name forObject:(id)object accessDirectly:(BOOL)accessDirectly
 {
 	if (!self.objectNames)
-		self.objectNames = [[[NSMutableDictionary alloc] init] autorelease];
+		self.objectNames = [NSMutableDictionary dictionary];
 
 	if (accessDirectly)
 		name = [@"self." stringByAppendingString:name];
@@ -453,7 +453,7 @@ DCIntrospect *sharedInstance = nil;
 	if (!self.objectNames)
 		return;
 
-	NSMutableArray *objectsToRemove = [[NSMutableArray new] autorelease];
+	NSMutableArray *objectsToRemove = [NSMutableArray array];
 	[self.objectNames enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
 		if ([[obj class] isSubclassOfClass:[UIView class]])
 		{
@@ -483,7 +483,7 @@ DCIntrospect *sharedInstance = nil;
 - (void)addBlock:(void (^)(void))block withName:(NSString *)name keyBinding:(NSString *)keyBinding
 {
 	if (!self.blockActions)
-		self.blockActions = [[NSMutableArray new] autorelease];
+		self.blockActions = [NSMutableArray array];
 
 	NSDictionary *blockAndName = [NSDictionary dictionaryWithObjectsAndKeys:
 								  [[block copy] autorelease], @"block",
@@ -508,7 +508,7 @@ DCIntrospect *sharedInstance = nil;
 
 	[self updateStatusBar];
 
-	NSMutableString *outputString = [[[NSMutableString alloc] initWithString:@"** Block Actions **\n"] autorelease];
+	NSMutableString *outputString = [NSMutableString stringWithString:@"** Block Actions **\n"];
 	for (NSDictionary *blockAction in self.blockActions)
 	{
 
@@ -518,7 +518,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 
 	[outputString appendString:@"\nWaiting for block key binding...\n\n"];
-	printf("%s", [outputString cStringUsingEncoding:NSUTF8StringEncoding]);
+	printf("%s", [outputString UTF8String]);
 }
 
 - (NSDictionary *)blockForKeyBinding:(NSString *)keyBinding
@@ -660,7 +660,7 @@ DCIntrospect *sharedInstance = nil;
 		[(UIView *)obj removeFromSuperview];
 	}];
 
-	NSMutableArray *buttons = [[NSMutableArray new] autorelease];
+	NSMutableArray *buttons = [NSMutableArray array];
 	
 	UIButton *logDescriptionButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	NSString *title = [NSString stringWithFormat:@"log view (%@)", kDCIntrospectKeysLogViewRecursive];
@@ -729,10 +729,10 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)logRecursiveDescriptionForView:(UIView *)view
 {
-//#ifdef DEBUG
+#ifdef DEBUG
 	// [UIView recursiveDescription] is a private method.
 	NSLog(@"%@", [view recursiveDescription]);
-//#endif
+#endif
 }
 
 - (void)forceSetNeedsDisplay
@@ -1058,7 +1058,7 @@ DCIntrospect *sharedInstance = nil;
 	else if ([propertyName isEqualToString:@"autoresizingMask"])
 	{
 		UIViewAutoresizing mask = (int)value;
-		NSMutableString *string = [[NSMutableString new] autorelease];
+		NSMutableString *string = [NSMutableString string];
 		if (mask & UIViewAutoresizingFlexibleLeftMargin)
 			[string appendFormat:@"UIViewAutoresizingFlexibleLeftMargin"];
 		if (mask & UIViewAutoresizingFlexibleRightMargin)
@@ -1191,7 +1191,7 @@ DCIntrospect *sharedInstance = nil;
 		webView.delegate = self;
 		[backingView addSubview:webView];
 
-		NSMutableString *helpString = [[[NSMutableString alloc] initWithString:@"<html>"] autorelease];
+		NSMutableString *helpString = [NSMutableString stringWithString:@"<html>"];
 		[helpString appendString:@"<head><style>"];
 		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; line-height: 15px margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:white; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { margin-left:7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
 
@@ -1299,7 +1299,7 @@ DCIntrospect *sharedInstance = nil;
 	objc_property_t *properties = class_copyPropertyList(objectClass, &count);
     size_t buf_size = 1024;
     char *buffer = malloc(buf_size);
-	NSMutableString *outputString = [[[NSMutableString alloc] initWithFormat:@"\n\n** %@", className] autorelease];
+	NSMutableString *outputString = [NSMutableString stringWithFormat:@"\n\n** %@", className];
 
 	// list the class heirachy
 	Class superClass = [objectClass superclass];
