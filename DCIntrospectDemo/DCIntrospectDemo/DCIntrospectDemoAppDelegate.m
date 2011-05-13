@@ -21,7 +21,7 @@
 	defaultGestureRecognizer.delaysTouchesEnded = NO;
 	defaultGestureRecognizer.numberOfTapsRequired = 3;
 	defaultGestureRecognizer.numberOfTouchesRequired = 2;
-	[DCIntrospect sharedIntrospector].gestureRecognizer = defaultGestureRecognizer;
+	[DCIntrospect sharedIntrospector].invokeGestureRecognizer = defaultGestureRecognizer;
 
 	self.window.rootViewController = self.viewController;
 	[self.window makeKeyAndVisible];

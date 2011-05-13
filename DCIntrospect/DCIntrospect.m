@@ -9,7 +9,7 @@
 DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
-@synthesize keyboardBindingsOn, showStatusBarOverlay, gestureRecognizer;
+@synthesize keyboardBindingsOn, showStatusBarOverlay, invokeGestureRecognizer;
 @synthesize on;
 @synthesize viewOutlines, highlightOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
@@ -94,17 +94,16 @@ DCIntrospect *sharedInstance = nil;
 }
 
 #pragma mark Custom Setters
-
-- (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer
+- (void)setInvokeGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer
 {
 	UIWindow *mainWindow = [self mainWindow];
-	[mainWindow removeGestureRecognizer:gestureRecognizer];
+	[mainWindow removeGestureRecognizer:invokeGestureRecognizer];
 
-	[gestureRecognizer release];
-	gestureRecognizer = nil;
-	gestureRecognizer = [newGestureRecognizer retain];
-	[gestureRecognizer addTarget:self action:@selector(invokeIntrospector)];
-	[mainWindow addGestureRecognizer:newGestureRecognizer];
+	[invokeGestureRecognizer release];
+	invokeGestureRecognizer = nil;
+	invokeGestureRecognizer = [newGestureRecognizer retain];
+	[invokeGestureRecognizer addTarget:self action:@selector(invokeIntrospector)];
+	[mainWindow addGestureRecognizer:invokeGestureRecognizer];
 }
 
 - (void)setKeyboardBindingsOn:(BOOL)newKeyboardBindingsOn
