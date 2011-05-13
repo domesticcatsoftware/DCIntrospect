@@ -30,9 +30,9 @@ typedef void (^Block)();
 {
 }
 
-@property (nonatomic) BOOL keyboardBindingsOn;							// default: YES
-@property (nonatomic) BOOL showStatusBarOverlay;						// default: YES
-@property (nonatomic, retain) UIGestureRecognizer *gestureRecognizer;	// default: nil
+@property (nonatomic) BOOL keyboardBindingsOn;									// default: YES
+@property (nonatomic) BOOL showStatusBarOverlay;								// default: YES
+@property (nonatomic, retain) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL viewOutlines;
@@ -59,13 +59,13 @@ typedef void (^Block)();
 ///////////
 
 + (DCIntrospect *)sharedIntrospector;		// this returns nil when DEBUG is not defined.
-- (void)setup;								// call setup AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
+- (void)setup;								// NOTE: call setup AFTER [window makeKeyAndVisible] so statusBarOrientation is reported correctly.
 
 ////////////////////
 // Custom Setters //
 ////////////////////
 
-- (void)setGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
+- (void)setInvokeGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
 - (void)setKeyboardBindingsOn:(BOOL)keyboardBindingsOn;
 
 //////////////////

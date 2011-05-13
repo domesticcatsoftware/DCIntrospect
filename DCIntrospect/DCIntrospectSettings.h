@@ -2,14 +2,14 @@
 // Settings //
 //////////////
 
-#define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]		// UIColor
-#define kDCIntrospectFlashOnRedrawFlashLength 0.03												// NSTimeInterval
+#define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]			// UIColor
+#define kDCIntrospectFlashOnRedrawFlashLength 0.03													// NSTimeInterval
 
 //////////////////
 // Key Bindings //
 //////////////////
 
-// '' is equivalent to page up
+// '' is equivalent to page up (copy and paste this character to use)
 
 // Global //
 #define kDCIntrospectKeysInvoke						@" "		// starts introspector
