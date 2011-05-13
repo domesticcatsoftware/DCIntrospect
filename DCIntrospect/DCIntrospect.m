@@ -17,7 +17,6 @@ DCIntrospect *sharedInstance = nil;
 @synthesize toolbar;
 @synthesize frameView;
 @synthesize objectNames;
-@synthesize blockActions, waitingForBlockKey;
 @synthesize currentView, originalFrame, originalAlpha;
 @synthesize showingHelp;
 
@@ -26,6 +25,7 @@ DCIntrospect *sharedInstance = nil;
 + (DCIntrospect *)sharedIntrospector
 {
 #ifdef DEBUG
+#if (TARGET_IPHONE_SIMULATOR)		// turn off this if you want to use on a device.
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
@@ -33,10 +33,11 @@ DCIntrospect *sharedInstance = nil;
 		sharedInstance.showStatusBarOverlay = YES;
 	}
 #endif
+#endif
 	return sharedInstance;
 }
 
-- (void)setup
+- (void)start
 {
 	UIWindow *mainWindow = [self mainWindow];
 	if (!mainWindow)
@@ -70,14 +71,14 @@ DCIntrospect *sharedInstance = nil;
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarTapped) name:kDCIntrospectNotificationStatusBarTapped object:nil];
 
-	// reclaim the keyboard if it is taken
+	// reclaim the keyboard after dismissal if it is taken
 	[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification
 													  object:nil
 													   queue:nil
 												  usingBlock:^(NSNotification *notification) {
-													  // needs to be done after a delay or else it doesn't work.
+													  // needs to be done after a delay or else it doesn't work for some reason.
 													  if (self.keyboardBindingsOn)
-														  [self.inputField performSelector:@selector(becomeFirstResponder)
+														  [self performSelector:@selector(takeFirstResponder)
 																				withObject:nil
 																				afterDelay:0.1];
 												  }];
@@ -90,7 +91,7 @@ DCIntrospect *sharedInstance = nil;
 - (void)takeFirstResponder
 {
 	if (![self.inputField becomeFirstResponder])
-		NSLog(@"DCIntrospect: Couldn't initiate keyboard field.  Is the keyboard used elsewhere?");
+		NSLog(@"DCIntrospect: Couldn't reclaim keyboard input.  Is the keyboard used elsewhere?");
 }
 
 #pragma mark Custom Setters
@@ -137,18 +138,16 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else
 	{
-		self.toolbar.alpha = 0;
 		if (self.viewOutlines)
 			[self toggleOutlines];
 		if (self.highlightOpaqueViews)
 			[self toggleOpaqueViews];
 		if (self.showingHelp)
 			[self toggleHelp];
-	
+
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
 		self.currentView = nil;
-		self.waitingForBlockKey = NO;
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidEnd
 															object:nil];
@@ -157,13 +156,15 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)touchAtPoint:(CGPoint)point
 {
-	NSMutableArray *views = [NSMutableArray array];
-	CGPoint newTouchPoint = point;
-	newTouchPoint = [[self mainWindow] convertPoint:newTouchPoint fromView:self.frameView];
-	[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:[self mainWindow]]];
+	// convert the point into the main window
+	CGPoint convertedTouchPoint = [[self mainWindow] convertPoint:point fromView:self.frameView];
+
+	// find all the views under that point – will be added in order on screen, ie mainWindow will be index 0, main view controller at index 1 etc.
+	NSMutableArray *views = [self viewsAtPoint:convertedTouchPoint inView:[self mainWindow]];
 	if (views.count == 0)
 		return;
 
+	// get the topmost view and setup the UI
 	UIView *newView = [views lastObject];
 	if (newView != self.currentView)
 	{
@@ -185,17 +186,15 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)statusBarTapped
 {
+	UIWindow *mainWindow = [self mainWindow];
 	if (self.showingHelp)
 	{
 		[self toggleHelp];
 		return;
 	}
-
-	UIWindow *mainWindow = [self mainWindow];
-
-	// if a view is selected, show the toolbar, otherwise show help
-	if (self.currentView)
+	else
 	{
+		// show the toolbar
 		if (!self.toolbar)
 		{
 			CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
@@ -239,38 +238,6 @@ DCIntrospect *sharedInstance = nil;
 
 	if (!self.on)
 		return NO;
-
-	if (self.waitingForBlockKey)
-	{
-		self.waitingForBlockKey = NO;
-
-		NSDictionary *blockAction = [self blockForKeyBinding:string];
-		NSString *statusString = nil;
-		if (blockAction)
-		{
-			statusString = [NSString stringWithFormat:@"Running block: %@", [blockAction objectForKey:@"name"]];
-			Block block = [blockAction objectForKey:@"block"];
-			block();
-		}
-		else
-		{
-			statusString = [NSString stringWithFormat:@"No block for key binding %@", string];
-		}
-
-		if (self.showStatusBarOverlay)
-			[self showTemporaryStringInStatusBar:statusString];
-		else
-			NSLog(@"%@", statusString);
-
-		return NO;
-	}
-
-	if ([string isEqualToString:kDCIntrospectKeysEnterBlockMode])
-	{
-		self.waitingForBlockKey = YES;
-		[self enterBlockMode];
-		return NO;
-	}
 
 	if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
 	{
@@ -336,8 +303,7 @@ DCIntrospect *sharedInstance = nil;
 			[self forceReloadOfView];
 			return NO;
 		}
-
-		if ([string isEqualToString:kDCIntrospectKeysSelectMoveUpViewHeirachy])
+		else if ([string isEqualToString:kDCIntrospectKeysSelectMoveUpViewHeirachy])
 		{
 			if (self.currentView.superview)
 			{
@@ -346,6 +312,11 @@ DCIntrospect *sharedInstance = nil;
 				[self updateStatusBar];
 				[self updateToolbar];
 			}
+			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysLogCodeForCurrentViewChanges])
+		{
+			[self logCodeForCurrentViewChanges];
 			return NO;
 		}
 
@@ -388,43 +359,40 @@ DCIntrospect *sharedInstance = nil;
 	return NO;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+#pragma mark Object Names
+
+- (void)logCodeForCurrentViewChanges
 {
 	if (!self.currentView)
-		return YES;
-
+		return;
+	
 	NSString *varName = [self nameForObject:self.currentView];
 	if ([varName isEqualToString:[NSString stringWithFormat:@"%@", self.currentView.class]])
 		varName = @"<#view#>";
-
+	
 	NSMutableString *outputString = [NSMutableString string];
 	if (!CGRectEqualToRect(self.originalFrame, self.currentView.frame))
 	{
-		[outputString appendFormat:@"%@.frame = CGRectMake(%.0f, %.0f, %.0f, %.0f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
+		[outputString appendFormat:@"%@.frame = CGRectMake(%.1f, %.1f, %.1f, %.1f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
 	}
-
+	
 	if (self.originalAlpha != self.currentView.alpha)
 	{
 		[outputString appendFormat:@"%@.alpha = %.2f;\n", varName, self.currentView.alpha];
 	}
-
+	
 	if (outputString.length == 0)
 		NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
 	else
 		printf("\n\n%s\n", [outputString UTF8String]);
-
-	return YES;
 }
 
-
-#pragma mark Object Names
-
-- (void)setName:(NSString *)name forObject:(id)object accessDirectly:(BOOL)accessDirectly
+- (void)setName:(NSString *)name forObject:(id)object accessedWithSelf:(BOOL)accessedWithSelf
 {
 	if (!self.objectNames)
 		self.objectNames = [NSMutableDictionary dictionary];
 
-	if (accessDirectly)
+	if (accessedWithSelf)
 		name = [@"self." stringByAppendingString:name];
 
 	[self.objectNames setValue:object forKey:name];
@@ -477,63 +445,6 @@ DCIntrospect *sharedInstance = nil;
 	[self.objectNames removeObjectForKey:objectName];
 }
 
-#pragma mark Block Actions
-
-- (void)addBlock:(void (^)(void))block withName:(NSString *)name keyBinding:(NSString *)keyBinding
-{
-	if (!self.blockActions)
-		self.blockActions = [NSMutableArray array];
-
-	NSDictionary *blockAndName = [NSDictionary dictionaryWithObjectsAndKeys:
-								  [[block copy] autorelease], @"block",
-								  name, @"name",
-								  keyBinding, @"binding",
-								  nil];
-	[self.blockActions addObject:blockAndName];
-}
-
-- (void)enterBlockMode
-{
-	if (!self.blockActions)
-	{
-		self.waitingForBlockKey = NO;
-		NSString *string = @"No block actions have been added.";
-		if (self.showStatusBarOverlay)
-			[self showTemporaryStringInStatusBar:string];
-		else
-			NSLog(@"%@", string);
-		return;
-	}
-
-	[self updateStatusBar];
-
-	NSMutableString *outputString = [NSMutableString stringWithString:@"** Block Actions **\n"];
-	for (NSDictionary *blockAction in self.blockActions)
-	{
-
-		NSString *name = [blockAction objectForKey:@"name"];
-		NSString *binding = [blockAction objectForKey:@"binding"];
-		[outputString appendFormat:@"  %@: %@\n", binding, name];
-	}
-
-	[outputString appendString:@"\nWaiting for block key binding...\n\n"];
-	printf("%s", [outputString UTF8String]);
-}
-
-- (NSDictionary *)blockForKeyBinding:(NSString *)keyBinding
-{
-	for (NSDictionary *blockAction in self.blockActions)
-	{
-		NSString *binding = [blockAction objectForKey:@"binding"];
-		if ([binding isEqualToString:keyBinding])
-		{
-			return blockAction;
-		}
-	}
-
-	return nil;
-}
-
 #pragma mark Layout
 
 - (void)updateFrameView
@@ -557,8 +468,10 @@ DCIntrospect *sharedInstance = nil;
 			self.frameView.mainRect = [self.currentView.superview convertRect:self.currentView.frame toView:self.frameView];
 			if (self.currentView.superview == mainWindow)
 				self.frameView.superRect = CGRectZero;
-			else
+			else if (self.currentView.superview.superview)
 				self.frameView.superRect = [self.currentView.superview.superview convertRect:self.currentView.superview.frame toView:self.frameView];
+			else
+				self.frameView.superRect = CGRectZero;
 		}
 		else
 		{
@@ -575,13 +488,6 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)updateStatusBar
 {
-	if (self.waitingForBlockKey)
-	{
-		self.statusBarOverlay.leftLabel.text = @"Waiting for block key binding...";
-		self.statusBarOverlay.rightLabel.text = nil;
-		return;
-	}
-
 	if (self.currentView)
 	{
 		NSString *nameForObject = [self nameForObject:self.currentView];
@@ -1177,7 +1083,7 @@ DCIntrospect *sharedInstance = nil;
 	if (self.showingHelp)
 	{
 		self.statusBarOverlay.leftLabel.text = @"Help";
-		self.statusBarOverlay.rightLabel.text = @"Close";
+		self.statusBarOverlay.rightLabel.text = @"Any key to close";
 		UIView *backingView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)] autorelease];
 		backingView.tag = 1548;
 		backingView.alpha = 0;
@@ -1192,7 +1098,7 @@ DCIntrospect *sharedInstance = nil;
 
 		NSMutableString *helpString = [NSMutableString stringWithString:@"<html>"];
 		[helpString appendString:@"<head><style>"];
-		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; line-height: 15px margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:white; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { margin-left:7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
+		[helpString appendString:@"body { background-color:rgba(0, 0, 0, 0.0); font:10pt helvetica; line-height: 15px margin-left:5px; margin-right:5px; margin-top:20px; color:rgb(240, 240, 240); } a { color:#45e0fe; font-weight:bold; } h1 { width:100%; font-size:14pt; border-bottom: 1px solid white; margin-top:22px; } h2 { font-size:11pt; margin-left:3px; margin-bottom:2px; } .name { margin-left:7px; } .key { float:right; margin-right:7px; } .key, .code { font-family:Courier; font-weight:bold; color:#CE8B39; } .spacer { height:10px; } p { margin-left: 7px; margin-right: 7px; }"];
 
 		if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
 			[helpString appendString:@"body { font-size:11pt; width:500px; margin:0 auto; }"];
@@ -1208,41 +1114,41 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendString:@"<h2>General</h2>"];
 
 		[helpString appendFormat:@"<div><span class='name'>Invoke Introspector</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysInvoke isEqualToString:@" "]) ? @"spacebar" : kDCIntrospectKeysInvoke];
-		[helpString appendFormat:@"<div><span class='name'>Toggle View Outlines</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleViewOutlines];
-		[helpString appendFormat:@"<div><span class='name'>Toggle Highlighting Non-Opaque Views</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleNonOpaqueViews];
-		[helpString appendFormat:@"<div><span class='name'>Toggle Help</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleHelp];
-		[helpString appendFormat:@"<div><span class='name'>Toggle flash on <span class='code'>drawRect:</span> (see below)</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleFlashViewRedraws];
-		[helpString appendFormat:@"<div><span class='name'>Toggle coordinates</span><div class='key'>%@</div></div>",kDCIntrospectKeysToggleShowCoordinates];
-		[helpString appendFormat:@"<div><span class='name'>Block mode</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterBlockMode];
+		[helpString appendFormat:@"<div><span class='name'>Toggle View Outlines</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleViewOutlines];
+		[helpString appendFormat:@"<div><span class='name'>Toggle Highlighting Non-Opaque Views</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleNonOpaqueViews];
+		[helpString appendFormat:@"<div><span class='name'>Toggle Help</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleHelp];
+		[helpString appendFormat:@"<div><span class='name'>Toggle flash on <span class='code'>drawRect:</span> (see below)</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleFlashViewRedraws];
+		[helpString appendFormat:@"<div><span class='name'>Toggle coordinates</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleShowCoordinates];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
 		[helpString appendString:@"<h2>When a view is selected</h2>"];
-		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>",kDCIntrospectKeysLogProperties];
-		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>",kDCIntrospectKeysLogViewRecursive];
+		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
+		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
 		[helpString appendFormat:@"<div><span class='name'>Select View's Superview</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysSelectMoveUpViewHeirachy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysSelectMoveUpViewHeirachy];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
-		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewLeft];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Right</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewRight];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Up</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewUp];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Down</span><div class='key'>%@</div></div>",kDCIntrospectKeysNudgeViewDown];
-		[helpString appendFormat:@"<div><span class='name'>Center in Superview</span><div class='key'>%@</div></div>",kDCIntrospectKeysCenterInSuperview];
-		[helpString appendFormat:@"<div><span class='name'>Increase Width</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseWidth];
-		[helpString appendFormat:@"<div><span class='name'>Decrease Width</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseWidth];
-		[helpString appendFormat:@"<div><span class='name'>Increase Height</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseHeight];
-		[helpString appendFormat:@"<div><span class='name'>Decrease Height</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseHeight];
-		[helpString appendFormat:@"<div><span class='name'>Increase Alpha</span><div class='key'>%@</div></div>",kDCIntrospectKeysIncreaseViewAlpha];
-		[helpString appendFormat:@"<div><span class='name'>Decrease Alpha</span><div class='key'>%@</div></div>",kDCIntrospectKeysDecreaseViewAlpha];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewLeft];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Right</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewRight];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Up</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewUp];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Down</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewDown];
+		[helpString appendFormat:@"<div><span class='name'>Center in Superview</span><div class='key'>%@</div></div>", kDCIntrospectKeysCenterInSuperview];
+		[helpString appendFormat:@"<div><span class='name'>Increase Width</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Width</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Increase Height</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Height</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Increase Alpha</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseViewAlpha];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Alpha</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseViewAlpha];
+		[helpString appendFormat:@"<div><span class='name'>Log view code</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogCodeForCurrentViewChanges];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
-		[helpString appendFormat:@"<div><span class='name'>Call setNeedsDisplay</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsDisplay];
-		[helpString appendFormat:@"<div><span class='name'>Call setNeedsLayout</span><div class='key'>%@</div></div>",kDCIntrospectKeysSetNeedsLayout];
-		[helpString appendFormat:@"<div><span class='name'>Call reloadData (UITableView only)</span><div class='key'>%@</div></div>",kDCIntrospectKeysReloadData];
+		[helpString appendFormat:@"<div><span class='name'>Call setNeedsDisplay</span><div class='key'>%@</div></div>", kDCIntrospectKeysSetNeedsDisplay];
+		[helpString appendFormat:@"<div><span class='name'>Call setNeedsLayout</span><div class='key'>%@</div></div>", kDCIntrospectKeysSetNeedsLayout];
+		[helpString appendFormat:@"<div><span class='name'>Call reloadData (UITableView only)</span><div class='key'>%@</div></div>", kDCIntrospectKeysReloadData];
 		[helpString appendString:@"</div>"];
 
 		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (binding: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
 
-		[helpString appendFormat:@"<h1>Block mode</h1><p>Add blocks using <span class='code'>[[DCIntrospect sharedIntrospector] addBlock:withName:keyBinding:]</span></p><p>After entering Block mode (key binding: <span class='code'>%@</span>), push the key binding set for the block to run the block.</p>", kDCIntrospectKeysEnterBlockMode];
+		[helpString appendFormat:@"<h1>Naming objects & logging code</h1><p>By providing names for objects using  <span class='code'>setName:forObject:accessedWithSelf:</span>, that name will be shown in the status bar instead of the class of the view.</p><p>This is also used when logging view code (binding: <span class='code'>%@</span>).  Logging view code prints formatted code to the console for properties that have been changed.</p><p>For example, if you resize/move a view using the nudge keys, logging the view code will print <span class='code'>view.frame = CGRectMake(50.0 ..etc);</span> to the console.  If a name is provided then <span class='code'>view</span> is replaced by the view.</p>", kDCIntrospectKeysLogCodeForCurrentViewChanges];
 
 		[helpString appendString:@"<h1>License</h1><p>DCIntrospect is made available under the <a href='http://en.wikipedia.org/wiki/MIT_License'>MIT license</a>.</p>"];
 
