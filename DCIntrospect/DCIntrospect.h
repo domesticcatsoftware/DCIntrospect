@@ -6,6 +6,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#include "TargetConditionals.h"
 
 #import "DCIntrospectSettings.h"
 #import "DCFrameView.h"
@@ -13,8 +14,7 @@
 
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
-
-typedef void (^Block)();
+#define kDCIntrospectAnimationDuration 0.08
 
 #ifdef DEBUG
 
@@ -45,9 +45,6 @@ typedef void (^Block)();
 
 @property (nonatomic, retain) NSMutableDictionary *objectNames;
 
-@property (nonatomic, retain) NSMutableArray *blockActions;
-@property (nonatomic) BOOL waitingForBlockKey;
-
 @property (nonatomic, assign) UIView *currentView;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
@@ -58,8 +55,8 @@ typedef void (^Block)();
 // Setup //
 ///////////
 
-+ (DCIntrospect *)sharedIntrospector;		// this returns nil when DEBUG is not defined.
-- (void)setup;								// NOTE: call setup AFTER [window makeKeyAndVisible] so statusBarOrientation is reported correctly.
++ (DCIntrospect *)sharedIntrospector;		// this returns nil when NOT in DEGBUG mode
+- (void)start;								// NOTE: call setup AFTER [window makeKeyAndVisible] so statusBarOrientation is reported correctly.
 
 ////////////////////
 // Custom Setters //
@@ -81,26 +78,18 @@ typedef void (^Block)();
 //////////////////////
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
-- (BOOL)textFieldShouldReturn:(UITextField *)textField;
 
-//////////////////
-// Object Names //
-//////////////////
+/////////////////////////////////
+// Logging Code & Object Names //
+/////////////////////////////////
+
+- (void)logCodeForCurrentViewChanges;
 
 // make sure all names that are added are removed at dealloc or else they will be retained here!
-
-- (void)setName:(NSString *)name forObject:(id)object accessDirectly:(BOOL)accessDirectly;
+- (void)setName:(NSString *)name forObject:(id)object accessedWithSelf:(BOOL)accessedWithSelf;
 - (NSString *)nameForObject:(id)object;
 - (void)removeNamesForViewsInView:(UIView *)view;
 - (void)removeNameForObject:(id)object;
-
-////////////
-// Blocks //
-////////////
-
-- (void)addBlock:(void (^)(void))block withName:(NSString *)name keyBinding:(NSString *)keyBinding;
-- (void)enterBlockMode;
-- (NSDictionary *)blockForKeyBinding:(NSString *)keyBinding;
 
 ////////////
 // Layout //

@@ -38,16 +38,7 @@
 {
     [super viewDidLoad];
 	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
-	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessDirectly:YES];
-
-	[[DCIntrospect sharedIntrospector] addBlock:^{
-		if ([self.activityIndicator isAnimating])
-			[self.activityIndicator stopAnimating];
-		else
-			[self.activityIndicator startAnimating];
-	}
-											 withName:@"Toggle Activity Indicator"
-										   keyBinding:@"a"];
+	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
 }
 
 - (void)viewDidUnload
@@ -55,9 +46,7 @@
     [self setActivityIndicator:nil];
 	[self setLabel:nil];
 	[self setCustomDrawnView:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+	[super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -99,7 +88,7 @@
 
 	cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	cell.textLabel.text = @"Text";
-	cell.detailTextLabel.text = @"Anus";
+	cell.detailTextLabel.text = @"Detailed Text";
 	return cell;
 }
 
@@ -117,4 +106,5 @@
 {
 	return @"Title";
 }
+
 @end
