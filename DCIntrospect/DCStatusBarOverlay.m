@@ -68,7 +68,8 @@
 	CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
 
 	CGFloat pi = (CGFloat)M_PI;
-	if (orientation == UIDeviceOrientationPortrait) {
+	if (orientation == UIDeviceOrientationPortrait)
+	{
 		self.transform = CGAffineTransformIdentity;
 		self.frame = CGRectMake(0, 0, screenWidth, self.frame.size.height);
 	}

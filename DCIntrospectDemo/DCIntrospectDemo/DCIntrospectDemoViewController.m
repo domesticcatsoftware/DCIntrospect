@@ -3,14 +3,13 @@
 //  DCIntrospectDemo
 //
 //  Created by Domestic Cat on 29/04/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 Domestic Cat Software. All rights reserved.
 //
 
 #import "DCIntrospectDemoViewController.h"
 #import "DCIntrospect.h"
 
 @implementation DCIntrospectDemoViewController
-@synthesize customDrawnView;
 @synthesize activityIndicator;
 @synthesize label;
 
@@ -20,23 +19,21 @@
 
     [activityIndicator release];
 	[label release];
-	[customDrawnView release];
     [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
+	[super didReceiveMemoryWarning];
 }
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+	[super viewDidLoad];
+
+	// set the activity indicator to a non-integer frame for demonstration
 	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
 	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
 }
@@ -45,26 +42,13 @@
 {
     [self setActivityIndicator:nil];
 	[self setLabel:nil];
-	[self setCustomDrawnView:nil];
+
 	[super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
-}
-
-- (IBAction)sliderDidChange:(id)sender
-{
-	[self.customDrawnView setNeedsDisplay];
-}
-
-- (IBAction)switchDidChange:(id)sender {
-}
-
-- (IBAction)removeAllObjectNames:(id)sender
-{
-	[[DCIntrospect sharedIntrospector] removeNamesForViewsInView:self.view];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -83,28 +67,41 @@
 	if (cell == nil)
 	{
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
-		cell.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
 
-	cell.accessoryType = UITableViewCellAccessoryCheckmark;
-	cell.textLabel.text = @"Text";
+	cell.textLabel.text = [NSString stringWithFormat:@"Row %i", indexPath.row];
 	cell.detailTextLabel.text = @"Detailed Text";
+	cell.accessoryType = UITableViewCellAccessoryCheckmark;
+
 	return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 1;
+	return 2;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+	return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	return @"Title";
+	return [NSString stringWithFormat:@"Section %i", section];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (IBAction)buttonTapped:(id)sender
+{
+}
+
+- (IBAction)switchChanged:(id)sender
+{
 }
 
 @end

@@ -4,17 +4,16 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
-#import <QuartzCore/QuartzCore.h>
+#define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
+#define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
+#define kDCIntrospectAnimationDuration 0.08
+
 #import <objc/runtime.h>
 #include "TargetConditionals.h"
 
 #import "DCIntrospectSettings.h"
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
-
-#define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
-#define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
-#define kDCIntrospectAnimationDuration 0.08
 
 #ifdef DEBUG
 
@@ -36,10 +35,9 @@
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL viewOutlines;
-@property (nonatomic) BOOL highlightOpaqueViews;
+@property (nonatomic) BOOL highlightNonOpaqueViews;
 @property (nonatomic) BOOL flashOnRedraw;
 @property (nonatomic, retain) DCFrameView *frameView;
-@property (nonatomic, retain) UIScrollView *toolbar;
 @property (nonatomic, retain) UITextField *inputField;
 @property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
 
@@ -98,7 +96,6 @@
 - (void)updateFrameView;
 - (void)updateStatusBar;
 - (void)updateViews;
-- (void)updateToolbar;
 - (void)showTemporaryStringInStatusBar:(NSString *)string;
 
 /////////////
@@ -112,8 +109,8 @@
 - (void)forceReloadOfView;
 - (void)toggleOutlines;
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view;
-- (void)toggleOpaqueViews;
-- (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view;
+- (void)toggleNonOpaqueViews;
+- (void)setBackgroundColor:(UIColor *)color ofNonOpaqueViewsInSubview:(UIView *)view;
 - (void)toggleRedrawFlashing;
 - (void)callDrawRectOnViewsInSubview:(UIView *)subview;
 - (void)flashRect:(CGRect)rect inView:(UIView *)view;
@@ -124,7 +121,6 @@
 
 - (void)logPropertiesForCurrentView;
 - (void)logPropertiesForObject:(id)object;
-- (BOOL)ignoreView:(UIView *)view;
 - (NSArray *)subclassesOfClass:(Class)parentClass;
 
 /////////////////////////
@@ -149,5 +145,6 @@
 - (NSMutableArray *)viewsAtPoint:(CGPoint)touchPoint inView:(UIView *)view;
 - (void)fadeView:(UIView *)view toAlpha:(CGFloat)alpha;
 - (BOOL)view:(UIView *)view containsSubview:(UIView *)subview;
+- (BOOL)shouldIgnoreView:(UIView *)view;
 
 @end

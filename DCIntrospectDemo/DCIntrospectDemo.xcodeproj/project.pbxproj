@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		625780B0138A052F004DA77B /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
+		625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
 		AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D4136A778000962171 /* UIKit.framework */; };
 		AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D6136A778000962171 /* Foundation.framework */; };
 		AB0D01D9136A778000962171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D8136A778000962171 /* CoreGraphics.framework */; };
@@ -15,16 +17,15 @@
 		AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
 		AB0D01E8136A778000962171 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
 		AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
-		AB0D0201136A841400962171 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D0200136A841400962171 /* QuartzCore.framework */; };
 		AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0213136A9E8D00962171 /* DCIntrospect.m */; };
 		AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D021E136A9FE000962171 /* DCFrameView.m */; };
 		ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */; };
 		ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509F136FDD9300339835 /* DCCrossHairView.m */; };
-		ABDA50FC1370C18C00339835 /* CustomDrawnView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA50FB1370C18B00339835 /* CustomDrawnView.m */; };
-		ABDA5134137131A500339835 /* MainWindowiPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABDA5133137131A400339835 /* MainWindowiPad.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
+		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AB0D01D0136A778000962171 /* DCIntrospectDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCIntrospectDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0D01D4136A778000962171 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB0D01D6136A778000962171 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -38,7 +39,6 @@
 		AB0D01E7136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntrospectDemoViewController.h; sourceTree = "<group>"; };
 		AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectDemoViewController.m; sourceTree = "<group>"; };
-		AB0D0200136A841400962171 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AB0D0212136A9E8D00962171 /* DCIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospect.h; path = ../../DCIntrospect/DCIntrospect.h; sourceTree = "<group>"; };
 		AB0D0213136A9E8D00962171 /* DCIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCIntrospect.m; path = ../../DCIntrospect/DCIntrospect.m; sourceTree = "<group>"; };
 		AB0D021D136A9FE000962171 /* DCFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCFrameView.h; path = ../../DCIntrospect/DCFrameView.h; sourceTree = "<group>"; };
@@ -47,10 +47,7 @@
 		ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCStatusBarOverlay.m; path = ../../DCIntrospect/DCStatusBarOverlay.m; sourceTree = "<group>"; };
 		ABDA509E136FDD9300339835 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCCrossHairView.h; path = ../../DCIntrospect/DCCrossHairView.h; sourceTree = "<group>"; };
 		ABDA509F136FDD9300339835 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCCrossHairView.m; path = ../../DCIntrospect/DCCrossHairView.m; sourceTree = "<group>"; };
-		ABDA50FA1370C18B00339835 /* CustomDrawnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDrawnView.h; sourceTree = "<group>"; };
-		ABDA50FB1370C18B00339835 /* CustomDrawnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDrawnView.m; sourceTree = "<group>"; };
 		ABDA51091370E79100339835 /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectSettings.h; path = ../../DCIntrospect/DCIntrospectSettings.h; sourceTree = "<group>"; };
-		ABDA5133137131A400339835 /* MainWindowiPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindowiPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB0D0201136A841400962171 /* QuartzCore.framework in Frameworks */,
+				625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */,
 				AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */,
 				AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */,
 				AB0D01D9136A778000962171 /* CoreGraphics.framework in Frameworks */,
@@ -88,7 +85,7 @@
 		AB0D01D3136A778000962171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AB0D0200136A841400962171 /* QuartzCore.framework */,
+				625780B1138A0EBC004DA77B /* QuartzCore.framework */,
 				AB0D01D4136A778000962171 /* UIKit.framework */,
 				AB0D01D6136A778000962171 /* Foundation.framework */,
 				AB0D01D8136A778000962171 /* CoreGraphics.framework */,
@@ -103,11 +100,9 @@
 				AB0D01E3136A778000962171 /* DCIntrospectDemoAppDelegate.h */,
 				AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */,
 				AB0D01E6136A778000962171 /* MainWindow.xib */,
-				ABDA5133137131A400339835 /* MainWindowiPad.xib */,
+				625780AF138A052F004DA77B /* circle.png */,
 				AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */,
 				AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */,
-				ABDA50FA1370C18B00339835 /* CustomDrawnView.h */,
-				ABDA50FB1370C18B00339835 /* CustomDrawnView.m */,
 				AB0D01DB136A778000962171 /* Supporting Files */,
 			);
 			path = DCIntrospectDemo;
@@ -165,6 +160,9 @@
 /* Begin PBXProject section */
 		AB0D01C7136A778000962171 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0410;
+			};
 			buildConfigurationList = AB0D01CA136A778000962171 /* Build configuration list for PBXProject "DCIntrospectDemo" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -189,7 +187,7 @@
 			files = (
 				AB0D01DF136A778000962171 /* InfoPlist.strings in Resources */,
 				AB0D01E8136A778000962171 /* MainWindow.xib in Resources */,
-				ABDA5134137131A500339835 /* MainWindowiPad.xib in Resources */,
+				625780B0138A052F004DA77B /* circle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +205,6 @@
 				AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */,
 				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
 				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
-				ABDA50FC1370C18C00339835 /* CustomDrawnView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,13 +240,14 @@
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -260,13 +258,14 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

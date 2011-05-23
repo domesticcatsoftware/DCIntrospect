@@ -106,7 +106,7 @@
 	if (showAntialiasingWarning)
 	{
 		[[UIColor redColor] set];
-		NSLog(@"*** DCIntrospect: WARNING: One or more values of this view's frame are non-integer values. This view may draw incorrectly. ***");
+		NSLog(@"DCIntrospect: *** WARNING: One or more values of this view's frame are non-integer values. This view will likely look blurry. ***");
 	}
 	else
 	{
@@ -214,9 +214,7 @@
 
 	self.touchPointLabel.frame = frame;
 	self.touchPointView.center = CGPointMake(touchPoint.x + 0.5, touchPoint.y + 0.5);
-	[UIView animateWithDuration:0.08 animations:^{
-		self.touchPointView.alpha = self.touchPointLabel.alpha = 1.0;
-	}];
+	self.touchPointView.alpha = self.touchPointLabel.alpha = 1.0;
 
 	[self.delegate touchAtPoint:touchPoint];
 }
