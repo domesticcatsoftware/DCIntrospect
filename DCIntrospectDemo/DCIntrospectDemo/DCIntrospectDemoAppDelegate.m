@@ -15,6 +15,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	// create a custom tap gesture recognizer so introspection can be invoked from a device
+	// this one is a three finger double tap
 	UITapGestureRecognizer *defaultGestureRecognizer = [[[UITapGestureRecognizer alloc] init] autorelease];
 	defaultGestureRecognizer.cancelsTouchesInView = NO;
 	defaultGestureRecognizer.delaysTouchesBegan = NO;
@@ -56,6 +58,7 @@
 {
 	[window release];
 	[viewController release];
+
 	[super dealloc];
 }
 

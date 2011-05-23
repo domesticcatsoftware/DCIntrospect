@@ -11,10 +11,9 @@ DCIntrospect *sharedInstance = nil;
 @implementation DCIntrospect
 @synthesize keyboardBindingsOn, showStatusBarOverlay, invokeGestureRecognizer;
 @synthesize on;
-@synthesize viewOutlines, highlightOpaqueViews, flashOnRedraw;
+@synthesize viewOutlines, highlightNonOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
 @synthesize inputField;
-@synthesize toolbar;
 @synthesize frameView;
 @synthesize objectNames;
 @synthesize currentView, originalFrame, originalAlpha;
@@ -25,14 +24,12 @@ DCIntrospect *sharedInstance = nil;
 + (DCIntrospect *)sharedIntrospector
 {
 #ifdef DEBUG
-#if (TARGET_IPHONE_SIMULATOR)		// turn off this if you want to use on a device.
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = YES;
 	}
-#endif
 #endif
 	return sharedInstance;
 }
@@ -86,6 +83,8 @@ DCIntrospect *sharedInstance = nil;
 	// listen for device orientation changes to adjust the status bar
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
+
+	NSLog(@"DCIntrospect is setup. %@ to start.", [kDCIntrospectKeysInvoke isEqualToString:@" "] ? @"Push the space bar" : [NSString stringWithFormat:@"Type '%@'",  kDCIntrospectKeysInvoke]);
 }
 
 - (void)takeFirstResponder
@@ -140,8 +139,8 @@ DCIntrospect *sharedInstance = nil;
 	{
 		if (self.viewOutlines)
 			[self toggleOutlines];
-		if (self.highlightOpaqueViews)
-			[self toggleOpaqueViews];
+		if (self.highlightNonOpaqueViews)
+			[self toggleNonOpaqueViews];
 		if (self.showingHelp)
 			[self toggleHelp];
 
@@ -180,43 +179,15 @@ DCIntrospect *sharedInstance = nil;
 		self.originalAlpha = self.currentView.alpha;
 		[self updateFrameView];
 		[self updateStatusBar];
-		[self updateToolbar];
 	}
 }
 
 - (void)statusBarTapped
 {
-	UIWindow *mainWindow = [self mainWindow];
 	if (self.showingHelp)
 	{
 		[self toggleHelp];
 		return;
-	}
-	else
-	{
-		// show the toolbar
-		if (!self.toolbar)
-		{
-			CGRect rect = CGRectMake(0.0, [UIApplication sharedApplication].statusBarFrame.size.height, mainWindow.frame.size.width, 30.0);
-			self.toolbar = [[[UIScrollView alloc] initWithFrame:rect] autorelease];
-			self.toolbar.backgroundColor = [UIColor blackColor];
-			self.toolbar.alpha = 0.0;
-			[mainWindow addSubview:self.toolbar];
-
-			[self updateViews];
-		}
-
-		[self updateToolbar];
-
-		if (self.toolbar.alpha == 1)
-		{
-			[self fadeView:self.toolbar toAlpha:0.0];
-		}
-		else
-		{
-			[mainWindow bringSubviewToFront:self.toolbar];
-			[self fadeView:self.toolbar toAlpha:1.0];
-		}
 	}
 }
 
@@ -224,12 +195,6 @@ DCIntrospect *sharedInstance = nil;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-	if (self.showingHelp)
-	{
-		[self toggleHelp];
-		return NO;
-	}
-
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
 		[self invokeIntrospector];
@@ -239,6 +204,12 @@ DCIntrospect *sharedInstance = nil;
 	if (!self.on)
 		return NO;
 
+	if (self.showingHelp)
+	{
+		[self toggleHelp];
+		return NO;
+	}
+
 	if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
 	{
 		[self toggleOutlines];
@@ -246,7 +217,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([string isEqualToString:kDCIntrospectKeysToggleNonOpaqueViews])
 	{
-		[self toggleOpaqueViews];
+		[self toggleNonOpaqueViews];
 		return NO;
 	}
 	else if ([string isEqualToString:kDCIntrospectKeysToggleFlashViewRedraws])
@@ -266,7 +237,7 @@ DCIntrospect *sharedInstance = nil;
 							 if (self.showStatusBarOverlay)
 								 [self showTemporaryStringInStatusBar:string];
 							 else
-								 NSLog(@"%@", string);
+								 NSLog(@"DCIntrospect: %@", string);
 						 }];
 		return NO;
 	}
@@ -310,7 +281,6 @@ DCIntrospect *sharedInstance = nil;
 				self.currentView = self.currentView.superview;
 				[self updateFrameView];
 				[self updateStatusBar];
-				[self updateToolbar];
 			}
 			return NO;
 		}
@@ -369,18 +339,18 @@ DCIntrospect *sharedInstance = nil;
 	NSString *varName = [self nameForObject:self.currentView];
 	if ([varName isEqualToString:[NSString stringWithFormat:@"%@", self.currentView.class]])
 		varName = @"<#view#>";
-	
+
 	NSMutableString *outputString = [NSMutableString string];
 	if (!CGRectEqualToRect(self.originalFrame, self.currentView.frame))
 	{
 		[outputString appendFormat:@"%@.frame = CGRectMake(%.1f, %.1f, %.1f, %.1f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
 	}
-	
+
 	if (self.originalAlpha != self.currentView.alpha)
 	{
 		[outputString appendFormat:@"%@.alpha = %.2f;\n", varName, self.currentView.alpha];
 	}
-	
+
 	if (outputString.length == 0)
 		NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
 	else
@@ -457,10 +427,9 @@ DCIntrospect *sharedInstance = nil;
 		self.frameView.alpha = 0.0;
 		[self updateViews];
 	}
-	
+
 	[mainWindow bringSubviewToFront:self.frameView];
-	[mainWindow bringSubviewToFront:self.toolbar];
-	
+
 	if (self.on)
 	{
 		if (self.currentView)
@@ -477,7 +446,7 @@ DCIntrospect *sharedInstance = nil;
 		{
 			self.frameView.mainRect = CGRectZero;
 		}
-		
+
 		[self fadeView:self.frameView toAlpha:1.0];
 	}
 	else
@@ -495,20 +464,20 @@ DCIntrospect *sharedInstance = nil;
 		// remove the 'self.' if it's there to save space
 		if ([nameForObject hasPrefix:@"self."])
 			nameForObject = [nameForObject substringFromIndex:@"self.".length];
-	
+
 		if (self.currentView.tag != 0)
 			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@ (tag: %i)", nameForObject, self.currentView.tag];
 		else
 			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", nameForObject];
-		
+
 		self.statusBarOverlay.rightLabel.text = NSStringFromCGRect(self.currentView.frame);
 	}
 	else
 	{
 		self.statusBarOverlay.leftLabel.text = @"DCIntrospect";
-		self.statusBarOverlay.rightLabel.text = nil;
+		self.statusBarOverlay.rightLabel.text = [NSString stringWithFormat:@"'%@' for help", kDCIntrospectKeysToggleHelp];
 	}
-	
+
 	if (self.showStatusBarOverlay)
 		self.statusBarOverlay.hidden = NO;
 	else
@@ -521,99 +490,31 @@ DCIntrospect *sharedInstance = nil;
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
 	CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
 	CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-	CGSize statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
-	CGSize toolbarSize = CGSizeMake(statusBarSize.width, 30.0);
 
 	CGFloat pi = (CGFloat)M_PI;
 	if (orientation == UIDeviceOrientationPortrait)
 	{
 		self.frameView.transform = CGAffineTransformIdentity;
 		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-		self.toolbar.transform = self.frameView.transform;
-		self.toolbar.frame = CGRectMake(0, statusBarSize.height, self.toolbar.frame.size.width, self.toolbar.frame.size.height);
 	}
 	else if (orientation == UIDeviceOrientationLandscapeLeft)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (90) / 180.0f);
 		self.frameView.frame = CGRectMake(screenWidth - screenHeight, 0, screenHeight, screenHeight);
-		self.toolbar.transform = self.frameView.transform;
-		self.toolbar.frame = CGRectMake(screenWidth - statusBarSize.width - toolbarSize.height, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationLandscapeRight)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi * (-90) / 180.0f);
 		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-		self.toolbar.transform = self.frameView.transform;
-		self.toolbar.frame = CGRectMake(statusBarSize.width, 0, toolbarSize.height, screenHeight);
 	}
 	else if (orientation == UIDeviceOrientationPortraitUpsideDown)
 	{
 		self.frameView.transform = CGAffineTransformMakeRotation(pi);
 		self.frameView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-		self.toolbar.transform = self.frameView.transform;
-		self.toolbar.frame = CGRectMake(0, screenHeight - statusBarSize.height - toolbarSize.height, screenWidth, toolbarSize.height);
 	}
 
 	self.currentView = nil;
 	[self updateFrameView];
-}
-
-- (void)updateToolbar
-{
-	// setup toolbar
-	[self.toolbar.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		[(UIView *)obj removeFromSuperview];
-	}];
-
-	NSMutableArray *buttons = [NSMutableArray array];
-	
-	UIButton *logDescriptionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	NSString *title = [NSString stringWithFormat:@"log view (%@)", kDCIntrospectKeysLogViewRecursive];
-	[logDescriptionButton setTitle:title forState:UIControlStateNormal];
-	[logDescriptionButton addTarget:self action:@selector(logRecursiveDescriptionForCurrentView) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:logDescriptionButton];
-
-	UIButton *logPropertiesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	title = [NSString stringWithFormat:@"log properties (%@)", kDCIntrospectKeysLogProperties];
-	[logPropertiesButton setTitle:title forState:UIControlStateNormal];
-	[logPropertiesButton addTarget:self action:@selector(logPropertiesForCurrentView) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:logPropertiesButton];
-	
-	UIButton *forceSetNeedsDisplay = [UIButton buttonWithType:UIButtonTypeCustom];
-	title = [NSString stringWithFormat:@"setNeedsDisplay (%@)", kDCIntrospectKeysSetNeedsDisplay];
-	[forceSetNeedsDisplay setTitle:title forState:UIControlStateNormal];
-	[forceSetNeedsDisplay addTarget:self action:@selector(forceSetNeedsDisplay) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:forceSetNeedsDisplay];
-	
-	UIButton *forceSetNeedsLayout = [UIButton buttonWithType:UIButtonTypeCustom];
-	title = [NSString stringWithFormat:@"setNeedsLayout (%@)", kDCIntrospectKeysSetNeedsLayout];
-	[forceSetNeedsLayout setTitle:title forState:UIControlStateNormal];
-	[forceSetNeedsLayout addTarget:self action:@selector(forceSetNeedsLayout) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:forceSetNeedsLayout];
-
-	if ([self.currentView class] == [UITableView class])
-	{
-		UIButton *reloadTableView = [UIButton buttonWithType:UIButtonTypeCustom];
-		title = [NSString stringWithFormat:@"reloadData (%@)", kDCIntrospectKeysReloadData];
-		[reloadTableView setTitle:title forState:UIControlStateNormal];
-		[reloadTableView addTarget:self action:@selector(forceReloadOfView) forControlEvents:UIControlEventTouchUpInside];
-		[buttons addObject:reloadTableView];
-	}
-
-	CGFloat x = 0;
-	for (UIButton *button in buttons)
-	{
-		button.titleLabel.font = [UIFont boldSystemFontOfSize:13.0];
-		button.titleLabel.textColor = [UIColor colorWithWhite:0.8 alpha:1.0];
-		[button setTitleColor:[UIColor colorWithWhite:0.78 alpha:1.0] forState:UIControlStateNormal];
-		[button setTitleColor:[UIColor colorWithWhite:1.0 alpha:1.0] forState:UIControlStateHighlighted];
-		CGSize titleSize = [button.titleLabel.text sizeWithFont:button.titleLabel.font];
-		button.frame = CGRectMake(x, 0.0, titleSize.width + 10.0, 24.0);
-		[self.toolbar addSubview:button];
-		x += button.frame.size.width;
-	}
-
-	self.toolbar.contentSize = CGSizeMake(x, self.toolbar.frame.size.height);
 }
 
 - (void)showTemporaryStringInStatusBar:(NSString *)string
@@ -635,8 +536,8 @@ DCIntrospect *sharedInstance = nil;
 - (void)logRecursiveDescriptionForView:(UIView *)view
 {
 #ifdef DEBUG
-	// [UIView recursiveDescription] is a private method.
-	NSLog(@"%@", [view recursiveDescription]);
+	// [UIView recursiveDescription] is a private method.  This should probably be re-written to avoid any potential problems.
+	NSLog(@"DCIntrospect: %@", [view recursiveDescription]);
 #endif
 }
 
@@ -668,18 +569,18 @@ DCIntrospect *sharedInstance = nil;
 
 	[self.frameView setNeedsDisplay];
 
-	NSString *string = [NSString stringWithFormat:@"Showing all view outlines is %@", (self.viewOutlines) ? @"on" : @"off"];
+	NSString *string = [NSString stringWithFormat:@"Showing view outlines is %@", (self.viewOutlines) ? @"on" : @"off"];
 	if (self.showStatusBarOverlay)
 		[self showTemporaryStringInStatusBar:string];
 	else
-		NSLog(@"%@", string);
+		NSLog(@"DCIntrospect: %@", string);
 }
 
 - (void)addOutlinesToFrameViewFromSubview:(UIView *)view
 {
 	for (UIView *subview in view.subviews)
 	{
-		if (subview == self.toolbar || subview == self.frameView)
+		if ([self shouldIgnoreView:subview])
 			continue;
 		
 		CGRect rect = [subview.superview convertRect:subview.frame toView:frameView];
@@ -690,32 +591,32 @@ DCIntrospect *sharedInstance = nil;
 	}
 }
 
-- (void)toggleOpaqueViews
+- (void)toggleNonOpaqueViews
 {
-	self.highlightOpaqueViews = !self.highlightOpaqueViews;
+	self.highlightNonOpaqueViews = !self.highlightNonOpaqueViews;
 
 	UIWindow *mainWindow = [self mainWindow];
-	[self setBackgroundColor:(self.highlightOpaqueViews) ? [UIColor redColor] : [UIColor clearColor]
-	  ofOpaqueViewsInSubview:mainWindow];
+	[self setBackgroundColor:(self.highlightNonOpaqueViews) ? kDCIntrospectOpaqueColor : [UIColor clearColor]
+	  ofNonOpaqueViewsInSubview:mainWindow];
 
-	NSString *string = [NSString stringWithFormat:@"Highlighting opaque views is %@", (self.highlightOpaqueViews) ? @"on" : @"off"];
+	NSString *string = [NSString stringWithFormat:@"Highlighting non-opaque views is %@", (self.highlightNonOpaqueViews) ? @"on" : @"off"];
 	if (self.showStatusBarOverlay)
 		[self showTemporaryStringInStatusBar:string];
 	else
-		NSLog(@"%@", string);
+		NSLog(@"DCIntrospect: %@", string);
 }
 
-- (void)setBackgroundColor:(UIColor *)color ofOpaqueViewsInSubview:(UIView *)view
+- (void)setBackgroundColor:(UIColor *)color ofNonOpaqueViewsInSubview:(UIView *)view
 {
 	for (UIView *subview in view.subviews)
 	{
-		if ([self ignoreView:subview])
+		if ([self shouldIgnoreView:subview])
 			continue;
-		
+
 		if (!subview.opaque)
 			subview.backgroundColor = color;
-		
-		[self setBackgroundColor:color ofOpaqueViewsInSubview:subview];
+
+		[self setBackgroundColor:color ofNonOpaqueViewsInSubview:subview];
 	}
 }
 
@@ -726,7 +627,7 @@ DCIntrospect *sharedInstance = nil;
 	if (self.showStatusBarOverlay)
 		[self showTemporaryStringInStatusBar:string];
 	else
-		NSLog(@"%@", string);
+		NSLog(@"DCIntrospect: %@", string);
 
 	// flash all views to show what is working
 	[self callDrawRectOnViewsInSubview:[self mainWindow]];
@@ -736,7 +637,7 @@ DCIntrospect *sharedInstance = nil;
 {
 	for (UIView *view in subview.subviews)
 	{
-		if (![self ignoreView:view])
+		if (![self shouldIgnoreView:view])
 		{
 			[view setNeedsDisplay];
 			[self callDrawRectOnViewsInSubview:view];
@@ -1106,7 +1007,7 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendString:@"</style></head><body><h1>DCIntrospect</h1>"];
 		[helpString appendString:@"<p>Created by <a href='http://domesticcat.com.au'>Domestic Cat Software</a> 2011.</p>"];
 		[helpString appendString:@"<p>More info and full documentation: <a href='http://domesticcat.com.au/introspect'>domesticcat.com.au/introspect</a></p>"];
-		[helpString appendString:@"<p>GitHub project: <a href='https://github.com/domesticcatsoftware/DCIntrospect'>github.com/domesticcatsoftware/DCIntrospect/</a></p>"];
+		[helpString appendString:@"<p>GitHub project: <a href='https://github.com/domesticcatsoftware/dcintrospect'>github.com/domesticcatsoftware/dcintrospect/</a></p>"];
 
 		[helpString appendString:@"<div class='bindings'><h1>Key Bindings</h1>"];
 		[helpString appendString:@"<p>Edit DCIntrospectSettings.h to change key bindings.</p>"];
@@ -1288,24 +1189,10 @@ DCIntrospect *sharedInstance = nil;
 	}
 
 	[outputString appendString:@"\n"];
-	NSLog(@"%@", outputString);
+	NSLog(@"DCIntrospect: %@", outputString);
 	
 	free(properties);
     free(buffer);
-}
-
-- (BOOL)ignoreView:(UIView *)view
-{
-	if (view == self.frameView || view == self.toolbar || view == self.inputField)
-		return YES;
-	
-	NSArray *classNamesToIgnore = [NSArray arrayWithObjects:
-								   @"UIDatePickerView",
-								   @"UIPickerTable",
-								   @"UIWeekMonthDayTableCell",
-								   nil];
-	NSString *className = NSStringFromClass([view class]);
-	return [classNamesToIgnore containsObject:className];
 }
 
 - (NSArray *)subclassesOfClass:(Class)parentClass
@@ -1356,7 +1243,7 @@ DCIntrospect *sharedInstance = nil;
 	for (UIView *subview in view.subviews)
 	{
 		CGRect rect = subview.frame;
-		if ([self ignoreView:subview])
+		if ([self shouldIgnoreView:subview])
 			continue;
 
 		if (CGRectContainsPoint(rect, touchPoint))
@@ -1395,6 +1282,13 @@ DCIntrospect *sharedInstance = nil;
 			return YES;
 	}
 
+	return NO;
+}
+
+- (BOOL)shouldIgnoreView:(UIView *)view
+{
+	if (view == self.frameView || view == self.inputField)
+		return YES;
 	return NO;
 }
 

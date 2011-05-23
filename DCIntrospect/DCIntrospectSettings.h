@@ -4,6 +4,7 @@
 
 #define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]			// UIColor
 #define kDCIntrospectFlashOnRedrawFlashLength 0.03													// NSTimeInterval
+#define kDCIntrospectOpaqueColor [UIColor redColor]													// UIColor
 
 //////////////////
 // Key Bindings //
