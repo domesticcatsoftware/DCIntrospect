@@ -1,6 +1,9 @@
 DCIntrospect
 ============
 
+Twitter: [@patr](http://twitter.com/patr)
+Our commercial apps: [domesticcat.com.au](http://domesticcat.com.au/apps)
+
 Introspect is small set of tools for iOS that aid in debugging user interfaces build with UIKit.  It's especially useful for UI layouts that are dynamically created or can change during runtime, or for tuning performance by finding non-opaque views or views that are re-drawing unnecessarily.  It's designed for use in the iPhone simulator, but can also be used on a device.
 
 
@@ -8,8 +11,6 @@ Introspect is small set of tools for iOS that aid in debugging user interfaces b
 
 
 It uses keyboard shortcuts to handle starting, ending and other commands.  It can also be invoked via an app-wide `UIGestureRecognizer` if it is to be used on the device.
-
-You can follow me on Twitter: [@patr](http://twitter.com/patr), and check out our commercial apps at [domesticcat.com.au](http://domesticcat.com.au/apps).
 
 Features:
 --------------
