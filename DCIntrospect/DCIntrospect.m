@@ -1006,7 +1006,8 @@ DCIntrospect *sharedInstance = nil;
 
 		[helpString appendString:@"</style></head><body><h1>DCIntrospect</h1>"];
 		[helpString appendString:@"<p>Created by <a href='http://domesticcat.com.au'>Domestic Cat Software</a> 2011.</p>"];
-		[helpString appendString:@"<p>More info and full documentation: <a href='http://domesticcat.com.au/introspect'>domesticcat.com.au/introspect</a></p>"];
+		[helpString appendString:@"<p>Twitter: <a href='http://twitter.com/patr'>@patr</a></p>"];
+		[helpString appendString:@"<p>More info and full documentation: <a href='http://domesticcat.com.au/projects/introspect'>domesticcat.com.au/projects/introspect</a></p>"];
 		[helpString appendString:@"<p>GitHub project: <a href='https://github.com/domesticcatsoftware/dcintrospect'>github.com/domesticcatsoftware/dcintrospect/</a></p>"];
 
 		[helpString appendString:@"<div class='bindings'><h1>Key Bindings</h1>"];
