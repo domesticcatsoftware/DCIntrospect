@@ -2,6 +2,7 @@ DCIntrospect
 ============
 
 Twitter: [@patr](http://twitter.com/patr)
+
 Our commercial apps: [domesticcat.com.au](http://domesticcat.com.au/apps)
 
 Introspect is small set of tools for iOS that aid in debugging user interfaces build with UIKit.  It's especially useful for UI layouts that are dynamically created or can change during runtime, or for tuning performance by finding non-opaque views or views that are re-drawing unnecessarily.  It's designed for use in the iPhone simulator, but can also be used on a device.
@@ -20,6 +21,7 @@ Features:
 * Displays a views origin & size, including distances to edges of main window
 * Move and resize view frames during runtime using shortcut keys
 * Logging of properties of a view, including subclass properties, actions and targets (see below for an example)
+* Logging of accessibility properties — useful for UI automation scripts (requires Accessibility Inspector: Settings.app -> General -> Accessibility)
 * Manually call setNeedsDisplay, setNeedsLayout and reloadData (for UITableView)
 * Highlight all view outlines
 * Highlight all views that are non-opaque
@@ -43,6 +45,7 @@ Selected keyboard shortcuts
 * Start/Stop: `spacebar`
 * Help: `?`
 * Print properties and actions of selected view to console: `p`
+* Print accessibility properties and actions of selected view to console: `a`
 * Toggle all view outlines: `o`
 * Toggle highlighting non-opaque views: `O`
 * Nudge view left, right, up & down: `4 6 8 2` (use the numeric pad)
@@ -76,12 +79,13 @@ Pushing `p` will log out the available properties about the selected view.  DCIn
 Customizing Key Bindings
 --------------------------------------
 
-Edit the file `DCIntrospectSettings.h` to change key bindings.
+Edit the file `DCIntrospectSettings.h` to change key bindings.  You might want to change the key bindings if your using a laptop/wireless keyboard for development.
 
 To Do
 --------
 
 * Add support for arrow keys for nudging views around, and maybe modifier keys for other things also.  If anyone knows how to do this please get in touch.  The iPhone app Prompt by Panic does this so I'm sure it's possible.
+* Work out how to load the right accessibility bundles to prevent the need for Accessibility Inspector
 
 License
 -----------
