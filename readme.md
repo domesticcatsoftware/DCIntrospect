@@ -5,7 +5,7 @@ Twitter: [@patr](http://twitter.com/patr)
 
 Our commercial apps: [domesticcat.com.au](http://domesticcat.com.au/apps)
 
-Introspect is small set of tools for iOS that aid in debugging user interfaces build with UIKit.  It's especially useful for UI layouts that are dynamically created or can change during runtime, or for tuning performance by finding non-opaque views or views that are re-drawing unnecessarily.  It's designed for use in the iPhone simulator, but can also be used on a device.
+Introspect is small set of tools for iOS that aid in debugging user interfaces built with UIKit.  It's especially useful for UI layouts that are dynamically created or can change during runtime, or for tuning performance by finding non-opaque views or views that are re-drawing unnecessarily.  It's designed for use in the iPhone simulator, but can also be used on a device.
 
 
 ![Introspect Demo Image](http://domesticcat.com.au/projects/introspect/introspectdemo.png)
