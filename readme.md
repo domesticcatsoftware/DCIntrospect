@@ -80,8 +80,12 @@ Accessibility Properties
 ------------------------
 
 There are two ways to get this working:
-1. Turn on the Accessibility Inspector on the iPhone Simulator: Settings.app -> General -> Accessibility)
-2. Edit `~/Library/Application Support/iPhone Simulator/[SDK Number]/Library/Preferences/com.apple.Accessibility.plist` and change the key `ApplicationAccessibilityEnabled` to `YES`.
+
+* Turn on the Accessibility Inspector on the iPhone Simulator: Settings.app -> General -> Accessibility)
+
+-- or --
+
+* Edit `~/Library/Application Support/iPhone Simulator/[SDK Number]/Library/Preferences/com.apple.Accessibility.plist` and change the key `ApplicationAccessibilityEnabled` to `YES`.
 
 Customizing Key Bindings
 --------------------------------------
