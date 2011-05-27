@@ -21,7 +21,7 @@ Features:
 * Displays a views origin & size, including distances to edges of main window
 * Move and resize view frames during runtime using shortcut keys
 * Logging of properties of a view, including subclass properties, actions and targets (see below for an example)
-* Logging of accessibility properties — useful for UI automation scripts (requires Accessibility Inspector: Settings.app -> General -> Accessibility)
+* Logging of accessibility properties — useful for UI automation scripts (see below for details)
 * Manually call setNeedsDisplay, setNeedsLayout and reloadData (for UITableView)
 * Highlight all view outlines
 * Highlight all views that are non-opaque
@@ -75,6 +75,13 @@ Pushing `p` will log out the available properties about the selected view.  DCIn
     
     ** Targets & Actions **
         target: <DCIntrospectDemoViewController: 0x4c8c0e0> action: buttonTapped:
+
+Accessibility Properties
+------------------------
+
+There are two ways to get this working:
+1. Turn on the Accessibility Inspector on the iPhone Simulator: Settings.app -> General -> Accessibility)
+2. Edit `~/Library/Application Support/iPhone Simulator/[SDK Number]/Library/Preferences/com.apple.Accessibility.plist` and change the key `ApplicationAccessibilityEnabled` to `YES`.
 
 Customizing Key Bindings
 --------------------------------------
