@@ -254,6 +254,11 @@ DCIntrospect *sharedInstance = nil;
 			[self logPropertiesForObject:self.currentView];
 			return NO;
 		}
+		else if ([string isEqualToString:kDCIntrospectKeysLogAccessibilityProperties])
+		{
+			[self logAccessabilityPropertiesForObject:self.currentView];
+			return NO;
+		}
 		else if ([string isEqualToString:kDCIntrospectKeysLogViewRecursive])
 		{
 			[self logRecursiveDescriptionForView:self.currentView];
@@ -313,9 +318,15 @@ DCIntrospect *sharedInstance = nil;
 		else if ([string isEqualToString:kDCIntrospectKeysDecreaseHeight])
 			frame.size.height -= 1.0;
 		else if ([string isEqualToString:kDCIntrospectKeysIncreaseViewAlpha])
-			self.currentView.alpha += 0.05;
+		{
+			if (self.currentView.alpha < 1.0)
+				self.currentView.alpha += 0.05;
+		}
 		else if ([string isEqualToString:kDCIntrospectKeysDecreaseViewAlpha])
-			self.currentView.alpha -= 0.05;
+		{
+			if (self.currentView.alpha > 0.0)
+				self.currentView.alpha -= 0.05;
+		}
 
 		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
 											floorf(frame.origin.y),
@@ -866,18 +877,53 @@ DCIntrospect *sharedInstance = nil;
 		UIViewAutoresizing mask = (int)value;
 		NSMutableString *string = [NSMutableString string];
 		if (mask & UIViewAutoresizingFlexibleLeftMargin)
-			[string appendFormat:@"UIViewAutoresizingFlexibleLeftMargin"];
+			[string appendString:@"UIViewAutoresizingFlexibleLeftMargin"];
 		if (mask & UIViewAutoresizingFlexibleRightMargin)
-			[string appendFormat:@" | UIViewAutoresizingFlexibleRightMargin"];
+			[string appendString:@" | UIViewAutoresizingFlexibleRightMargin"];
 		if (mask & UIViewAutoresizingFlexibleTopMargin)
-			[string appendFormat:@" | UIViewAutoresizingFlexibleTopMargin"];
+			[string appendString:@" | UIViewAutoresizingFlexibleTopMargin"];
 		if (mask & UIViewAutoresizingFlexibleBottomMargin)
-			[string appendFormat:@" | UIViewAutoresizingFlexibleBottomMargin"];
+			[string appendString:@" | UIViewAutoresizingFlexibleBottomMargin"];
 		if (mask & UIViewAutoresizingFlexibleWidth)
-			[string appendFormat:@" | UIViewAutoresizingFlexibleWidthMargin"];
+			[string appendString:@" | UIViewAutoresizingFlexibleWidthMargin"];
 		if (mask & UIViewAutoresizingFlexibleHeight)
-			[string appendFormat:@" | UIViewAutoresizingFlexibleHeightMargin"];
+			[string appendString:@" | UIViewAutoresizingFlexibleHeightMargin"];
 		
+		if ([string hasPrefix:@" | "])
+			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
+
+		return string;
+	}
+	else if ([propertyName isEqualToString:@"accessibilityTraits"])
+	{
+		UIAccessibilityTraits traits = (int)value;
+		NSMutableString *string = [NSMutableString string];
+		if (traits & UIAccessibilityTraitButton)
+			[string appendString:@"UIAccessibilityTraitButton"];
+		if (traits & UIAccessibilityTraitLink)
+			[string appendString:@" | UIAccessibilityTraitLink"];
+		if (traits & UIAccessibilityTraitSearchField)
+			[string appendString:@" | UIAccessibilityTraitSearchField"];
+		if (traits & UIAccessibilityTraitImage)
+			[string appendString:@" | UIAccessibilityTraitImage"];
+		if (traits & UIAccessibilityTraitSelected)
+			[string appendString:@" | UIAccessibilityTraitSelected"];
+		if (traits & UIAccessibilityTraitPlaysSound)
+			[string appendString:@" | UIAccessibilityTraitPlaysSound"];
+		if (traits & UIAccessibilityTraitKeyboardKey)
+			[string appendString:@" | UIAccessibilityTraitKeyboardKey"];
+		if (traits & UIAccessibilityTraitStaticText)
+			[string appendString:@" | UIAccessibilityTraitStaticText"];
+		if (traits & UIAccessibilityTraitSummaryElement)
+			[string appendString:@" | UIAccessibilityTraitSummaryElement"];
+		if (traits & UIAccessibilityTraitNotEnabled)
+			[string appendString:@" | UIAccessibilityTraitNotEnabled"];
+		if (traits & UIAccessibilityTraitUpdatesFrequently)
+			[string appendString:@" | UIAccessibilityTraitUpdatesFrequently"];
+		if (traits & UIAccessibilityTraitStartsMediaSession)
+			[string appendString:@" | UIAccessibilityTraitStartsMediaSession"];
+		if (traits & UIAccessibilityTraitAdjustable)
+			[string appendFormat:@" | UIAccessibilityTraitAdjustable"];
 		if ([string hasPrefix:@" | "])
 			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
 
@@ -1025,6 +1071,7 @@ DCIntrospect *sharedInstance = nil;
 
 		[helpString appendString:@"<h2>When a view is selected</h2>"];
 		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
+		[helpString appendFormat:@"<div><span class='name'>Log Accessibility Properties (see below)</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogAccessibilityProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
 		[helpString appendFormat:@"<div><span class='name'>Select View's Superview</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysSelectMoveUpViewHeirachy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysSelectMoveUpViewHeirachy];
 		[helpString appendString:@"<div class='spacer'></div>"];
@@ -1050,7 +1097,9 @@ DCIntrospect *sharedInstance = nil;
 
 		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (binding: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
 
-		[helpString appendFormat:@"<h1>Naming objects & logging code</h1><p>By providing names for objects using  <span class='code'>setName:forObject:accessedWithSelf:</span>, that name will be shown in the status bar instead of the class of the view.</p><p>This is also used when logging view code (binding: <span class='code'>%@</span>).  Logging view code prints formatted code to the console for properties that have been changed.</p><p>For example, if you resize/move a view using the nudge keys, logging the view code will print <span class='code'>view.frame = CGRectMake(50.0 ..etc);</span> to the console.  If a name is provided then <span class='code'>view</span> is replaced by the view.</p>", kDCIntrospectKeysLogCodeForCurrentViewChanges];
+		[helpString appendFormat:@"<h1>Naming objects & logging code</h1><p>By providing names for objects using <span class='code'>setName:forObject:accessedWithSelf:</span>, that name will be shown in the status bar instead of the class of the view.</p><p>This is also used when logging view code (binding: <span class='code'>%@</span>).  Logging view code prints formatted code to the console for properties that have been changed.</p><p>For example, if you resize/move a view using the nudge keys, logging the view code will print <span class='code'>view.frame = CGRectMake(50.0 ..etc);</span> to the console.  If a name is provided then <span class='code'>view</span> is replaced by the name.</p>", kDCIntrospectKeysLogCodeForCurrentViewChanges];
+
+		[helpString appendFormat:@"<h1>Accessibility Properties</h1><p>Logging accessibility properties (binding: <span class='code'>%@</span>) requires the Accesibility Instector to be on, in Settings.app -> General -> Accessibility.  Useful for writing automated UI scripts.</p>", kDCIntrospectKeysLogAccessibilityProperties];
 
 		[helpString appendString:@"<h1>License</h1><p>DCIntrospect is made available under the <a href='http://en.wikipedia.org/wiki/MIT_License'>MIT license</a>.</p>"];
 
@@ -1172,7 +1221,7 @@ DCIntrospect *sharedInstance = nil;
 		}
 	}
 
-	// list all targets if there are any
+	// list targets if there are any
 	if ([object respondsToSelector:@selector(allTargets)])
 	{
 		[outputString appendString:@"\n  ** Targets & Actions **\n"];
@@ -1191,9 +1240,31 @@ DCIntrospect *sharedInstance = nil;
 
 	[outputString appendString:@"\n"];
 	NSLog(@"DCIntrospect: %@", outputString);
-	
+
 	free(properties);
     free(buffer);
+}
+
+- (void)logAccessabilityPropertiesForObject:(id)object
+{
+	Class objectClass = [object class];
+	NSString *className = [NSString stringWithFormat:@"%@", objectClass];
+	NSMutableString *outputString = [NSMutableString string];
+
+	// warn about accessibility inspector if the element count is zero
+	NSUInteger count = [object accessibilityElementCount];
+	if (count == 0)
+		[outputString appendString:@"\n\n** Warning: Logging accessibility properties requires Accessibility Inspector: Settings.app -> General -> Accessibility\n"];
+
+	[outputString appendFormat:@"** %@ Accessibility Properties **\n", className];
+	[outputString appendFormat:@"	label: %@\n", [object accessibilityLabel]];
+	[outputString appendFormat:@"	hint: %@\n", [object accessibilityHint]];
+	[outputString appendFormat:@"	traits: %@\n", [self describeProperty:@"accessibilityTraits" type:nil value:(id)[object accessibilityTraits]]];
+	[outputString appendFormat:@"	value: %@\n", [object accessibilityValue]];
+	[outputString appendFormat:@"	frame: %@\n", NSStringFromCGRect([object accessibilityFrame])];
+	[outputString appendString:@"\n"];
+
+	NSLog(@"DCIntrospect: %@", outputString);
 }
 
 - (NSArray *)subclassesOfClass:(Class)parentClass
@@ -1201,10 +1272,10 @@ DCIntrospect *sharedInstance = nil;
 	// thanks to Matt Gallagher:
     int numClasses = objc_getClassList(NULL, 0);
     Class *classes = NULL;
-	
+
     classes = malloc(sizeof(Class) * numClasses);
     numClasses = objc_getClassList(classes, numClasses);
-    
+
     NSMutableArray *result = [NSMutableArray array];
     for (NSInteger i = 0; i < numClasses; i++)
     {
@@ -1221,9 +1292,9 @@ DCIntrospect *sharedInstance = nil;
         
         [result addObject:classes[i]];
     }
-	
+
     free(classes);
-    
+
     return result;
 }
 
@@ -1257,7 +1328,7 @@ DCIntrospect *sharedInstance = nil;
 			[views addObjectsFromArray:[self viewsAtPoint:newTouchPoint inView:subview]];
 		}
 	}
-	
+
 	return [views autorelease];
 }
 

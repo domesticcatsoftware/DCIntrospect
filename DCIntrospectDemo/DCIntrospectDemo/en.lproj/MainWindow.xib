@@ -93,6 +93,11 @@
 							</object>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIUserInteractionEnabled">NO</bool>
+							<object class="IBUIAccessibilityConfiguration" key="IBUIAccessibilityConfiguration">
+								<string key="IBUIAccessibilityHint">ImageAccessibilityHint</string>
+								<string key="IBUIAccessibilityLabel">ImageAccessibilityLabel</string>
+								<boolean value="YES" key="IBUIIsAccessibilityElement"/>
+							</object>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<object class="NSCustomResource" key="IBUIImage">
 								<string key="NSClassName">NSImage</string>
@@ -145,6 +150,10 @@
 							<reference key="NSNextKeyView" ref="229314024"/>
 							<bool key="IBUIOpaque">NO</bool>
 							<int key="IBUITag">1</int>
+							<object class="IBUIAccessibilityConfiguration" key="IBUIAccessibilityConfiguration">
+								<string key="IBUIAccessibilityHint">Hint</string>
+								<string key="IBUIAccessibilityLabel">Button</string>
+							</object>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<int key="IBUIContentHorizontalAlignment">0</int>
 							<int key="IBUIContentVerticalAlignment">0</int>
@@ -237,6 +246,11 @@
 							<reference key="NSNextKeyView" ref="986179393"/>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
+							<object class="IBUIAccessibilityConfiguration" key="IBUIAccessibilityConfiguration">
+								<string key="IBUIAccessibilityHint">Accessibility Hint</string>
+								<string key="IBUIAccessibilityLabel">Accessibility Label</string>
+								<integer value="17" key="IBUIAccessibilityTraits"/>
+							</object>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<int key="IBUIContentVerticalAlignment">0</int>
 							<string key="IBUIText">Text Field</string>
@@ -267,7 +281,6 @@
 							<reference key="NSSuperview" ref="310526039"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1005697353"/>
-							<string key="NSReuseIdentifierKey">_NS:262</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<int key="IBSegmentControlStyle">2</int>
@@ -307,7 +320,6 @@
 							<reference key="NSSuperview" ref="310526039"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="964205533"/>
-							<string key="NSReuseIdentifierKey">_NS:643</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<int key="IBUIContentHorizontalAlignment">0</int>
@@ -335,10 +347,9 @@
 				<bool key="IBUIHorizontal">NO</bool>
 			</object>
 			<object class="IBUIWindow" id="117978783">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<string key="NSFrameSize">{320, 480}</string>
-				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
 					<bytes key="NSRGB">MSAxIDEAA</bytes>

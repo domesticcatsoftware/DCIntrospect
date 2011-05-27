@@ -40,6 +40,7 @@
 #define kDCIntrospectKeysSetNeedsLayout					@"l"		// calls setNeedsLayout on selected view
 #define kDCIntrospectKeysReloadData						@"r"		// calls reloadData on selected view if it's a UITableView
 #define kDCIntrospectKeysLogProperties					@"p"		// logs all properties of the selected view
+#define kDCIntrospectKeysLogAccessibilityProperties		@"a"		// logs accessibility info (useful for automated view tests - thanks to @samsoffes for the idea)
 #define kDCIntrospectKeysLogViewRecursive				@"v"		// calls private method recursiveDescription which logs selected view heirachy
 
 #define kDCIntrospectKeysSelectMoveUpViewHeirachy		@""		// changes the selected view to it's superview
