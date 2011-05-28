@@ -21,7 +21,7 @@ Features:
 * Displays a views origin & size, including distances to edges of main window
 * Move and resize view frames during runtime using shortcut keys
 * Logging of properties of a view, including subclass properties, actions and targets (see below for an example)
-* Logging of accessibility properties — useful for UI automation scripts (see below for details)
+* Logging of accessibility properties — useful for UI automation scripts
 * Manually call setNeedsDisplay, setNeedsLayout and reloadData (for UITableView)
 * Highlight all view outlines
 * Highlight all views that are non-opaque
@@ -76,17 +76,6 @@ Pushing `p` will log out the available properties about the selected view.  DCIn
     ** Targets & Actions **
         target: <DCIntrospectDemoViewController: 0x4c8c0e0> action: buttonTapped:
 
-Accessibility Properties
-------------------------
-
-There are two ways to get this working:
-
-* Turn on the Accessibility Inspector on the iPhone Simulator: Settings.app -> General -> Accessibility)
-
--- or --
-
-* Edit `~/Library/Application Support/iPhone Simulator/[SDK Number]/Library/Preferences/com.apple.Accessibility.plist` and change the key `ApplicationAccessibilityEnabled` to `YES`.
-
 Customizing Key Bindings
 --------------------------------------
 
@@ -96,7 +85,6 @@ To Do
 --------
 
 * Add support for arrow keys for nudging views around, and maybe modifier keys for other things also.  If anyone knows how to do this please get in touch.  The iPhone app Prompt by Panic does this so I'm sure it's possible.
-* Work out how to load the right accessibility bundles to prevent the need for Accessibility Inspector
 
 License
 -----------

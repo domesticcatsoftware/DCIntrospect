@@ -6,6 +6,8 @@
 
 #import "DCIntrospect.h"
 
+#import <dlfcn.h>
+
 DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
@@ -20,6 +22,29 @@ DCIntrospect *sharedInstance = nil;
 @synthesize showingHelp;
 
 #pragma mark Setup
+
++ (void)load
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *simulatorRoot = [[[NSProcessInfo processInfo] environment] objectForKey:@"IPHONE_SIMULATOR_ROOT"];
+	if (simulatorRoot)
+	{
+		void *AppSupport = dlopen([[simulatorRoot stringByAppendingPathComponent:@"/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport"] fileSystemRepresentation], RTLD_LAZY);
+		CFStringRef (*CPCopySharedResourcesPreferencesDomainForDomain)(CFStringRef domain) = dlsym(AppSupport, "CPCopySharedResourcesPreferencesDomainForDomain");
+		if (CPCopySharedResourcesPreferencesDomainForDomain)
+		{
+			CFStringRef accessibilityDomain = CPCopySharedResourcesPreferencesDomainForDomain(CFSTR("com.apple.Accessibility"));
+			if (accessibilityDomain)
+			{
+				CFPreferencesSetValue(CFSTR("ApplicationAccessibilityEnabled"), kCFBooleanTrue, accessibilityDomain, kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+				CFRelease(accessibilityDomain);
+			}
+		}
+	}
+	
+	[pool drain];
+}
 
 + (DCIntrospect *)sharedIntrospector
 {
