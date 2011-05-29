@@ -25,7 +25,7 @@
 
 #endif
 
-@interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextFieldDelegate, UIWebViewDelegate>
+@interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextViewDelegate, UIWebViewDelegate>
 {
 }
 
@@ -34,11 +34,12 @@
 @property (nonatomic, retain) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
 
 @property (nonatomic) BOOL on;
+@property (nonatomic) BOOL handleArrowKeys;
 @property (nonatomic) BOOL viewOutlines;
 @property (nonatomic) BOOL highlightNonOpaqueViews;
 @property (nonatomic) BOOL flashOnRedraw;
 @property (nonatomic, retain) DCFrameView *frameView;
-@property (nonatomic, retain) UITextField *inputField;
+@property (nonatomic, retain) UITextView *inputTextView;
 @property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
 
 @property (nonatomic, retain) NSMutableDictionary *objectNames;
@@ -75,7 +76,8 @@
 // Keyboard Capture //
 //////////////////////
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+- (void)textViewDidChangeSelection:(UITextView *)textView;
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string;
 
 /////////////////////////////////
 // Logging Code & Object Names //
