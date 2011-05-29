@@ -13,9 +13,10 @@ DCIntrospect *sharedInstance = nil;
 @implementation DCIntrospect
 @synthesize keyboardBindingsOn, showStatusBarOverlay, invokeGestureRecognizer;
 @synthesize on;
+@synthesize handleArrowKeys;
 @synthesize viewOutlines, highlightNonOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
-@synthesize inputField;
+@synthesize inputTextView;
 @synthesize frameView;
 @synthesize objectNames;
 @synthesize currentView, originalFrame, originalAlpha;
@@ -73,19 +74,19 @@ DCIntrospect *sharedInstance = nil;
 		self.statusBarOverlay = [[[DCStatusBarOverlay alloc] init] autorelease];
 	}
 
-	if (!self.inputField)
+	if (!self.inputTextView)
 	{
-		self.inputField = [[[UITextField alloc] initWithFrame:CGRectZero] autorelease];
-		self.inputField.delegate = self;
-		self.inputField.autocorrectionType = UITextAutocorrectionTypeNo;
-		self.inputField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.inputField.inputView = [[[UIView alloc] init] autorelease];
-		[mainWindow addSubview:self.inputField];
+		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
+		self.inputTextView.delegate = self;
+		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
+		[mainWindow addSubview:self.inputTextView];
 	}
 
 	if (self.keyboardBindingsOn)
 	{
-		if (![self.inputField becomeFirstResponder])
+		if (![self.inputTextView becomeFirstResponder])
 		{
 			[self performSelector:@selector(takeFirstResponder) withObject:nil afterDelay:0.5];
 		}
@@ -114,8 +115,16 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)takeFirstResponder
 {
-	if (![self.inputField becomeFirstResponder])
+	if (![self.inputTextView becomeFirstResponder])
 		NSLog(@"DCIntrospect: Couldn't reclaim keyboard input.  Is the keyboard used elsewhere?");
+}
+
+- (void)resetInputTextView
+{
+	self.inputTextView.text = @"\n2 4567 9\n";
+	self.handleArrowKeys = NO;
+	self.inputTextView.selectedRange = NSMakeRange(5, 0);
+	self.handleArrowKeys = YES;
 }
 
 #pragma mark Custom Setters
@@ -135,9 +144,9 @@ DCIntrospect *sharedInstance = nil;
 {
 	keyboardBindingsOn = newKeyboardBindingsOn;
 	if (self.keyboardBindingsOn)
-		[self.inputField becomeFirstResponder];
+		[self.inputTextView becomeFirstResponder];
 	else
-		[self.inputField resignFirstResponder];
+		[self.inputTextView resignFirstResponder];
 }
 
 #pragma mark Main Actions
@@ -153,9 +162,11 @@ DCIntrospect *sharedInstance = nil;
 		[self updateFrameView];
 
 		if (keyboardBindingsOn)
-			[self.inputField becomeFirstResponder];
+			[self.inputTextView becomeFirstResponder];
 		else
-			[self.inputField resignFirstResponder];
+			[self.inputTextView resignFirstResponder];
+
+		[self resetInputTextView];
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidStart
 															object:nil];
@@ -218,7 +229,63 @@ DCIntrospect *sharedInstance = nil;
 
 #pragma mark Keyboard Capture
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+- (void)textViewDidChangeSelection:(UITextView *)textView
+{
+	if (!(self.on && self.handleArrowKeys))
+		return;
+
+	NSUInteger selectionLocation = textView.selectedRange.location;
+	NSUInteger selectionLength = textView.selectedRange.length;
+	BOOL shiftKey = selectionLength != 0;
+	BOOL optionKey = selectionLocation % 2 == 1;
+
+	CGRect frame = self.currentView.frame;
+	if (shiftKey)
+	{
+		if (selectionLocation == 4 && selectionLength == 1)
+			frame.origin.x -= 10.0;
+		else if (selectionLocation == 5 && selectionLength == 1)
+			frame.origin.x += 10.0;
+		else if (selectionLocation == 0 && selectionLength == 5)
+			frame.origin.y -= 10.0;
+		else if (selectionLocation == 5 && selectionLength == 5)
+			frame.origin.y += 10.0;
+	}
+	else if (optionKey)
+	{
+		if (selectionLocation == 7)
+			frame.size.width += 1.0;
+		else if (selectionLocation == 3)
+			frame.size.width -= 1.0;
+		else if (selectionLocation == 9)
+			frame.size.height += 1.0;
+		else if (selectionLocation == 1)
+			frame.size.height -= 1.0;
+	}
+	else
+	{
+		if (selectionLocation == 4)
+			frame.origin.x -= 1.0;
+		else if (selectionLocation == 6)
+			frame.origin.x += 1.0;
+		else if (selectionLocation == 0)
+			frame.origin.y -= 1.0;
+		else if (selectionLocation == 10)
+			frame.origin.y += 1.0;
+	}
+
+	self.currentView.frame = CGRectMake(floorf(frame.origin.x),
+										floorf(frame.origin.y),
+										floorf(frame.size.width),
+										floorf(frame.size.height));
+
+	[self updateFrameView];
+	[self updateStatusBar];
+
+	[self resetInputTextView];
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string
 {
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
@@ -1101,15 +1168,15 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendFormat:@"<div><span class='name'>Select View's Superview</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysSelectMoveUpViewHeirachy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysSelectMoveUpViewHeirachy];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
-		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewLeft];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Right</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewRight];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Up</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewUp];
-		[helpString appendFormat:@"<div><span class='name'>Nudge Down</span><div class='key'>%@</div></div>", kDCIntrospectKeysNudgeViewDown];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>\uE235 / %@</div></div>", kDCIntrospectKeysNudgeViewLeft];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Right</span><div class='key'>\uE234 / %@</div></div>", kDCIntrospectKeysNudgeViewRight];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Up</span><div class='key'>\uE232 / %@</div></div>", kDCIntrospectKeysNudgeViewUp];
+		[helpString appendFormat:@"<div><span class='name'>Nudge Down</span><div class='key'>\uE233 / %@</div></div>", kDCIntrospectKeysNudgeViewDown];
 		[helpString appendFormat:@"<div><span class='name'>Center in Superview</span><div class='key'>%@</div></div>", kDCIntrospectKeysCenterInSuperview];
-		[helpString appendFormat:@"<div><span class='name'>Increase Width</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseWidth];
-		[helpString appendFormat:@"<div><span class='name'>Decrease Width</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseWidth];
-		[helpString appendFormat:@"<div><span class='name'>Increase Height</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseHeight];
-		[helpString appendFormat:@"<div><span class='name'>Decrease Height</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Increase Width</span><div class='key'>alt + \uE234 / %@</div></div>", kDCIntrospectKeysIncreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Width</span><div class='key'>alt + \uE235 / %@</div></div>", kDCIntrospectKeysDecreaseWidth];
+		[helpString appendFormat:@"<div><span class='name'>Increase Height</span><div class='key'>alt + \uE233 / %@</div></div>", kDCIntrospectKeysIncreaseHeight];
+		[helpString appendFormat:@"<div><span class='name'>Decrease Height</span><div class='key'>alt + \uE232 / %@</div></div>", kDCIntrospectKeysDecreaseHeight];
 		[helpString appendFormat:@"<div><span class='name'>Increase Alpha</span><div class='key'>%@</div></div>", kDCIntrospectKeysIncreaseViewAlpha];
 		[helpString appendFormat:@"<div><span class='name'>Decrease Alpha</span><div class='key'>%@</div></div>", kDCIntrospectKeysDecreaseViewAlpha];
 		[helpString appendFormat:@"<div><span class='name'>Log view code</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogCodeForCurrentViewChanges];
@@ -1384,7 +1451,7 @@ DCIntrospect *sharedInstance = nil;
 
 - (BOOL)shouldIgnoreView:(UIView *)view
 {
-	if (view == self.frameView || view == self.inputField)
+	if (view == self.frameView || view == self.inputTextView)
 		return YES;
 	return NO;
 }
