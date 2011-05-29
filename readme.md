@@ -48,7 +48,7 @@ Selected keyboard shortcuts
 * Print accessibility properties and actions of selected view to console: `a`
 * Toggle all view outlines: `o`
 * Toggle highlighting non-opaque views: `O`
-* Nudge view left, right, up & down: `4 6 8 2` (use the numeric pad)
+* Nudge view left, right, up & down: `4 6 8 2` (use the numeric pad) or `← → ↑ ↓`
 * Print out the selected views' new frame to console after nudge/resize: `0`
 * Print selected views recursive description to console: `v`
 
@@ -80,11 +80,6 @@ Customizing Key Bindings
 --------------------------------------
 
 Edit the file `DCIntrospectSettings.h` to change key bindings.  You might want to change the key bindings if your using a laptop/wireless keyboard for development.
-
-To Do
---------
-
-* Add support for arrow keys for nudging views around, and maybe modifier keys for other things also.  If anyone knows how to do this please get in touch.  The iPhone app Prompt by Panic does this so I'm sure it's possible.
 
 License
 -----------
