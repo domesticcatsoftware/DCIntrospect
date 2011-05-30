@@ -11,6 +11,7 @@
 //////////////////
 
 // '' is equivalent to page up (copy and paste this character to use)
+// '' is equivalent to page down (copy and paste this character to use)
 
 // Global //
 #define kDCIntrospectKeysInvoke							@" "		// starts introspector
@@ -43,4 +44,5 @@
 #define kDCIntrospectKeysLogAccessibilityProperties		@"a"		// logs accessibility info (useful for automated view tests - thanks to @samsoffes for the idea)
 #define kDCIntrospectKeysLogViewRecursive				@"v"		// calls private method recursiveDescription which logs selected view heirachy
 
-#define kDCIntrospectKeysSelectMoveUpViewHeirachy		@""		// changes the selected view to it's superview
+#define kDCIntrospectKeysMoveUpInViewHierarchy			@""		// changes the selected view to it's superview
+#define kDCIntrospectKeysMoveBackInViewHierarchy		@""		// changes the selected view back to the previous view selected (after using the above command)

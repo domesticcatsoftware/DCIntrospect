@@ -20,6 +20,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize frameView;
 @synthesize objectNames;
 @synthesize currentView, originalFrame, originalAlpha;
+@synthesize currentViewHistory;
 @synthesize showingHelp;
 
 #pragma mark Setup
@@ -109,6 +110,9 @@ DCIntrospect *sharedInstance = nil;
 	// listen for device orientation changes to adjust the status bar
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
+
+	if (!self.currentViewHistory)
+		self.currentViewHistory = [[[NSMutableArray alloc] init] autorelease];
 
 	NSLog(@"DCIntrospect is setup. %@ to start.", [kDCIntrospectKeysInvoke isEqualToString:@" "] ? @"Push the space bar" : [NSString stringWithFormat:@"Type '%@'",  kDCIntrospectKeysInvoke]);
 }
@@ -200,22 +204,29 @@ DCIntrospect *sharedInstance = nil;
 		return;
 
 	// get the topmost view and setup the UI
+	[self.currentViewHistory removeAllObjects];
 	UIView *newView = [views lastObject];
-	if (newView != self.currentView)
-	{
-		if (self.frameView.rectsToOutline.count > 0)
-		{
-			[self.frameView.rectsToOutline removeAllObjects];
-			[self.frameView setNeedsDisplay];
-			self.viewOutlines = NO;
-		}
+	[self selectView:newView];
+}
 
-		self.currentView = [views lastObject];
-		self.originalFrame = self.currentView.frame;
-		self.originalAlpha = self.currentView.alpha;
-		[self updateFrameView];
-		[self updateStatusBar];
+- (void)selectView:(UIView *)view
+{
+	self.currentView = view;
+	self.originalFrame = self.currentView.frame;
+	self.originalAlpha = self.currentView.alpha;
+	
+	if (self.frameView.rectsToOutline.count > 0)
+	{
+		[self.frameView.rectsToOutline removeAllObjects];
+		[self.frameView setNeedsDisplay];
+		self.viewOutlines = NO;
 	}
+	
+	[self updateFrameView];
+	[self updateStatusBar];
+	
+	if (![self.currentViewHistory containsObject:self.currentView])
+		[self.currentViewHistory addObject:self.currentView];
 }
 
 - (void)statusBarTapped
@@ -371,15 +382,32 @@ DCIntrospect *sharedInstance = nil;
 			[self forceReloadOfView];
 			return NO;
 		}
-		else if ([string isEqualToString:kDCIntrospectKeysSelectMoveUpViewHeirachy])
+		else if ([string isEqualToString:kDCIntrospectKeysMoveUpInViewHierarchy])
 		{
 			if (self.currentView.superview)
 			{
-				self.currentView = self.currentView.superview;
-				[self updateFrameView];
-				[self updateStatusBar];
+				[self selectView:self.currentView.superview];
+			}
+			else
+			{
+				NSLog(@"DCIntrospect: At top of view hierarchy.");
+				return NO;
 			}
 			return NO;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysMoveBackInViewHierarchy])
+		{
+			if (self.currentViewHistory.count == 0)
+				return NO;
+
+			int indexOfCurrentView = [self.currentViewHistory indexOfObject:self.currentView];
+			if (indexOfCurrentView == 0)
+			{
+				NSLog(@"DCIntrospect: At bottom of view history.");
+				return NO;
+			}
+
+			[self selectView:[self.currentViewHistory objectAtIndex:indexOfCurrentView - 1]];
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysLogCodeForCurrentViewChanges])
 		{
@@ -1165,7 +1193,8 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Accessibility Properties (see below)</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogAccessibilityProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
-		[helpString appendFormat:@"<div><span class='name'>Select View's Superview</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysSelectMoveUpViewHeirachy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysSelectMoveUpViewHeirachy];
+		[helpString appendFormat:@"<div><span class='name'>Move up in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveUpInViewHierarchy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysMoveUpInViewHierarchy];
+		[helpString appendFormat:@"<div><span class='name'>Move back down in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveBackInViewHierarchy isEqualToString:@""]) ? @"page down" : kDCIntrospectKeysMoveBackInViewHierarchy];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
 		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>\uE235 / %@</div></div>", kDCIntrospectKeysNudgeViewLeft];
