@@ -47,6 +47,7 @@
 @property (nonatomic, assign) UIView *currentView;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
+@property (nonatomic, retain) NSMutableArray *currentViewHistory;
 
 @property (nonatomic) BOOL showingHelp;
 
@@ -70,6 +71,7 @@
 
 - (void)invokeIntrospector;					// can be called manually
 - (void)touchAtPoint:(CGPoint)point;		// can be called manually
+- (void)selectView:(UIView *)view;
 - (void)statusBarTapped;
 
 //////////////////////
