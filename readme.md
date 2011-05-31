@@ -33,9 +33,18 @@ Usage
 
 Before you start make sure the `DEBUG` environment variable is set.  DCIntrospect will not run without that set to prevent it being left in for production use.
 
-Add the `DCIntrospect` class files to your project, add the QuartzCore framework if needed, then call `[[DCIntrospect sharedIntrospector] start]` _after_ `[window makeKeyAndDisplay]`.
+Add the `DCIntrospect` class files to your project, add the QuartzCore framework if needed.  To start:
 
-Once installed, simply push the space bar to invoke the introspect or then start clicking on views to get info.  You can also tap and drag around the interface.
+    [window makeKeyAndDisplay]
+    
+    // always call after makeKeyAndDisplay.
+    #ifdef TARGET_IPHONE_SIMULATOR
+        [[DCIntrospect sharedIntrospector] start];
+    #endif
+
+The `#ifdef` to target the simulator is not required but is a good idea to further prevent leaving it on in production code.
+
+Once setup, simply push the space bar to invoke the introspect or then start clicking on views to get info.  You can also tap and drag around the interface.
 
 A a small demo app is included to test it out.
 
@@ -85,3 +94,8 @@ License
 -----------
 
 Made available under the MIT License.
+
+Collaboration
+-------------
+
+If you have any feature requests/bugfixes etc. feel free to help out and send a pull request, or create a new issue.
