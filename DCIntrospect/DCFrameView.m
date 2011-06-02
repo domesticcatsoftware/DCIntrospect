@@ -82,12 +82,12 @@
 													blue:(arc4random() % 256) / 256.0
 												   alpha:1.0];
 			[randomColor set];
-			CGRect rect = [value CGRectValue];
-			rect = CGRectMake(rect.origin.x + 0.5,
-							  rect.origin.y + 0.5,
-							  rect.size.width - 1.0,
-							  rect.size.height - 1.0);
-			CGContextStrokeRect(context, rect);
+			CGRect valueRect = [value CGRectValue];
+			valueRect = CGRectMake(valueRect.origin.x + 0.5,
+                                   valueRect.origin.y + 0.5,
+                                   valueRect.size.width - 1.0,
+                                   valueRect.size.height - 1.0);
+			CGContextStrokeRect(context, valueRect);
 		}
 		return;
 	}
