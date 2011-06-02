@@ -5,8 +5,15 @@
 //
 
 #import "DCIntrospect.h"
-
 #import <dlfcn.h>
+
+
+@interface DCIntrospect ()
+
+- (void)takeFirstResponder;
+
+@end
+
 
 DCIntrospect *sharedInstance = nil;
 
@@ -336,11 +343,11 @@ DCIntrospect *sharedInstance = nil;
 						 animations:^{
 							 self.frameView.touchPointLabel.alpha = !self.frameView.touchPointLabel.alpha;
 						 } completion:^(BOOL finished) {
-							 NSString *string = [NSString stringWithFormat:@"Coordinates are %@", (self.frameView.touchPointLabel.alpha) ? @"on" : @"off"];
+							 NSString *coordinatesString = [NSString stringWithFormat:@"Coordinates are %@", (self.frameView.touchPointLabel.alpha) ? @"on" : @"off"];
 							 if (self.showStatusBarOverlay)
-								 [self showTemporaryStringInStatusBar:string];
+								 [self showTemporaryStringInStatusBar:coordinatesString];
 							 else
-								 NSLog(@"DCIntrospect: %@", string);
+								 NSLog(@"DCIntrospect: %@", coordinatesString);
 						 }];
 		return NO;
 	}
@@ -1350,7 +1357,7 @@ DCIntrospect *sharedInstance = nil;
 		[allTargets enumerateObjectsUsingBlock:^(id target, BOOL *stop)
 		 {
 			 NSArray *actions = [control actionsForTarget:target forControlEvent:controlEvents];
-			 [actions enumerateObjectsUsingBlock:^(id action, NSUInteger idx, BOOL *stop)
+			 [actions enumerateObjectsUsingBlock:^(id action, NSUInteger idx, BOOL *stop2)
 			  {
 				  [outputString appendFormat:@"    target: %@ action: %@\n", target, action];
 			  }];
