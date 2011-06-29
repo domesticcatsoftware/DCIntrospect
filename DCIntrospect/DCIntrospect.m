@@ -62,7 +62,7 @@ DCIntrospect *sharedInstance = nil;
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
 		sharedInstance.keyboardBindingsOn = YES;
-		sharedInstance.showStatusBarOverlay = YES;
+		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
 	}
 #endif
 	return sharedInstance;
