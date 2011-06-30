@@ -6,6 +6,7 @@
 
 #import "DCIntrospect.h"
 #import <dlfcn.h>
+#import <objc/message.h>
 
 
 @interface DCIntrospect ()
@@ -62,7 +63,7 @@ DCIntrospect *sharedInstance = nil;
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
 		sharedInstance.keyboardBindingsOn = YES;
-		sharedInstance.showStatusBarOverlay = YES;
+		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
 	}
 #endif
 	return sharedInstance;
@@ -1108,10 +1109,16 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([type isEqualToString:@"{CGSize=ff}"])
 	{
-		NSValue *sizeValue = (NSValue *)value;
-		if (!sizeValue)
+#if TARGET_IPHONE_SIMULATOR
+        CGSize size = *(CGSize *)value;
+        if (size.width==0.0f && size.height==0.0f)
+            return @"CGSizeZero";
+#else
+		if (!value)
 			return @"CGSizeZero";
+		NSValue *sizeValue = (NSValue *)value;
 		CGSize size = [sizeValue CGSizeValue];
+#endif
 		return [NSString stringWithFormat:@"%@", NSStringFromCGSize(size)];
 	}
 	else if ([type isEqualToString:@"{UIEdgeInsets=ffff}"])
@@ -1337,13 +1344,27 @@ DCIntrospect *sharedInstance = nil;
 			// get the return object and type for the selector
 			SEL sel = NSSelectorFromString(propertyName);
 			Method method = class_getInstanceMethod(objectClass, sel);
-			id returnObject = ([object respondsToSelector:sel]) ? [object performSelector:sel] : nil;
 			method_getReturnType(method, buffer, buf_size);
 			NSString *returnType = [NSString stringWithFormat:@"%s", buffer];
-			
-			[outputString appendFormat:@"    %@: ", propertyName];
-			NSString *propertyDescription = [self describeProperty:propertyName type:returnType value:returnObject];
-			[outputString appendFormat:@"%@\n", propertyDescription];
+            if ([object respondsToSelector:sel]) {
+                id returnObject;
+#if TARGET_IPHONE_SIMULATOR
+                // on x86, 8-byte structs like CGSize are handled differently
+                if ([returnType isEqualToString:@"{CGSize=ff}"]) {
+                    CGSize (*fptr)(id, SEL) = (CGSize (*)(id, SEL))objc_msgSend;
+                    CGSize ret = fptr(object, sel);
+                    memcpy(buffer, &ret, sizeof(ret));
+                    returnObject = (id)buffer;
+                } else 
+#endif
+                {
+                    returnObject =  objc_msgSend(object, sel);
+                }
+
+                [outputString appendFormat:@"    %@: ", propertyName];
+                NSString *propertyDescription = [self describeProperty:propertyName type:returnType value:returnObject];
+                [outputString appendFormat:@"%@\n", propertyDescription];
+            }			
 		}
 	}
 
