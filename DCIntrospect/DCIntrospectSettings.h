@@ -1,3 +1,5 @@
+#ifdef DEBUG
+
 //////////////
 // Settings //
 //////////////
@@ -46,3 +48,5 @@
 
 #define kDCIntrospectKeysMoveUpInViewHierarchy			@""		// changes the selected view to it's superview
 #define kDCIntrospectKeysMoveBackInViewHierarchy		@""		// changes the selected view back to the previous view selected (after using the above command)
+
+#endif

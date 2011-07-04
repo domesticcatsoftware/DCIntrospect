@@ -4,6 +4,8 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+#if DEBUG
+
 #import <QuartzCore/QuartzCore.h>
 #import "DCCrossHairView.h"
 
@@ -53,3 +55,5 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end
+
+#endif

@@ -4,6 +4,8 @@
 //  Copyright 2011 Domestic Cat. All rights reserved.
 //
 
+#if DEBUG
+
 #import "DCStatusBarOverlay.h"
 
 @implementation DCStatusBarOverlay
@@ -98,3 +100,5 @@
 }
 
 @end
+
+#endif

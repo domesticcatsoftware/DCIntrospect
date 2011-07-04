@@ -4,6 +4,8 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+#if DEBUG
+
 #import "DCFrameView.h"
 
 @implementation DCFrameView
@@ -232,3 +234,5 @@
 }
 
 @end
+
+#endif
