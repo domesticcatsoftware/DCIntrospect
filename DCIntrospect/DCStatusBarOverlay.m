@@ -4,7 +4,7 @@
 //  Copyright 2011 Domestic Cat. All rights reserved.
 //
 
-#if DEBUG
+#ifdef DEBUG
 
 #import "DCStatusBarOverlay.h"
 

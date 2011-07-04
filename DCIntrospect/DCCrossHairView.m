@@ -4,7 +4,7 @@
 //  Created by Domestic Cat on 3/05/11.
 //
 
-#if DEBUG
+#ifdef DEBUG
 
 #import "DCCrossHairView.h"
 

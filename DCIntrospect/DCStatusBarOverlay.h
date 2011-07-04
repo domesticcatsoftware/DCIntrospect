@@ -6,7 +6,7 @@
 
 // Based mainly on @myellow's excellent MTStatusBarOverlay: https://github.com/myell0w/MTStatusBarOverlay
 
-#if DEBUG
+#ifdef DEBUG
 
 #import "DCIntrospectSettings.h"
 

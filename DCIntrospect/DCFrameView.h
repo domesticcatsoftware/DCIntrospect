@@ -4,7 +4,7 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
-#if DEBUG
+#ifdef DEBUG
 
 #import <QuartzCore/QuartzCore.h>
 #import "DCCrossHairView.h"
