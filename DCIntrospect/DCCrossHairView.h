@@ -4,6 +4,7 @@
 //  Created by Domestic Cat on 3/05/11.
 //
 
+#ifdef DEBUG
 
 @interface DCCrossHairView : UIView
 {
@@ -14,3 +15,5 @@
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)aColor;
 
 @end
+
+#endif

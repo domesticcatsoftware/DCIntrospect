@@ -4,6 +4,8 @@
 //  Created by Domestic Cat on 3/05/11.
 //
 
+#ifdef DEBUG
+
 #import "DCCrossHairView.h"
 
 @implementation DCCrossHairView
@@ -41,3 +43,5 @@
 }
 
 @end
+
+#endif

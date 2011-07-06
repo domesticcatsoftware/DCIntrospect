@@ -4,9 +4,10 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+#ifdef DEBUG
+
 #import "DCIntrospect.h"
 #import <dlfcn.h>
-
 
 @interface DCIntrospect ()
 
@@ -57,14 +58,12 @@ DCIntrospect *sharedInstance = nil;
 
 + (DCIntrospect *)sharedIntrospector
 {
-#ifdef DEBUG
 	if (!sharedInstance)
 	{
 		sharedInstance = [[DCIntrospect alloc] init];
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
 	}
-#endif
 	return sharedInstance;
 }
 
@@ -673,10 +672,8 @@ DCIntrospect *sharedInstance = nil;
 
 - (void)logRecursiveDescriptionForView:(UIView *)view
 {
-#ifdef DEBUG
 	// [UIView recursiveDescription] is a private method.  This should probably be re-written to avoid any potential problems.
 	NSLog(@"DCIntrospect: %@", [view recursiveDescription]);
-#endif
 }
 
 - (void)forceSetNeedsDisplay
@@ -1466,3 +1463,5 @@ DCIntrospect *sharedInstance = nil;
 }
 
 @end
+
+#endif

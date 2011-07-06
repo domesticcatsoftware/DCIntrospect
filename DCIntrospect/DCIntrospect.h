@@ -4,6 +4,8 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+#ifdef DEBUG
+
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 #define kDCIntrospectAnimationDuration 0.08
@@ -15,15 +17,11 @@
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
 
-#ifdef DEBUG
-
 @interface UIView (debug)
 
 - (NSString *)recursiveDescription;
 
 @end
-
-#endif
 
 @interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextViewDelegate, UIWebViewDelegate>
 {
@@ -153,3 +151,5 @@
 - (BOOL)shouldIgnoreView:(UIView *)view;
 
 @end
+
+#endif

@@ -6,6 +6,7 @@
 
 // Based mainly on @myellow's excellent MTStatusBarOverlay: https://github.com/myell0w/MTStatusBarOverlay
 
+#ifdef DEBUG
 
 #import "DCIntrospectSettings.h"
 
@@ -32,3 +33,5 @@
 - (void)tapped;
 
 @end
+
+#endif
