@@ -6,7 +6,6 @@
 
 #import "DCIntrospect.h"
 #import <dlfcn.h>
-#import <objc/message.h>
 
 
 @interface DCIntrospect ()
@@ -798,11 +797,11 @@ DCIntrospect *sharedInstance = nil;
 
 #pragma mark Description Methods
 
-- (NSString *)describeProperty:(NSString *)propertyName type:(NSString *)type value:(id)value
+- (NSString *)describeProperty:(NSString *)propertyName value:(id)value
 {
 	if ([propertyName isEqualToString:@"contentMode"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIViewContentModeScaleToFill";
 			case 1: return @"UIViewContentModeScaleAspectFit";
@@ -822,7 +821,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"textAlignment"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITextAlignmentLeft";
 			case 1: return @"UITextAlignmentCenter";
@@ -832,7 +831,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"lineBreakMode"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UILineBreakModeWordWrap";
 			case 1: return @"UILineBreakModeCharacterWrap";
@@ -845,7 +844,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"activityIndicatorViewStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIActivityIndicatorViewStyleWhiteLarge";
 			case 1: return @"UIActivityIndicatorViewStyleWhite";
@@ -855,7 +854,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"returnKeyType"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIReturnKeyDefault";
 			case 1: return @"UIReturnKeyGo";
@@ -872,7 +871,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"keyboardAppearance"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIKeyboardAppearanceDefault";
 			case 1: return @"UIKeyboardAppearanceAlert";
@@ -881,7 +880,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"keyboardType"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIKeyboardTypeDefault";
 			case 1: return @"UIKeyboardTypeASCIICapable";
@@ -897,7 +896,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"autocorrectionType"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIKeyboardTypeDefault";
 			case 1: return @"UITextAutocorrectionTypeDefault";
@@ -907,7 +906,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"autocapitalizationType"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITextAutocapitalizationTypeNone";
 			case 1: return @"UITextAutocapitalizationTypeWords";
@@ -920,7 +919,7 @@ DCIntrospect *sharedInstance = nil;
 			 [propertyName isEqualToString:@"leftViewMode"] ||
 			 [propertyName isEqualToString:@"rightViewMode"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITextFieldViewModeNever";
 			case 1: return @"UITextFieldViewModeWhileEditing";
@@ -931,7 +930,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"borderStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITextBorderStyleNone";
 			case 1: return @"UITextBorderStyleLine";
@@ -942,7 +941,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"progressViewStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UIProgressViewStyleBar";
 			case 1: return @"UIProgressViewStyleDefault";
@@ -951,7 +950,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"separatorStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITableViewCellSeparatorStyleNone";
 			case 1: return @"UITableViewCellSeparatorStyleSingleLine";
@@ -961,7 +960,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"selectionStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITableViewCellSelectionStyleNone";
 			case 1: return @"UITableViewCellSelectionStyleBlue";
@@ -971,7 +970,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"editingStyle"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITableViewCellEditingStyleNone";
 			case 1: return @"UITableViewCellEditingStyleDelete";
@@ -981,7 +980,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"accessoryType"] || [propertyName isEqualToString:@"editingAccessoryType"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITableViewCellAccessoryNone";
 			case 1: return @"UITableViewCellAccessoryDisclosureIndicator";
@@ -992,7 +991,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"style"])
 	{
-		switch ((int)value)
+		switch ([value intValue])
 		{
 			case 0: return @"UITableViewStylePlain";
 			case 1: return @"UITableViewStyleGrouped";
@@ -1002,7 +1001,7 @@ DCIntrospect *sharedInstance = nil;
 	}
 	else if ([propertyName isEqualToString:@"autoresizingMask"])
 	{
-		UIViewAutoresizing mask = (int)value;
+		UIViewAutoresizing mask = [value intValue];
 		NSMutableString *string = [NSMutableString string];
 		if (mask & UIViewAutoresizingFlexibleLeftMargin)
 			[string appendString:@"UIViewAutoresizingFlexibleLeftMargin"];
@@ -1020,11 +1019,11 @@ DCIntrospect *sharedInstance = nil;
 		if ([string hasPrefix:@" | "])
 			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
 
-		return string;
+		return ([string length] > 0) ? string : @"UIViewAutoresizingNone";
 	}
 	else if ([propertyName isEqualToString:@"accessibilityTraits"])
 	{
-		UIAccessibilityTraits traits = (int)value;
+		UIAccessibilityTraits traits = [value intValue];
 		NSMutableString *string = [NSMutableString string];
 		if (traits & UIAccessibilityTraitButton)
 			[string appendString:@"UIAccessibilityTraitButton"];
@@ -1055,88 +1054,47 @@ DCIntrospect *sharedInstance = nil;
 		if ([string hasPrefix:@" | "])
 			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
 
-		return string;
-	}
-	else if ([propertyName isEqualToString:@"userInteractionEnabled"] ||
-			 [propertyName isEqualToString:@"enabled"] ||
-			 [propertyName isEqualToString:@"highlighted"] ||
-			 [propertyName isEqualToString:@"selected"] ||
-			 [propertyName isEqualToString:@"continuous"] ||
-			 [propertyName isEqualToString:@"on"] ||
-			 [propertyName isEqualToString:@"secureTextEntry"] ||
-			 [propertyName isEqualToString:@"enablesReturnKeyAutomatically"] ||
-			 [propertyName isEqualToString:@"keepsFirstResponderVisibleOnBoundsChange"] ||
-			 [propertyName isEqualToString:@"editing"] ||
-			 [propertyName isEqualToString:@"needsSetup"] ||
-			 [propertyName isEqualToString:@"drawsTopShadow"])
-	{
-		return ((int)value) ? @"YES" : @"NO";
+		return ([string length] > 0) ? string : @"UIAccessibilityTraitNone";
 	}
 
-	// print out the return for each value depending on type
-	if ([type isEqualToString:@"f"])
+	if ([value isKindOfClass:[NSValue class]])
 	{
-		return [NSString stringWithFormat:@"%f", value];
-	}
-	else if ([type isEqualToString:@"d"])
-	{
-		return [NSString stringWithFormat:@"%d", value];
-	}
-	else if ([type isEqualToString:@"i"] || [type isEqualToString:@"I"])
-	{
-		return [NSString stringWithFormat:@"%i", value];
-	}
-	else if ([type isEqualToString:@"c"])
-	{
-		return [NSString stringWithFormat:@"%@", (value) ? @"YES" : @"NO"];
-	}
-	else if ([type isEqualToString:@"@"])
-	{
-		if ([NSStringFromClass([value class]) isEqualToString:@"UIDeviceRGBColor"])
+		// print out the return for each value depending on type
+		NSString *type = [NSString stringWithUTF8String:[value objCType]];
+		if ([type isEqualToString:@"c"])
 		{
-			UIColor *color = (UIColor *)value;
-			return [self describeColor:color];
+			return ([value boolValue]) ? @"YES" : @"NO";
 		}
-		else if ([NSStringFromClass([value class]) isEqualToString:@"UICFFont"])
+		else if ([type isEqualToString:@"{CGSize=ff}"])
 		{
-			UIFont *font = (UIFont *)value;
-			return [NSString stringWithFormat:@"%.0fpx %@", font.pointSize, font.fontName];
+			CGSize size = [value CGSizeValue];
+			return CGSizeEqualToSize(size, CGSizeZero) ? @"CGSizeZero" : NSStringFromCGSize(size);
 		}
-		else
+		else if ([type isEqualToString:@"{UIEdgeInsets=ffff}"])
 		{
-			return [NSString stringWithFormat:@"%@", value];
+			UIEdgeInsets edgeInsets = [value UIEdgeInsetsValue];
+			return UIEdgeInsetsEqualToEdgeInsets(edgeInsets, UIEdgeInsetsZero) ? @"UIEdgeInsetsZero" : NSStringFromUIEdgeInsets(edgeInsets);
 		}
 	}
-	else if ([type isEqualToString:@"{CGSize=ff}"])
+	else if ([value isKindOfClass:[UIColor class]])
 	{
-#if TARGET_IPHONE_SIMULATOR
-        CGSize size = *(CGSize *)value;
-        if (size.width==0.0f && size.height==0.0f)
-            return @"CGSizeZero";
-#else
-		if (!value)
-			return @"CGSizeZero";
-		NSValue *sizeValue = (NSValue *)value;
-		CGSize size = [sizeValue CGSizeValue];
-#endif
-		return [NSString stringWithFormat:@"%@", NSStringFromCGSize(size)];
+		UIColor *color = (UIColor *)value;
+		return [self describeColor:color];
 	}
-	else if ([type isEqualToString:@"{UIEdgeInsets=ffff}"])
+	else if ([value isKindOfClass:[UIFont class]])
 	{
-		NSValue *editInsetsValue = (NSValue *)value;
-		UIEdgeInsets edgeInsets = [editInsetsValue UIEdgeInsetsValue];
-		return [NSString stringWithFormat:@"%@", NSStringFromUIEdgeInsets(edgeInsets)];
-	}
-	else
-	{
-		return [NSString stringWithFormat:@"(unknown type: %@)", type];
+		UIFont *font = (UIFont *)value;
+		return [NSString stringWithFormat:@"%.0fpx %@", font.pointSize, font.fontName];
 	}
 
-	return nil;
+	return value ? [value description] : @"nil";
 }
 
 - (NSString *)describeColor:(UIColor *)color
 {
+	if (!color)
+		return @"nil";
+
 	NSString *returnString = nil;
 	if (CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor)) == kCGColorSpaceModelRGB)
 	{
@@ -1310,9 +1268,9 @@ DCIntrospect *sharedInstance = nil;
 		[outputString appendFormat:@"bounds: %@ | ", NSStringFromCGRect(view.bounds)];
 		[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(view.center)];
 		[outputString appendFormat:@"    transform: %@\n", NSStringFromCGAffineTransform(view.transform)];
-		[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" type:@"autoresizingMask" value:(id)view.autoresizingMask]];
+		[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" value:[NSNumber numberWithInt:view.autoresizingMask]]];
 		[outputString appendFormat:@"    autoresizesSubviews: %@\n", (view.autoresizesSubviews) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" type:nil value:(id)view.contentMode]];
+		[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" value:[NSNumber numberWithInt:view.contentMode]]];
 		[outputString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(view.contentStretch)];
 		[outputString appendFormat:@"    backgroundColor: %@\n", [self describeColor:view.backgroundColor]];
 		[outputString appendFormat:@"    alpha: %.2f | ", view.alpha];
@@ -1322,7 +1280,7 @@ DCIntrospect *sharedInstance = nil;
 		[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", (view.clearsContextBeforeDrawing) ? @"YES" : @"NO"];
 		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", (view.userInteractionEnabled) ? @"YES" : @"NO"];
 		[outputString appendFormat:@"multipleTouchEnabled: %@\n", (view.multipleTouchEnabled) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"    gestureRecognizers: %@\n", view.gestureRecognizers];
+		[outputString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
 
 		[outputString appendString:@"\n"];
 	}
@@ -1341,30 +1299,26 @@ DCIntrospect *sharedInstance = nil;
 			// get the property name and selector name
 			NSString *propertyName = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding];
 			
-			// get the return object and type for the selector
 			SEL sel = NSSelectorFromString(propertyName);
-			Method method = class_getInstanceMethod(objectClass, sel);
-			method_getReturnType(method, buffer, buf_size);
-			NSString *returnType = [NSString stringWithFormat:@"%s", buffer];
-            if ([object respondsToSelector:sel]) {
-                id returnObject;
-#if TARGET_IPHONE_SIMULATOR
-                // on x86, 8-byte structs like CGSize are handled differently
-                if ([returnType isEqualToString:@"{CGSize=ff}"]) {
-                    CGSize (*fptr)(id, SEL) = (CGSize (*)(id, SEL))objc_msgSend;
-                    CGSize ret = fptr(object, sel);
-                    memcpy(buffer, &ret, sizeof(ret));
-                    returnObject = (id)buffer;
-                } else 
-#endif
-                {
-                    returnObject =  objc_msgSend(object, sel);
-                }
-
-                [outputString appendFormat:@"    %@: ", propertyName];
-                NSString *propertyDescription = [self describeProperty:propertyName type:returnType value:returnObject];
-                [outputString appendFormat:@"%@\n", propertyDescription];
-            }			
+			if ([object respondsToSelector:sel])
+			{
+				@try
+				{
+					// get the return object and type for the selector
+					NSString *returnType = [NSString stringWithUTF8String:[[object methodSignatureForSelector:sel] methodReturnType]];
+					id returnObject = [object valueForKey:propertyName];
+					if ([returnType isEqualToString:@"c"])
+						returnObject = [NSNumber numberWithBool:[returnObject intValue] != 0];
+					[outputString appendFormat:@"    %@: ", propertyName];
+					NSString *propertyDescription = [self describeProperty:propertyName value:returnObject];
+					[outputString appendFormat:@"%@\n", propertyDescription];
+				}
+				@catch (NSException *exception)
+				{
+					// FIXME: Happens with UITextField and UITextInputTraits properties
+					NSLog(@"%@", exception);
+				}
+			}
 		}
 	}
 
@@ -1406,7 +1360,7 @@ DCIntrospect *sharedInstance = nil;
 	[outputString appendFormat:@"** %@ Accessibility Properties **\n", className];
 	[outputString appendFormat:@"	label: %@\n", [object accessibilityLabel]];
 	[outputString appendFormat:@"	hint: %@\n", [object accessibilityHint]];
-	[outputString appendFormat:@"	traits: %@\n", [self describeProperty:@"accessibilityTraits" type:nil value:(id)[object accessibilityTraits]]];
+	[outputString appendFormat:@"	traits: %@\n", [self describeProperty:@"accessibilityTraits" value:[NSNumber numberWithInt:[object accessibilityTraits]]]];
 	[outputString appendFormat:@"	value: %@\n", [object accessibilityValue]];
 	[outputString appendFormat:@"	frame: %@\n", NSStringFromCGRect([object accessibilityFrame])];
 	[outputString appendString:@"\n"];
