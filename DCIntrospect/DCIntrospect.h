@@ -132,7 +132,7 @@
 // Description Methods //
 /////////////////////////
 
-- (NSString *)describeProperty:(NSString *)propertyName type:(NSString *)type value:(id)value;
+- (NSString *)describeProperty:(NSString *)propertyName value:(id)value;
 - (NSString *)describeColor:(UIColor *)color;
 
 /////////////////////////
