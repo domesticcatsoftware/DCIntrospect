@@ -1302,6 +1302,7 @@ DCIntrospect *sharedInstance = nil;
 			SEL sel = NSSelectorFromString(propertyName);
 			if ([object respondsToSelector:sel])
 			{
+				NSString *propertyDescription;
 				@try
 				{
 					// get the return object and type for the selector
@@ -1309,15 +1310,16 @@ DCIntrospect *sharedInstance = nil;
 					id returnObject = [object valueForKey:propertyName];
 					if ([returnType isEqualToString:@"c"])
 						returnObject = [NSNumber numberWithBool:[returnObject intValue] != 0];
-					[outputString appendFormat:@"    %@: ", propertyName];
-					NSString *propertyDescription = [self describeProperty:propertyName value:returnObject];
-					[outputString appendFormat:@"%@\n", propertyDescription];
+					
+					propertyDescription = [self describeProperty:propertyName value:returnObject];
 				}
 				@catch (NSException *exception)
 				{
-					// FIXME: Happens with UITextField and UITextInputTraits properties
-					NSLog(@"%@", exception);
+					// Non KVC compliant properties, e.g. UITextInputTraits properties of UITextField
+					// See http://stackoverflow.com/questions/6617472/why-does-valueforkey-on-a-uitextfield-throws-an-exception-for-uitextinputtraits
+					propertyDescription = @"N/A";
 				}
+				[outputString appendFormat:@"    %@: %@\n", propertyName, propertyDescription];
 			}
 		}
 	}
