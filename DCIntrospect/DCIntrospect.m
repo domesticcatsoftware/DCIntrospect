@@ -920,9 +920,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			case 4: return @"UIReturnKeyNext";
 			case 5: return @"UIReturnKeyRoute";
 			case 6: return @"UIReturnKeySearch";
-			case 7: return @"UIReturnKeyYahoo";
-			case 8: return @"UIReturnKeyDone";
-			case 9: return @"UIReturnKeyEmergencyCall";
+			case 7: return @"UIReturnKeySend";
+			case 8: return @"UIReturnKeyYahoo";
+			case 9: return @"UIReturnKeyDone";
+			case 10: return @"UIReturnKeyEmergencyCall";
 			default: return nil;
 		}
 	}
