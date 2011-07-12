@@ -74,11 +74,11 @@ Pushing `p` will log out the available properties about the selected view.  DCIn
         transform: [1, 0, 0, 1, 0, 0]
         autoresizingMask: UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin
         autoresizesSubviews: YES
-        contentMode: UIViewContentModeScaleToFill | contentStretch: {{0, 0}, {1, 1}} backgroundColor: (null) (incompatible color space)
+        contentMode: UIViewContentModeScaleToFill | contentStretch: {{0, 0}, {1, 1}} backgroundColor: nil
         alpha: 1.00 | opaque: NO | hidden: NO | clips to bounds: NO |
         clearsContextBeforeDrawing: YES
         userInteractionEnabled: YES | multipleTouchEnabled: NO
-        gestureRecognizers: (null)
+        gestureRecognizers: nil
     
     ** UIRoundedRectButton properties **
     
