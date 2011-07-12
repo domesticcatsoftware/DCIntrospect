@@ -46,6 +46,7 @@ DCIntrospect *sharedInstance = nil;
 			CFStringRef accessibilityDomain = CPCopySharedResourcesPreferencesDomainForDomain(CFSTR("com.apple.Accessibility"));
 			if (accessibilityDomain)
 			{
+				// This must be done *before* UIApplicationMain, hence +load
 				CFPreferencesSetValue(CFSTR("ApplicationAccessibilityEnabled"), kCFBooleanTrue, accessibilityDomain, kCFPreferencesAnyUser, kCFPreferencesAnyHost);
 				CFRelease(accessibilityDomain);
 			}
@@ -53,6 +54,61 @@ DCIntrospect *sharedInstance = nil;
 	}
 	
 	[pool drain];
+}
+
+static void *originalValueForKeyIMPKey = &originalValueForKeyIMPKey;
+
+id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key);
+id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
+{
+	static NSMutableSet *textInputTraitsProperties = nil;
+	if (!textInputTraitsProperties)
+	{
+		textInputTraitsProperties = [[NSMutableSet alloc] init];
+		unsigned int count = 0;
+		objc_property_t *properties = protocol_copyPropertyList(@protocol(UITextInputTraits), &count);
+		for (unsigned int i = 0; i < count; i++)
+		{
+			objc_property_t property = properties[i];
+			NSString *propertyName = [NSString stringWithUTF8String:property_getName(property)];
+			[textInputTraitsProperties addObject:propertyName];
+		}
+		free(properties);
+	}
+	
+	IMP valueForKey = [objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
+	if ([textInputTraitsProperties containsObject:key])
+	{
+		id textInputTraits = valueForKey(self, _cmd, @"textInputTraits");
+		return valueForKey(textInputTraits, _cmd, key);
+	}
+	else
+	{
+		return valueForKey(self, _cmd, key);
+	}
+}
+
+// See http://stackoverflow.com/questions/6617472/why-does-valueforkey-on-a-uitextfield-throws-an-exception-for-uitextinputtraits
++ (void)workaroundUITextInputTraitsPropertiesBug
+{
+	Method valueForKey = class_getInstanceMethod([NSObject class], @selector(valueForKey:));
+	const char *valueForKeyTypeEncoding = method_getTypeEncoding(valueForKey);
+	
+	unsigned int count = 0;
+	Class *classes = objc_copyClassList(&count);
+	for (unsigned int i = 0; i < count; i++)
+	{
+		Class class = classes[i];
+		if (class_conformsToProtocol(class, @protocol(UITextInputTraits)))
+		{
+			IMP originalValueForKey = class_replaceMethod(class, @selector(valueForKey:), (IMP)UITextInputTraits_valueForKey, valueForKeyTypeEncoding);
+			if (!originalValueForKey)
+				originalValueForKey = class_getMethodImplementation([class superclass], @selector(valueForKey:));
+			
+			objc_setAssociatedObject(class, originalValueForKeyIMPKey, [NSValue valueWithPointer:originalValueForKey], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		}
+	}
+	free(classes);
 }
 
 + (DCIntrospect *)sharedIntrospector
@@ -63,6 +119,7 @@ DCIntrospect *sharedInstance = nil;
 		sharedInstance = [[DCIntrospect alloc] init];
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
+		[self workaroundUITextInputTraitsPropertiesBug];
 	}
 #endif
 	return sharedInstance;
@@ -863,9 +920,10 @@ DCIntrospect *sharedInstance = nil;
 			case 4: return @"UIReturnKeyNext";
 			case 5: return @"UIReturnKeyRoute";
 			case 6: return @"UIReturnKeySearch";
-			case 7: return @"UIReturnKeyYahoo";
-			case 8: return @"UIReturnKeyDone";
-			case 9: return @"UIReturnKeyEmergencyCall";
+			case 7: return @"UIReturnKeySend";
+			case 8: return @"UIReturnKeyYahoo";
+			case 9: return @"UIReturnKeyDone";
+			case 10: return @"UIReturnKeyEmergencyCall";
 			default: return nil;
 		}
 	}
@@ -1302,6 +1360,7 @@ DCIntrospect *sharedInstance = nil;
 			SEL sel = NSSelectorFromString(propertyName);
 			if ([object respondsToSelector:sel])
 			{
+				NSString *propertyDescription;
 				@try
 				{
 					// get the return object and type for the selector
@@ -1309,15 +1368,15 @@ DCIntrospect *sharedInstance = nil;
 					id returnObject = [object valueForKey:propertyName];
 					if ([returnType isEqualToString:@"c"])
 						returnObject = [NSNumber numberWithBool:[returnObject intValue] != 0];
-					[outputString appendFormat:@"    %@: ", propertyName];
-					NSString *propertyDescription = [self describeProperty:propertyName value:returnObject];
-					[outputString appendFormat:@"%@\n", propertyDescription];
+					
+					propertyDescription = [self describeProperty:propertyName value:returnObject];
 				}
 				@catch (NSException *exception)
 				{
-					// FIXME: Happens with UITextField and UITextInputTraits properties
-					NSLog(@"%@", exception);
+					// Non KVC compliant properties, see also +workaroundUITextInputTraitsPropertiesBug
+					propertyDescription = @"N/A";
 				}
+				[outputString appendFormat:@"    %@: %@\n", propertyName, propertyDescription];
 			}
 		}
 	}
