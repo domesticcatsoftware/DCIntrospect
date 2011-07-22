@@ -2,8 +2,8 @@
 // Settings //
 //////////////
 
-#define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]			// UIColor
-#define kDCIntrospectFlashOnRedrawFlashLength 0.03													// NSTimeInterval
+#define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.4f]			// UIColor
+#define kDCIntrospectFlashOnRedrawFlashLength 0.03f													// NSTimeInterval
 #define kDCIntrospectOpaqueColor [UIColor redColor]													// UIColor
 
 //////////////////

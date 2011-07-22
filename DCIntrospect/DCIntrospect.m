@@ -318,35 +318,35 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (shiftKey)
 	{
 		if (selectionLocation == 4 && selectionLength == 1)
-			frame.origin.x -= 10.0;
+			frame.origin.x -= 10.0f;
 		else if (selectionLocation == 5 && selectionLength == 1)
-			frame.origin.x += 10.0;
+			frame.origin.x += 10.0f;
 		else if (selectionLocation == 0 && selectionLength == 5)
-			frame.origin.y -= 10.0;
+			frame.origin.y -= 10.0f;
 		else if (selectionLocation == 5 && selectionLength == 5)
-			frame.origin.y += 10.0;
+			frame.origin.y += 10.0f;
 	}
 	else if (optionKey)
 	{
 		if (selectionLocation == 7)
-			frame.size.width += 1.0;
+			frame.size.width += 1.0f;
 		else if (selectionLocation == 3)
-			frame.size.width -= 1.0;
+			frame.size.width -= 1.0f;
 		else if (selectionLocation == 9)
-			frame.size.height += 1.0;
+			frame.size.height += 1.0f;
 		else if (selectionLocation == 1)
-			frame.size.height -= 1.0;
+			frame.size.height -= 1.0f;
 	}
 	else
 	{
 		if (selectionLocation == 4)
-			frame.origin.x -= 1.0;
+			frame.origin.x -= 1.0f;
 		else if (selectionLocation == 6)
-			frame.origin.x += 1.0;
+			frame.origin.x += 1.0f;
 		else if (selectionLocation == 0)
-			frame.origin.y -= 1.0;
+			frame.origin.y -= 1.0f;
 		else if (selectionLocation == 10)
-			frame.origin.y += 1.0;
+			frame.origin.y += 1.0f;
 	}
 
 	self.currentView.frame = CGRectMake(floorf(frame.origin.x),
@@ -481,35 +481,35 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 		CGRect frame = self.currentView.frame;
 		if ([string isEqualToString:kDCIntrospectKeysNudgeViewLeft])
-			frame.origin.x -= 1.0;
+			frame.origin.x -= 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewRight])
-			frame.origin.x += 1.0;
+			frame.origin.x += 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewUp])
-			frame.origin.y -= 1.0;
+			frame.origin.y -= 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysNudgeViewDown])
-			frame.origin.y += 1.0;
+			frame.origin.y += 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysCenterInSuperview])
-			frame = CGRectMake(floorf((self.currentView.superview.frame.size.width - frame.size.width) / 2.0),
-							   floorf((self.currentView.superview.frame.size.height - frame.size.height) / 2.0),
+			frame = CGRectMake(floorf((self.currentView.superview.frame.size.width - frame.size.width) / 2.0f),
+							   floorf((self.currentView.superview.frame.size.height - frame.size.height) / 2.0f),
 							   frame.size.width,
 							   frame.size.height);
 		else if ([string isEqualToString:kDCIntrospectKeysIncreaseWidth])
-			frame.size.width += 1.0;
+			frame.size.width += 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysDecreaseWidth])
-			frame.size.width -= 1.0;
+			frame.size.width -= 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysIncreaseHeight])
-			frame.size.height += 1.0;
+			frame.size.height += 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysDecreaseHeight])
-			frame.size.height -= 1.0;
+			frame.size.height -= 1.0f;
 		else if ([string isEqualToString:kDCIntrospectKeysIncreaseViewAlpha])
 		{
-			if (self.currentView.alpha < 1.0)
-				self.currentView.alpha += 0.05;
+			if (self.currentView.alpha < 1.0f)
+				self.currentView.alpha += 0.05f;
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysDecreaseViewAlpha])
 		{
-			if (self.currentView.alpha > 0.0)
-				self.currentView.alpha -= 0.05;
+			if (self.currentView.alpha > 0.0f)
+				self.currentView.alpha -= 0.05f;
 		}
 
 		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
@@ -619,7 +619,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	{
 		self.frameView = [[[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self] autorelease];
 		[mainWindow addSubview:self.frameView];
-		self.frameView.alpha = 0.0;
+		self.frameView.alpha = 0.0f;
 		[self updateViews];
 	}
 
@@ -642,11 +642,11 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			self.frameView.mainRect = CGRectZero;
 		}
 
-		[self fadeView:self.frameView toAlpha:1.0];
+		[self fadeView:self.frameView toAlpha:1.0f];
 	}
 	else
 	{
-		[self fadeView:self.frameView toAlpha:0.0];
+		[self fadeView:self.frameView toAlpha:0.0f];
 	}
 }
 
@@ -1184,7 +1184,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		UIView *backingView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)] autorelease];
 		backingView.tag = 1548;
 		backingView.alpha = 0;
-		backingView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.85];
+		backingView.backgroundColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.85f];
 		[mainWindow addSubview:backingView];
 
 		UIWebView *webView = [[[UIWebView alloc] initWithFrame:backingView.frame] autorelease];
@@ -1257,7 +1257,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 		[UIView animateWithDuration:0.1
 						 animations:^{
-							 backingView.alpha = 1.0;
+							 backingView.alpha = 1.0f;
 						 } completion:^(BOOL finished) {
 							 [webView loadHTMLString:helpString baseURL:nil];
 						 }];
@@ -1419,7 +1419,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	[outputString appendFormat:@"** %@ Accessibility Properties **\n", className];
 	[outputString appendFormat:@"	label: %@\n", [object accessibilityLabel]];
 	[outputString appendFormat:@"	hint: %@\n", [object accessibilityHint]];
-	[outputString appendFormat:@"	traits: %@\n", [self describeProperty:@"accessibilityTraits" value:[NSNumber numberWithInt:[object accessibilityTraits]]]];
+	[outputString appendFormat:@"	traits: %@\n", [self describeProperty:@"accessibilityTraits" value:[NSNumber numberWithUnsignedLongLong:[object accessibilityTraits]]]];
 	[outputString appendFormat:@"	value: %@\n", [object accessibilityValue]];
 	[outputString appendFormat:@"	frame: %@\n", NSStringFromCGRect([object accessibilityFrame])];
 	[outputString appendString:@"\n"];
