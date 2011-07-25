@@ -17,5 +17,6 @@
 
 - (IBAction)buttonTapped:(id)sender;
 - (IBAction)switchChanged:(id)sender;
+- (IBAction)sliderChanged:(id)sender;
 
 @end
