@@ -104,4 +104,8 @@
 {
 }
 
+- (IBAction)sliderChanged:(id)sender
+{
+}
+
 @end

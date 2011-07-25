@@ -406,7 +406,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">sliderDidChange:</string>
+						<string key="label">sliderChanged:</string>
 						<reference key="source" ref="141592933"/>
 						<reference key="destination" ref="943309135"/>
 						<int key="IBEventType">13</int>
