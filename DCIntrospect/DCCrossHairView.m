@@ -31,12 +31,12 @@
 {
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	[self.color set];
-	CGContextMoveToPoint(context, floorf(self.bounds.size.width / 2) + 0.5, 0);
-	CGContextAddLineToPoint(context, floorf(self.bounds.size.width / 2) + 0.5, self.bounds.size.height);
+	CGContextMoveToPoint(context, floorf(self.bounds.size.width / 2.0f) + 0.5f, 0.0f);
+	CGContextAddLineToPoint(context, floorf(self.bounds.size.width / 2.0f) + 0.5f, self.bounds.size.height);
 	CGContextStrokePath(context);
 
-	CGContextMoveToPoint(context, 0, floorf(self.bounds.size.height / 2) + 0.5);
-	CGContextAddLineToPoint(context, self.bounds.size.width, floorf(self.bounds.size.height / 2) + 0.5);
+	CGContextMoveToPoint(context, 0, floorf(self.bounds.size.height / 2.0f) + 0.5f);
+	CGContextAddLineToPoint(context, self.bounds.size.width, floorf(self.bounds.size.height / 2.0f) + 0.5f);
 	CGContextStrokePath(context);
 }
 
