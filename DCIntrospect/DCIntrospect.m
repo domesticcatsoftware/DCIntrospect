@@ -99,7 +99,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	for (unsigned int i = 0; i < count; i++)
 	{
 		Class class = classes[i];
-		if (class_conformsToProtocol(class, @protocol(UITextInputTraits)))
+		if (class_getInstanceMethod(class, NSSelectorFromString(@"textInputTraits")))
 		{
 			IMP originalValueForKey = class_replaceMethod(class, @selector(valueForKey:), (IMP)UITextInputTraits_valueForKey, valueForKeyTypeEncoding);
 			if (!originalValueForKey)
