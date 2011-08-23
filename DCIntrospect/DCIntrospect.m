@@ -103,7 +103,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		{
 			IMP originalValueForKey = class_replaceMethod(class, @selector(valueForKey:), (IMP)UITextInputTraits_valueForKey, valueForKeyTypeEncoding);
 			if (!originalValueForKey)
-				originalValueForKey = class_getMethodImplementation([class superclass], @selector(valueForKey:));
+				originalValueForKey = [objc_getAssociatedObject([class superclass], originalValueForKeyIMPKey) pointerValue];
+				if (!originalValueForKey)
+					originalValueForKey = class_getMethodImplementation([class superclass], @selector(valueForKey:));
 			
 			objc_setAssociatedObject(class, originalValueForKeyIMPKey, [NSValue valueWithPointer:originalValueForKey], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 		}
