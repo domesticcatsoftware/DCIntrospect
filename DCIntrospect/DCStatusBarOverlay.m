@@ -25,8 +25,15 @@
 {
     if ((self = [super initWithFrame:CGRectZero]))
 	{
-        self.windowLevel = UIWindowLevelStatusBar + 1.0f;
-        self.frame = [[UIApplication sharedApplication] statusBarFrame];
+		self.windowLevel = UIWindowLevelStatusBar + 1.0f;
+		UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+		CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+		CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+		const CGFloat bar_size = 20;
+		if (UIInterfaceOrientationIsLandscape(orientation))
+			self.frame = CGRectMake(0, 0, screenHeight, bar_size);
+		else
+			self.frame = CGRectMake(0, 0, screenWidth, bar_size);
 		self.backgroundColor = [UIColor blackColor];
 
         UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
