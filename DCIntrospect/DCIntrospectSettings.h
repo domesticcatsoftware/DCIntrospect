@@ -50,3 +50,5 @@
 #define kDCIntrospectKeysMoveDownToFirstSubview			@"h"
 #define kDCIntrospectKeysMoveToNextSiblingView			@"j"
 #define kDCIntrospectKeysMoveToPrevSiblingView			@"g"
+
+#define kDCIntrospectKeysEnterGDB						@"`"			// enters GDB
