@@ -13,3 +13,12 @@ tags
 xcuserdata/
 docs/*.html
 docs/referencia
+.DS_Store
+DCIntrospectDemo/DCIntrospectDemo.xcodeproj/project.xcworkspace/xcuserdata/aircat.xcuserdatad/UserInterfaceState.xcuserstate
+DCIntrospectDemo/DCIntrospectDemo.xcodeproj/project.xcworkspace/xcuserdata/domesticcat.xcuserdatad/UserInterfaceState.xcuserstate
+DCIntrospectDemo/DCIntrospectDemo.xcodeproj/xcuserdata/aircat.xcuserdatad/xcschemes/xcschememanagement.plist
+DCIntrospectDemo/DCIntrospectDemo.xcodeproj/xcuserdata/domesticcat.xcuserdatad/xcschemes/DCIntrospectDemo.xcscheme
+DCIntrospectDemo/DCIntrospectDemo/.DS_Store
+DCIntrospectDemo/DCIntrospectDemo/DCIntrospectDemoViewController (Air-Cat's conflicted copy 2011-07-27).h
+DCIntrospectDemo/DCIntrospectDemo/DCIntrospectDemoViewController (Air-Cat's conflicted copy 2011-07-27).m
+DCIntrospectDemo/DCIntrospectDemo/en.lproj/MainWindow (Air-Cat's conflicted copy 2011-07-27).xib
