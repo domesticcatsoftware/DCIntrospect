@@ -7,6 +7,54 @@
 #import "DCIntrospect.h"
 #import <dlfcn.h>
 
+#include <assert.h>
+#include <stdbool.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/sysctl.h>
+
+// break into GDB code complied from following sources: 
+// http://blog.timac.org/?p=190, http://developer.apple.com/library/mac/#qa/qa1361/_index.html, http://cocoawithlove.com/2008/03/break-into-debugger.html
+
+// Returns true if the current process is being debugged (either 
+// running under the debugger or has a debugger attached post facto).
+static bool AmIBeingDebugged(void)
+{
+	int                 junk;
+	int                 mib[4];
+	struct kinfo_proc   info;
+	size_t              size;
+
+	// Initialize the flags so that, if sysctl fails for some bizarre 
+	// reason, we get a predictable result.
+
+	info.kp_proc.p_flag = 0;
+
+	// Initialize mib, which tells sysctl the info we want, in this case
+	// we're looking for information about a specific process ID.
+
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_PID;
+	mib[3] = getpid();
+
+	// Call sysctl.
+
+	size = sizeof(info);
+	junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+	assert(junk == 0);
+
+	// We're being debugged if the P_TRACED flag is set.
+
+	return ( (info.kp_proc.p_flag & P_TRACED) != 0 );
+}
+
+#if TARGET_CPU_ARM
+#define DEBUGSTOP(signal) __asm__ __volatile__ ("mov r0, %0\nmov r1, %1\nmov r12, #37\nswi 128\n" : : "r"(getpid ()), "r"(signal) : "r12", "r0", "r1", "cc");
+#define DEBUGGER do { int trapSignal = AmIBeingDebugged () ? SIGINT : SIGSTOP; DEBUGSTOP(trapSignal); if (trapSignal == SIGSTOP) { DEBUGSTOP (SIGINT); } } while (false);
+#else
+#define DEBUGGER do { int trapSignal = AmIBeingDebugged () ? SIGINT : SIGSTOP; __asm__ __volatile__ ("pushl %0\npushl %1\npush $0\nmovl %2, %%eax\nint $0x80\nadd $12, %%esp" : : "g" (trapSignal), "g" (getpid ()), "n" (37) : "eax", "cc"); } while (false);
+#endif
 
 @interface DCIntrospect ()
 
@@ -549,6 +597,14 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		{
 			if (self.currentView.alpha > 0.0f)
 				self.currentView.alpha -= 0.05f;
+		}
+		else if ([string isEqualToString:kDCIntrospectKeysEnterGDB])
+		{
+			UIView *view = self.currentView;
+			view.tag = view.tag;	// suppress the xcode warning about an unused variable.
+			NSLog(@"DCIntrospect: access current view using local 'view' variable.");
+			DEBUGGER;
+			return NO;
 		}
 		
 		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
@@ -1262,6 +1318,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Accessibility Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogAccessibilityProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
+		[helpString appendFormat:@"<div><span class='name'>Enter GDB</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterGDB];
 		[helpString appendFormat:@"<div><span class='name'>Move up in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveUpInViewHierarchy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysMoveUpInViewHierarchy];
 		[helpString appendFormat:@"<div><span class='name'>Move back down in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveBackInViewHierarchy isEqualToString:@""]) ? @"page down" : kDCIntrospectKeysMoveBackInViewHierarchy];
 		[helpString appendString:@"<div class='spacer'></div>"];
@@ -1284,6 +1341,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[helpString appendFormat:@"<div><span class='name'>Call setNeedsLayout</span><div class='key'>%@</div></div>", kDCIntrospectKeysSetNeedsLayout];
 		[helpString appendFormat:@"<div><span class='name'>Call reloadData (UITableView only)</span><div class='key'>%@</div></div>", kDCIntrospectKeysReloadData];
 		[helpString appendString:@"</div>"];
+		
+		[helpString appendFormat:@"<h1>GDB</h1><p>Push <span class='code'>%@</span> (backtick) to jump into GDB.  The currently selected view will be available as a variable named 'view'.</p>", kDCIntrospectKeysEnterGDB];
 		
 		[helpString appendFormat:@"<h1>Flash on <span class='code'>drawRect:</span> calls</h1><p>To implement, call <span class='code'>[[DCIntrospect sharedIntrospector] flashRect:inView:]</span> inside the <span class='code'>drawRect:</span> method of any view you want to track.</p><p>When Flash on <span class='code'>drawRect:</span> is toggled on (binding: <span class='code'>%@</span>) the view will flash whenever <span class='code'>drawRect:</span> is called.</p>", kDCIntrospectKeysToggleFlashViewRedraws];
 		
