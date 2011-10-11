@@ -38,11 +38,11 @@ Add the `DCIntrospect` class files to your project, add the QuartzCore framework
     [window makeKeyAndDisplay]
     
     // always call after makeKeyAndDisplay.
-    #ifdef TARGET_IPHONE_SIMULATOR
+    #if TARGET_IPHONE_SIMULATOR
         [[DCIntrospect sharedIntrospector] start];
     #endif
 
-The `#ifdef` to target the simulator is not required but is a good idea to further prevent leaving it on in production code.
+The `#if` to target the simulator is not required but is a good idea to further prevent leaving it on in production code.
 
 Once setup, simply push the space bar to invoke the introspect or then start clicking on views to get info.  You can also tap and drag around the interface.
 
