@@ -148,6 +148,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
+		self.inputTextView.scrollsToTop = NO;
 		[mainWindow addSubview:self.inputTextView];
 	}
 	
