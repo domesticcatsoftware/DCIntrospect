@@ -598,6 +598,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			if (self.currentView.alpha > 0.0f)
 				self.currentView.alpha -= 0.05f;
 		}
+		else if ([string isEqualToString:kDCIntrospectKeysToggleHidden])
+		{
+			self.currentView.hidden = !self.currentView.hidden;
+		}
 		else if ([string isEqualToString:kDCIntrospectKeysEnterGDB])
 		{
 			UIView *view = self.currentView;
