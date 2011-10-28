@@ -9,6 +9,16 @@
 /* Begin PBXBuildFile section */
 		C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918391B145A3463008BF5C0 /* Foundation.framework */; };
 		C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918392C145A353E008BF5C0 /* QuartzCore.framework */; };
+		C9183937145A3594008BF5C0 /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (); }; };
+		C9183938145A3594008BF5C0 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = C918392F145A3590008BF5C0 /* DCCrossHairView.m */; };
+		C9183939145A3594008BF5C0 /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; };
+		C918393A145A3594008BF5C0 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183931145A3591008BF5C0 /* DCFrameView.m */; };
+		C918393B145A3594008BF5C0 /* DCIntrospect.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183932145A3591008BF5C0 /* DCIntrospect.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C918393C145A3594008BF5C0 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183933145A3591008BF5C0 /* DCIntrospect.m */; };
+		C918393D145A3594008BF5C0 /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; };
+		C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; };
+		C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */; };
+		C9183941145A35A5008BF5C0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9183940145A35A5008BF5C0 /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +26,16 @@
 		C918391B145A3463008BF5C0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DCIntrospect-Prefix.pch"; path = "../DCIntrospect-Prefix.pch"; sourceTree = "<group>"; };
 		C918392C145A353E008BF5C0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C918392E145A3590008BF5C0 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCCrossHairView.h; sourceTree = SOURCE_ROOT; };
+		C918392F145A3590008BF5C0 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCCrossHairView.m; sourceTree = SOURCE_ROOT; };
+		C9183930145A3590008BF5C0 /* DCFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCFrameView.h; sourceTree = SOURCE_ROOT; };
+		C9183931145A3591008BF5C0 /* DCFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCFrameView.m; sourceTree = SOURCE_ROOT; };
+		C9183932145A3591008BF5C0 /* DCIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntrospect.h; sourceTree = SOURCE_ROOT; };
+		C9183933145A3591008BF5C0 /* DCIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntrospect.m; sourceTree = SOURCE_ROOT; };
+		C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntrospectSettings.h; sourceTree = SOURCE_ROOT; };
+		C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCStatusBarOverlay.h; sourceTree = SOURCE_ROOT; };
+		C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = SOURCE_ROOT; };
+		C9183940145A35A5008BF5C0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -23,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9183941145A35A5008BF5C0 /* UIKit.framework in Frameworks */,
 				C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */,
 				C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */,
 			);
@@ -51,6 +72,7 @@
 		C918391A145A3463008BF5C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C9183940145A35A5008BF5C0 /* UIKit.framework */,
 				C918392C145A353E008BF5C0 /* QuartzCore.framework */,
 				C918391B145A3463008BF5C0 /* Foundation.framework */,
 			);
@@ -60,6 +82,15 @@
 		C918391D145A3463008BF5C0 /* DCIntrospect */ = {
 			isa = PBXGroup;
 			children = (
+				C918392E145A3590008BF5C0 /* DCCrossHairView.h */,
+				C918392F145A3590008BF5C0 /* DCCrossHairView.m */,
+				C9183930145A3590008BF5C0 /* DCFrameView.h */,
+				C9183931145A3591008BF5C0 /* DCFrameView.m */,
+				C9183932145A3591008BF5C0 /* DCIntrospect.h */,
+				C9183933145A3591008BF5C0 /* DCIntrospect.m */,
+				C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */,
+				C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */,
+				C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */,
 				C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */,
 			);
 			path = DCIntrospect;
@@ -72,6 +103,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9183937145A3594008BF5C0 /* DCCrossHairView.h in Headers */,
+				C9183939145A3594008BF5C0 /* DCFrameView.h in Headers */,
+				C918393B145A3594008BF5C0 /* DCIntrospect.h in Headers */,
+				C918393D145A3594008BF5C0 /* DCIntrospectSettings.h in Headers */,
+				C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +161,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9183938145A3594008BF5C0 /* DCCrossHairView.m in Sources */,
+				C918393A145A3594008BF5C0 /* DCFrameView.m in Sources */,
+				C918393C145A3594008BF5C0 /* DCIntrospect.m in Sources */,
+				C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,9 +216,10 @@
 			buildSettings = {
 				DSTROOT = /tmp/DCIntrospect.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCIntrospect/DCIntrospect-Prefix.pch";
+				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -188,9 +229,10 @@
 			buildSettings = {
 				DSTROOT = /tmp/DCIntrospect.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCIntrospect/DCIntrospect-Prefix.pch";
+				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
