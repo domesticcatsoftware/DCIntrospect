@@ -28,9 +28,6 @@
 	self.window.rootViewController = self.viewController;
 	[self.window makeKeyAndVisible];
 
-	// always insert this AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
-	[[DCIntrospect sharedIntrospector] start];
-
 	return YES;
 }
 

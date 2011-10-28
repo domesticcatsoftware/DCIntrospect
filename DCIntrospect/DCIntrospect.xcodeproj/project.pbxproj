@@ -42,6 +42,8 @@
 		C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C9E26F40145A7AE1007C072D /* DCIntrospectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E26F3D145A7AE1007C072D /* DCIntrospectLoader.m */; };
+		C9E26F41145A7AE1007C072D /* DCIntrospectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E26F3D145A7AE1007C072D /* DCIntrospectLoader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +62,7 @@
 		C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = SOURCE_ROOT; };
 		C9183940145A35A5008BF5C0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C9E26EE8145A5165007C072D /* DCIntrospect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCIntrospect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E26F3D145A7AE1007C072D /* DCIntrospectLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectLoader.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +127,7 @@
 				C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */,
 				C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */,
 				C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */,
+				C9E26F3D145A7AE1007C072D /* DCIntrospectLoader.m */,
 			);
 			path = DCIntrospect;
 			sourceTree = "<group>";
@@ -255,6 +259,7 @@
 				C918393A145A3594008BF5C0 /* DCFrameView.m in Sources */,
 				C918393C145A3594008BF5C0 /* DCIntrospect.m in Sources */,
 				C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */,
+				C9E26F40145A7AE1007C072D /* DCIntrospectLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +271,7 @@
 				C9E26EF7145A584A007C072D /* DCFrameView.m in Sources */,
 				C9E26EF8145A584A007C072D /* DCIntrospect.m in Sources */,
 				C9E26EF9145A584A007C072D /* DCStatusBarOverlay.m in Sources */,
+				C9E26F41145A7AE1007C072D /* DCIntrospectLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
