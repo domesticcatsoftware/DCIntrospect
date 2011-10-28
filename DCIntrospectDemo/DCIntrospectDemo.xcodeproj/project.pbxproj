@@ -17,6 +17,7 @@
 		AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
 		AB0D01E8136A778000962171 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
 		AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
+		C918394A145A377B008BF5C0 /* libDCIntrospect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9183949145A377B008BF5C0 /* libDCIntrospect.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		AB0D01E7136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntrospectDemoViewController.h; sourceTree = "<group>"; };
 		AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectDemoViewController.m; sourceTree = "<group>"; };
+		C9183949145A377B008BF5C0 /* libDCIntrospect.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libDCIntrospect.a; path = "../DCIntrospect/build/Release-iphoneos/libDCIntrospect.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C918394A145A377B008BF5C0 /* libDCIntrospect.a in Frameworks */,
 				625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */,
 				AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */,
 				AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */,
@@ -72,6 +75,7 @@
 		AB0D01D3136A778000962171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C9183949145A377B008BF5C0 /* libDCIntrospect.a */,
 				625780B1138A0EBC004DA77B /* QuartzCore.framework */,
 				AB0D01D4136A778000962171 /* UIKit.framework */,
 				AB0D01D6136A778000962171 /* Foundation.framework */,
@@ -245,7 +249,9 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = ../DCIntrospect;
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = "../DCIntrospect/build/Debug-iphonesimulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -260,7 +266,9 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = ../DCIntrospect;
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = "../DCIntrospect/build/Debug-iphonesimulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

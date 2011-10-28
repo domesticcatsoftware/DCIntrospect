@@ -4,4 +4,7 @@
    <FileRef
       location = "group:DCIntrospectDemo/DCIntrospectDemo.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:DCIntrospect/DCIntrospect.xcodeproj">
+   </FileRef>
 </Workspace>
