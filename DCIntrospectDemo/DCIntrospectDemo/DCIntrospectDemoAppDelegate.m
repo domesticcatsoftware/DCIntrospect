@@ -4,9 +4,9 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+#import <DCIntrospect/DCIntrospect.h>
 #import "DCIntrospectDemoAppDelegate.h"
 #import "DCIntrospectDemoViewController.h"
-#import "DCIntrospect.h"
 
 @implementation DCIntrospectDemoAppDelegate
 
