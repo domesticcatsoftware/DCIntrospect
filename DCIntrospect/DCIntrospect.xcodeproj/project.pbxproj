@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C9E26F04145A5A89007C072D /* UniversalFramework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "UniversalFramework" */;
+			buildPhases = (
+				C9E26F08145A5AAA007C072D /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = UniversalFramework;
+			productName = UniversalFramework;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918391B145A3463008BF5C0 /* Foundation.framework */; };
 		C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918392C145A353E008BF5C0 /* QuartzCore.framework */; };
@@ -19,6 +33,16 @@
 		C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; };
 		C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */; };
 		C9183941145A35A5008BF5C0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9183940145A35A5008BF5C0 /* UIKit.framework */; };
+		C9E26EF6145A584A007C072D /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = C918392F145A3590008BF5C0 /* DCCrossHairView.m */; };
+		C9E26EF7145A584A007C072D /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183931145A3591008BF5C0 /* DCFrameView.m */; };
+		C9E26EF8145A584A007C072D /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183933145A3591008BF5C0 /* DCIntrospect.m */; };
+		C9E26EF9145A584A007C072D /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */; };
+		C9E26EFD145A58B2007C072D /* DCIntrospect.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183932145A3591008BF5C0 /* DCIntrospect.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C9E26EFE145A58C6007C072D /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (); }; };
+		C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (); }; };
+		C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (); }; };
+		C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (); }; };
+		C9E26F03145A59CB007C072D /* DCIntrospectFramework-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +60,9 @@
 		C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCStatusBarOverlay.h; sourceTree = SOURCE_ROOT; };
 		C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = SOURCE_ROOT; };
 		C9183940145A35A5008BF5C0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCIntrospectFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E26EE9145A5165007C072D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCIntrospectFramework-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +76,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9E26EE5145A5165007C072D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -56,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				C918391D145A3463008BF5C0 /* DCIntrospect */,
+				C9E26EEB145A5165007C072D /* DCIntrospectFramework */,
 				C918391A145A3463008BF5C0 /* Frameworks */,
 				C9183919145A3463008BF5C0 /* Products */,
 			);
@@ -65,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				C9183918145A3463008BF5C0 /* libDCIntrospect.a */,
+				C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +111,7 @@
 				C9183940145A35A5008BF5C0 /* UIKit.framework */,
 				C918392C145A353E008BF5C0 /* QuartzCore.framework */,
 				C918391B145A3463008BF5C0 /* Foundation.framework */,
+				C9E26EE9145A5165007C072D /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -92,8 +129,24 @@
 				C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */,
 				C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */,
 				C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */,
+				C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */,
 			);
 			path = DCIntrospect;
+			sourceTree = "<group>";
+		};
+		C9E26EEB145A5165007C072D /* DCIntrospectFramework */ = {
+			isa = PBXGroup;
+			children = (
+				C9E26EEC145A5165007C072D /* Supporting Files */,
+			);
+			path = DCIntrospectFramework;
+			sourceTree = "<group>";
+		};
+		C9E26EEC145A5165007C072D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,6 +161,18 @@
 				C918393B145A3594008BF5C0 /* DCIntrospect.h in Headers */,
 				C918393D145A3594008BF5C0 /* DCIntrospectSettings.h in Headers */,
 				C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26EFC145A5899007C072D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26EFD145A58B2007C072D /* DCIntrospect.h in Headers */,
+				C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */,
+				C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */,
+				C9E26EFE145A58C6007C072D /* DCCrossHairView.h in Headers */,
+				C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +196,24 @@
 			productReference = C9183918145A3463008BF5C0 /* libDCIntrospect.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		C9E26EE7145A5165007C072D /* DCIntrospectFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9E26EF4145A5165007C072D /* Build configuration list for PBXNativeTarget "DCIntrospectFramework" */;
+			buildPhases = (
+				C9E26EE4145A5165007C072D /* Sources */,
+				C9E26EE5145A5165007C072D /* Frameworks */,
+				C9E26EE6145A5165007C072D /* Resources */,
+				C9E26EFC145A5899007C072D /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DCIntrospectFramework;
+			productName = DCIntrospectFramework;
+			productReference = C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -152,9 +235,38 @@
 			projectRoot = "";
 			targets = (
 				C9183917145A3463008BF5C0 /* DCIntrospect */,
+				C9E26EE7145A5165007C072D /* DCIntrospectFramework */,
+				C9E26F04145A5A89007C072D /* UniversalFramework */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C9E26EE6145A5165007C072D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F03145A59CB007C072D /* DCIntrospectFramework-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C9E26F08145A5AAA007C072D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=DCIntrospectFramework\nFMK_VERSION=A\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n\n# Building both architectures.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n#rm -r \"${WRK_DIR}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C9183914145A3463008BF5C0 /* Sources */ = {
@@ -165,6 +277,17 @@
 				C918393A145A3594008BF5C0 /* DCFrameView.m in Sources */,
 				C918393C145A3594008BF5C0 /* DCIntrospect.m in Sources */,
 				C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26EE4145A5165007C072D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26EF6145A584A007C072D /* DCCrossHairView.m in Sources */,
+				C9E26EF7145A584A007C072D /* DCFrameView.m in Sources */,
+				C9E26EF8145A584A007C072D /* DCIntrospect.m in Sources */,
+				C9E26EF9145A584A007C072D /* DCStatusBarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +360,62 @@
 			};
 			name = Release;
 		};
+		C9E26EF2145A5165007C072D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DEAD_CODE_STRIPPING = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "DCIntrospectFramework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = mh_object;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		C9E26EF3145A5165007C072D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "DCIntrospectFramework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = mh_object;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		C9E26F06145A5A89007C072D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C9E26F07145A5A89007C072D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -257,6 +436,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C9E26EF4145A5165007C072D /* Build configuration list for PBXNativeTarget "DCIntrospectFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9E26EF2145A5165007C072D /* Debug */,
+				C9E26EF3145A5165007C072D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "UniversalFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9E26F06145A5A89007C072D /* Debug */,
+				C9E26F07145A5A89007C072D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
