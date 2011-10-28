@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		C9183918145A3463008BF5C0 /* libDCIntrospect.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCIntrospect.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C918391B145A3463008BF5C0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DCIntrospect-Prefix.pch"; path = "../DCIntrospect-Prefix.pch"; sourceTree = "<group>"; };
+		C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCIntrospect-Prefix.pch"; sourceTree = "<group>"; };
 		C918392C145A353E008BF5C0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C918392E145A3590008BF5C0 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCCrossHairView.h; sourceTree = SOURCE_ROOT; };
 		C918392F145A3590008BF5C0 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCCrossHairView.m; sourceTree = SOURCE_ROOT; };
