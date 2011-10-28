@@ -42,7 +42,6 @@
 		C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C9E26F03145A59CB007C072D /* DCIntrospectFramework-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +60,6 @@
 		C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = SOURCE_ROOT; };
 		C9183940145A35A5008BF5C0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C9E26EE8145A5165007C072D /* DCIntrospect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCIntrospect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCIntrospectFramework-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +124,6 @@
 				C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */,
 				C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */,
 				C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */,
-				C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */,
 			);
 			path = DCIntrospect;
 			sourceTree = "<group>";
@@ -228,7 +225,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9E26F03145A59CB007C072D /* DCIntrospectFramework-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +347,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "DCIntrospectFramework-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
@@ -373,7 +368,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "DCIntrospectFramework-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
@@ -426,6 +420,7 @@
 				C9E26EF3145A5165007C072D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "BundleProducts" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +429,7 @@
 				C9E26F07145A5A89007C072D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
