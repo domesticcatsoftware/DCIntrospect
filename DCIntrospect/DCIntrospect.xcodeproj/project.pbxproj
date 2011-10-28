@@ -1,0 +1,222 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918391B145A3463008BF5C0 /* Foundation.framework */; };
+		C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918392C145A353E008BF5C0 /* QuartzCore.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C9183918145A3463008BF5C0 /* libDCIntrospect.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCIntrospect.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C918391B145A3463008BF5C0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DCIntrospect-Prefix.pch"; path = "../DCIntrospect-Prefix.pch"; sourceTree = "<group>"; };
+		C918392C145A353E008BF5C0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C9183915145A3463008BF5C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */,
+				C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C918390D145A3462008BF5C0 = {
+			isa = PBXGroup;
+			children = (
+				C918391D145A3463008BF5C0 /* DCIntrospect */,
+				C918391A145A3463008BF5C0 /* Frameworks */,
+				C9183919145A3463008BF5C0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C9183919145A3463008BF5C0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C9183918145A3463008BF5C0 /* libDCIntrospect.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C918391A145A3463008BF5C0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C918392C145A353E008BF5C0 /* QuartzCore.framework */,
+				C918391B145A3463008BF5C0 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C918391D145A3463008BF5C0 /* DCIntrospect */ = {
+			isa = PBXGroup;
+			children = (
+				C918391F145A3463008BF5C0 /* DCIntrospect-Prefix.pch */,
+			);
+			path = DCIntrospect;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C9183916145A3463008BF5C0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C9183917145A3463008BF5C0 /* DCIntrospect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospect" */;
+			buildPhases = (
+				C9183914145A3463008BF5C0 /* Sources */,
+				C9183915145A3463008BF5C0 /* Frameworks */,
+				C9183916145A3463008BF5C0 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DCIntrospect;
+			productName = DCIntrospect;
+			productReference = C9183918145A3463008BF5C0 /* libDCIntrospect.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C918390F145A3462008BF5C0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = C9183912145A3462008BF5C0 /* Build configuration list for PBXProject "DCIntrospect" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C918390D145A3462008BF5C0;
+			productRefGroup = C9183919145A3463008BF5C0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C9183917145A3463008BF5C0 /* DCIntrospect */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C9183914145A3463008BF5C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C9183923145A3463008BF5C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C9183924145A3463008BF5C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C9183926145A3463008BF5C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/DCIntrospect.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospect/DCIntrospect-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		C9183927145A3463008BF5C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/DCIntrospect.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospect/DCIntrospect-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C9183912145A3462008BF5C0 /* Build configuration list for PBXProject "DCIntrospect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9183923145A3463008BF5C0 /* Debug */,
+				C9183924145A3463008BF5C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9183926145A3463008BF5C0 /* Debug */,
+				C9183927145A3463008BF5C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C918390F145A3462008BF5C0 /* Project object */;
+}
