@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C9E26EE7145A5165007C072D"
-               BuildableName = "DCIntrospectFramework.framework"
+               BuildableName = "DCIntrospect.framework"
                BlueprintName = "DCIntrospectFramework"
                ReferencedContainer = "container:DCIntrospect.xcodeproj">
             </BuildableReference>
