@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		C9E26F04145A5A89007C072D /* UniversalFramework */ = {
+		C9E26F04145A5A89007C072D /* BundleProducts */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "UniversalFramework" */;
+			buildConfigurationList = C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "BundleProducts" */;
 			buildPhases = (
 				C9E26F08145A5AAA007C072D /* ShellScript */,
 			);
 			dependencies = (
 			);
-			name = UniversalFramework;
+			name = BundleProducts;
 			productName = UniversalFramework;
 		};
 /* End PBXAggregateTarget section */
@@ -23,14 +23,14 @@
 /* Begin PBXBuildFile section */
 		C918391C145A3463008BF5C0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918391B145A3463008BF5C0 /* Foundation.framework */; };
 		C918392D145A353E008BF5C0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C918392C145A353E008BF5C0 /* QuartzCore.framework */; };
-		C9183937145A3594008BF5C0 /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (); }; };
+		C9183937145A3594008BF5C0 /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9183938145A3594008BF5C0 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = C918392F145A3590008BF5C0 /* DCCrossHairView.m */; };
-		C9183939145A3594008BF5C0 /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; };
+		C9183939145A3594008BF5C0 /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C918393A145A3594008BF5C0 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183931145A3591008BF5C0 /* DCFrameView.m */; };
 		C918393B145A3594008BF5C0 /* DCIntrospect.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183932145A3591008BF5C0 /* DCIntrospect.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C918393C145A3594008BF5C0 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183933145A3591008BF5C0 /* DCIntrospect.m */; };
-		C918393D145A3594008BF5C0 /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; };
-		C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; };
+		C918393D145A3594008BF5C0 /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C918393E145A3594008BF5C0 /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C918393F145A3594008BF5C0 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */; };
 		C9183941145A35A5008BF5C0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9183940145A35A5008BF5C0 /* UIKit.framework */; };
 		C9E26EF6145A584A007C072D /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = C918392F145A3590008BF5C0 /* DCCrossHairView.m */; };
@@ -38,10 +38,10 @@
 		C9E26EF8145A584A007C072D /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183933145A3591008BF5C0 /* DCIntrospect.m */; };
 		C9E26EF9145A584A007C072D /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */; };
 		C9E26EFD145A58B2007C072D /* DCIntrospect.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183932145A3591008BF5C0 /* DCIntrospect.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C9E26EFE145A58C6007C072D /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (); }; };
-		C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (); }; };
-		C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (); }; };
-		C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (); }; };
+		C9E26EFE145A58C6007C072D /* DCCrossHairView.h in Headers */ = {isa = PBXBuildFile; fileRef = C918392E145A3590008BF5C0 /* DCCrossHairView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C9E26EFF145A58C9007C072D /* DCFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183930145A3590008BF5C0 /* DCFrameView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C9E26F00145A58DD007C072D /* DCIntrospectSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183934145A3592008BF5C0 /* DCIntrospectSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C9E26F01145A58DF007C072D /* DCStatusBarOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E26F03145A59CB007C072D /* DCIntrospectFramework-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +60,7 @@
 		C9183935145A3593008BF5C0 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCStatusBarOverlay.h; sourceTree = SOURCE_ROOT; };
 		C9183936145A3593008BF5C0 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = SOURCE_ROOT; };
 		C9183940145A35A5008BF5C0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCIntrospectFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E26EE8145A5165007C072D /* DCIntrospect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCIntrospect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E26EED145A5165007C072D /* DCIntrospectFramework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCIntrospectFramework-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -98,7 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				C9183918145A3463008BF5C0 /* libDCIntrospect.a */,
-				C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */,
+				C9E26EE8145A5165007C072D /* DCIntrospect.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,9 +161,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		C9183917145A3463008BF5C0 /* DCIntrospect */ = {
+		C9183917145A3463008BF5C0 /* DCIntrospectStaticLib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospect" */;
+			buildConfigurationList = C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospectStaticLib" */;
 			buildPhases = (
 				C9183914145A3463008BF5C0 /* Sources */,
 				C9183915145A3463008BF5C0 /* Frameworks */,
@@ -173,7 +173,7 @@
 			);
 			dependencies = (
 			);
-			name = DCIntrospect;
+			name = DCIntrospectStaticLib;
 			productName = DCIntrospect;
 			productReference = C9183918145A3463008BF5C0 /* libDCIntrospect.a */;
 			productType = "com.apple.product-type.library.static";
@@ -193,7 +193,7 @@
 			);
 			name = DCIntrospectFramework;
 			productName = DCIntrospectFramework;
-			productReference = C9E26EE8145A5165007C072D /* DCIntrospectFramework.framework */;
+			productReference = C9E26EE8145A5165007C072D /* DCIntrospect.framework */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -216,9 +216,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C9183917145A3463008BF5C0 /* DCIntrospect */,
+				C9183917145A3463008BF5C0 /* DCIntrospectStaticLib */,
 				C9E26EE7145A5165007C072D /* DCIntrospectFramework */,
-				C9E26F04145A5A89007C072D /* UniversalFramework */,
+				C9E26F04145A5A89007C072D /* BundleProducts */,
 			);
 		};
 /* End PBXProject section */
@@ -246,7 +246,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=DCIntrospectFramework\nFMK_VERSION=A\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/../Products/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n\n# Building both architectures.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n#rm -r \"${WRK_DIR}\"";
+			shellScript = "# Sets the target folders and the final framework product.\nBUILD_CONFIGURATION=Debug\nLIB_NAME=DCIntrospect\nFMK_NAME=DCIntrospect\nFMK_VERSION=A\n\nLIB_FILE=\"lib${LIB_NAME}.a\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/../Products/${FMK_NAME}.framework\nLIB_INSTALL_DIR=${SRCROOT}/../Products/lib\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/${BUILD_CONFIGURATION}-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/${BUILD_CONFIGURATION}-iphonesimulator/${FMK_NAME}.framework\nLIB_DEVICE_DIR=${WRK_DIR}/${BUILD_CONFIGURATION}-iphoneos\nLIB_SIMULATOR_DIR=${WRK_DIR}/${BUILD_CONFIGURATION}-iphonesimulator\n\n# Clean before starting compile\nrm -r \"${WRK_DIR}\"\n\n# Building both architectures.\nxcodebuild -configuration \"${BUILD_CONFIGURATION}\" -target \"${FMK_NAME}Framework\" -sdk iphoneos\nxcodebuild -configuration \"${BUILD_CONFIGURATION}\" -target \"${FMK_NAME}Framework\" -sdk iphonesimulator\nxcodebuild -configuration \"${BUILD_CONFIGURATION}\" -target \"${LIB_NAME}StaticLib\" -sdk iphoneos\nxcodebuild -configuration \"${BUILD_CONFIGURATION}\" -target \"${LIB_NAME}StaticLib\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\nif [ -d \"${LIB_INSTALL_DIR}\" ]\nthen\nrm -rf \"${LIB_INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\nmkdir -p \"${LIB_INSTALL_DIR}\"\nmkdir -p \"${LIB_INSTALL_DIR}/${LIB_NAME}\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\ncp -R \"${LIB_DEVICE_DIR}/${LIB_NAME}/\"*.h \"${LIB_INSTALL_DIR}/${LIB_NAME}\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\nlipo -create \"${LIB_DEVICE_DIR}/${LIB_FILE}\" \"${LIB_SIMULATOR_DIR}/${LIB_FILE}\" -output \"${LIB_INSTALL_DIR}/${LIB_FILE}\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -323,8 +323,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = DCIntrospect;
+				PUBLIC_HEADERS_FOLDER_PATH = "$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -336,8 +336,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospect-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = DCIntrospect;
+				PUBLIC_HEADERS_FOLDER_PATH = "$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -357,7 +357,7 @@
 				MACH_O_TYPE = mh_object;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DCIntrospect;
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -378,7 +378,7 @@
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DCIntrospect;
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -410,7 +410,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospect" */ = {
+		C9183925145A3463008BF5C0 /* Build configuration list for PBXNativeTarget "DCIntrospectStaticLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9183926145A3463008BF5C0 /* Debug */,
@@ -427,7 +427,7 @@
 			);
 			defaultConfigurationIsVisible = 0;
 		};
-		C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "UniversalFramework" */ = {
+		C9E26F05145A5A89007C072D /* Build configuration list for PBXAggregateTarget "BundleProducts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9E26F06145A5A89007C072D /* Debug */,

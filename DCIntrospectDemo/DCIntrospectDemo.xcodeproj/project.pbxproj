@@ -17,7 +17,18 @@
 		AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
 		AB0D01E8136A778000962171 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
 		AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
-		C918394A145A377B008BF5C0 /* libDCIntrospect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9183949145A377B008BF5C0 /* libDCIntrospect.a */; };
+		C9E26F0C145A6472007C072D /* libDCIntrospect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E26F0B145A6472007C072D /* libDCIntrospect.a */; };
+		C9E26F0F145A679D007C072D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E1136A778000962171 /* main.m */; };
+		C9E26F10145A679D007C072D /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
+		C9E26F11145A679D007C072D /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
+		C9E26F13145A679D007C072D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
+		C9E26F14145A679D007C072D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D4136A778000962171 /* UIKit.framework */; };
+		C9E26F15145A679D007C072D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D6136A778000962171 /* Foundation.framework */; };
+		C9E26F16145A679D007C072D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D8136A778000962171 /* CoreGraphics.framework */; };
+		C9E26F19145A679D007C072D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01DD136A778000962171 /* InfoPlist.strings */; };
+		C9E26F1A145A679D007C072D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
+		C9E26F1B145A679D007C072D /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
+		C9E26F23145A6E46007C072D /* DCIntrospect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E26F22145A6E46007C072D /* DCIntrospect.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +47,9 @@
 		AB0D01E7136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntrospectDemoViewController.h; sourceTree = "<group>"; };
 		AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectDemoViewController.m; sourceTree = "<group>"; };
-		C9183949145A377B008BF5C0 /* libDCIntrospect.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libDCIntrospect.a; path = "../DCIntrospect/build/Release-iphoneos/libDCIntrospect.a"; sourceTree = "<group>"; };
+		C9E26F0B145A6472007C072D /* libDCIntrospect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDCIntrospect.a; path = ../Products/lib/libDCIntrospect.a; sourceTree = "<group>"; };
+		C9E26F1F145A679D007C072D /* DemoUsingFramework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoUsingFramework.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E26F22145A6E46007C072D /* DCIntrospect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCIntrospect.framework; path = ../Products/DCIntrospect.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,11 +57,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C918394A145A377B008BF5C0 /* libDCIntrospect.a in Frameworks */,
 				625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */,
 				AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */,
 				AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */,
 				AB0D01D9136A778000962171 /* CoreGraphics.framework in Frameworks */,
+				C9E26F0C145A6472007C072D /* libDCIntrospect.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26F12145A679D007C072D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F13145A679D007C072D /* QuartzCore.framework in Frameworks */,
+				C9E26F14145A679D007C072D /* UIKit.framework in Frameworks */,
+				C9E26F15145A679D007C072D /* Foundation.framework in Frameworks */,
+				C9E26F16145A679D007C072D /* CoreGraphics.framework in Frameworks */,
+				C9E26F23145A6E46007C072D /* DCIntrospect.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				AB0D01D0136A778000962171 /* DCIntrospectDemo.app */,
+				C9E26F1F145A679D007C072D /* DemoUsingFramework.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,7 +101,8 @@
 		AB0D01D3136A778000962171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C9183949145A377B008BF5C0 /* libDCIntrospect.a */,
+				C9E26F0B145A6472007C072D /* libDCIntrospect.a */,
+				C9E26F22145A6E46007C072D /* DCIntrospect.framework */,
 				625780B1138A0EBC004DA77B /* QuartzCore.framework */,
 				AB0D01D4136A778000962171 /* UIKit.framework */,
 				AB0D01D6136A778000962171 /* Foundation.framework */,
@@ -112,9 +139,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AB0D01CF136A778000962171 /* DCIntrospectDemo */ = {
+		AB0D01CF136A778000962171 /* DemoUsingStaticLib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DCIntrospectDemo" */;
+			buildConfigurationList = AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DemoUsingStaticLib" */;
 			buildPhases = (
 				AB0D01CC136A778000962171 /* Sources */,
 				AB0D01CD136A778000962171 /* Frameworks */,
@@ -124,9 +151,26 @@
 			);
 			dependencies = (
 			);
-			name = DCIntrospectDemo;
+			name = DemoUsingStaticLib;
 			productName = DCIntrospectDemo;
 			productReference = AB0D01D0136A778000962171 /* DCIntrospectDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C9E26F0D145A679D007C072D /* DemoUsingFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9E26F1C145A679D007C072D /* Build configuration list for PBXNativeTarget "DemoUsingFramework" */;
+			buildPhases = (
+				C9E26F0E145A679D007C072D /* Sources */,
+				C9E26F12145A679D007C072D /* Frameworks */,
+				C9E26F18145A679D007C072D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DemoUsingFramework;
+			productName = DCIntrospectDemo;
+			productReference = C9E26F1F145A679D007C072D /* DemoUsingFramework.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -149,7 +193,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AB0D01CF136A778000962171 /* DCIntrospectDemo */,
+				AB0D01CF136A778000962171 /* DemoUsingStaticLib */,
+				C9E26F0D145A679D007C072D /* DemoUsingFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -165,6 +210,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9E26F18145A679D007C072D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F19145A679D007C072D /* InfoPlist.strings in Resources */,
+				C9E26F1A145A679D007C072D /* MainWindow.xib in Resources */,
+				C9E26F1B145A679D007C072D /* circle.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -175,6 +230,16 @@
 				AB0D01E2136A778000962171 /* main.m in Sources */,
 				AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */,
 				AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26F0E145A679D007C072D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F0F145A679D007C072D /* main.m in Sources */,
+				C9E26F10145A679D007C072D /* DCIntrospectDemoAppDelegate.m in Sources */,
+				C9E26F11145A679D007C072D /* DCIntrospectDemoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,9 +314,9 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				HEADER_SEARCH_PATHS = ../DCIntrospect;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
-				LIBRARY_SEARCH_PATHS = "../DCIntrospect/build/Debug-iphonesimulator";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -266,10 +331,52 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				HEADER_SEARCH_PATHS = ../DCIntrospect;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
-				LIBRARY_SEARCH_PATHS = "../DCIntrospect/build/Debug-iphonesimulator";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C9E26F1D145A679D007C072D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Products\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				PRODUCT_NAME = DemoUsingFramework;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C9E26F1E145A679D007C072D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Products\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				PRODUCT_NAME = DemoUsingFramework;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -287,11 +394,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DCIntrospectDemo" */ = {
+		AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DemoUsingStaticLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB0D01F2136A778000962171 /* Debug */,
 				AB0D01F3136A778000962171 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9E26F1C145A679D007C072D /* Build configuration list for PBXNativeTarget "DemoUsingFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9E26F1D145A679D007C072D /* Debug */,
+				C9E26F1E145A679D007C072D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
