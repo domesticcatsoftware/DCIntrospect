@@ -6,8 +6,6 @@
 //  Based on an implementation by Pete Hodgson in Frank
 //  https://github.com/moredip/Frank/blob/master/src/FrankLoader.m
 
-#ifdef DEBUG
-
 #import "DCIntrospect.h"
 
 @interface DCIntrospectLoader : NSObject
@@ -19,8 +17,12 @@
 // so the statusBarOrientation should be reported correctly
 + (void)applicationDidBecomeActive:(NSNotification *)notification
 {
-    NSLog(@"Injecting DCIntrospect loader");
-    [[DCIntrospect sharedIntrospector] start];
+    NSString *simulatorRoot = [[[NSProcessInfo processInfo] environment] objectForKey:@"IPHONE_SIMULATOR_ROOT"];
+    if (simulatorRoot)
+    {
+        NSLog(@"Running in simulator, loading DCIntrospect");
+        [[DCIntrospect sharedIntrospector] start];
+    }
 }
 
 + (void)load
@@ -34,5 +36,3 @@
 }
 
 @end
-
-#endif

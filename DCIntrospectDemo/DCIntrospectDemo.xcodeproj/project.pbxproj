@@ -65,7 +65,7 @@
 /* Begin PBXFileReference section */
 		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		AB0D01D0136A778000962171 /* DCIntrospectDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCIntrospectDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoUsingStaticLib.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0D01D4136A778000962171 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB0D01D6136A778000962171 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AB0D01D8136A778000962171 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -124,7 +124,7 @@
 		AB0D01D1136A778000962171 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AB0D01D0136A778000962171 /* DCIntrospectDemo.app */,
+				AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */,
 				C9E26F1F145A679D007C072D /* DemoUsingFramework.app */,
 			);
 			name = Products;
@@ -196,7 +196,7 @@
 			);
 			name = DemoUsingStaticLib;
 			productName = DCIntrospectDemo;
-			productReference = AB0D01D0136A778000962171 /* DCIntrospectDemo.app */;
+			productReference = AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C9E26F0D145A679D007C072D /* DemoUsingFramework */ = {

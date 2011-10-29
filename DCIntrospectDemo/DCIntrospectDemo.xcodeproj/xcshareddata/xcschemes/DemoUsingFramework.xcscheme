@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C9E26F0D145A679D007C072D"
-               BuildableName = "DemoUsingStaticLib copy.app"
+               BuildableName = "DemoUsingFramework.app"
                BlueprintName = "DemoUsingFramework"
                ReferencedContainer = "container:DCIntrospectDemo.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C9E26F0D145A679D007C072D"
-            BuildableName = "DemoUsingStaticLib copy.app"
+            BuildableName = "DemoUsingFramework.app"
             BlueprintName = "DemoUsingFramework"
             ReferencedContainer = "container:DCIntrospectDemo.xcodeproj">
          </BuildableReference>
@@ -50,7 +50,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C9E26F0D145A679D007C072D"
-            BuildableName = "DemoUsingStaticLib copy.app"
+            BuildableName = "DemoUsingFramework.app"
             BlueprintName = "DemoUsingFramework"
             ReferencedContainer = "container:DCIntrospectDemo.xcodeproj">
          </BuildableReference>
@@ -68,7 +68,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C9E26F0D145A679D007C072D"
-            BuildableName = "DemoUsingStaticLib copy.app"
+            BuildableName = "DemoUsingFramework.app"
             BlueprintName = "DemoUsingFramework"
             ReferencedContainer = "container:DCIntrospectDemo.xcodeproj">
          </BuildableReference>
