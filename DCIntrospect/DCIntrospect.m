@@ -1441,10 +1441,6 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			[objectString appendFormat:@"multipleTouchEnabled: %@\n", (view.multipleTouchEnabled) ? @"YES" : @"NO"];
 			[objectString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
 		}
-		else if (inspectClass == UIScrollView.class || inspectClass == UIButton.class)
-		{
-			[objectString appendFormat:@"    Logging properties not currently supported for this class \"%@\".\n", inspectClass];
-		}
 		else
 		{
 			// Dump all properties of the class
