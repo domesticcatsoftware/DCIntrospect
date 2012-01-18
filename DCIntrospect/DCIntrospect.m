@@ -88,7 +88,7 @@ DCIntrospect *sharedInstance = nil;
 	if (simulatorRoot)
 	{
 		void *AppSupport = dlopen([[simulatorRoot stringByAppendingPathComponent:@"/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport"] fileSystemRepresentation], RTLD_LAZY);
-		CFStringRef (*CPCopySharedResourcesPreferencesDomainForDomain)(CFStringRef domain) = dlsym(AppSupport, "CPCopySharedResourcesPreferencesDomainForDomain");
+		CFStringRef (*CPCopySharedResourcesPreferencesDomainForDomain)(CFStringRef domain) = (CFStringRef (*)())dlsym(AppSupport, "CPCopySharedResourcesPreferencesDomainForDomain");
 		if (CPCopySharedResourcesPreferencesDomainForDomain)
 		{
 			CFStringRef accessibilityDomain = CPCopySharedResourcesPreferencesDomainForDomain(CFSTR("com.apple.Accessibility"));
@@ -124,7 +124,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		free(properties);
 	}
 	
-	IMP valueForKey = [objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
+	IMP valueForKey = (IMP)[objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
 	if ([textInputTraitsProperties containsObject:key])
 	{
 		id textInputTraits = valueForKey(self, _cmd, @"textInputTraits");
@@ -151,11 +151,11 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		{
 			IMP originalValueForKey = class_replaceMethod(class, @selector(valueForKey:), (IMP)UITextInputTraits_valueForKey, valueForKeyTypeEncoding);
 			if (!originalValueForKey)
-				originalValueForKey = [objc_getAssociatedObject([class superclass], originalValueForKeyIMPKey) pointerValue];
+				originalValueForKey = (IMP)[objc_getAssociatedObject([class superclass], originalValueForKeyIMPKey) pointerValue];
 			if (!originalValueForKey)
 				originalValueForKey = class_getMethodImplementation([class superclass], @selector(valueForKey:));
 			
-			objc_setAssociatedObject(class, originalValueForKeyIMPKey, [NSValue valueWithPointer:originalValueForKey], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+			objc_setAssociatedObject(class, originalValueForKeyIMPKey, [NSValue valueWithPointer:(void *)originalValueForKey], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 		}
 	}
 	free(classes);
