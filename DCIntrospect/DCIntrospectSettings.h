@@ -5,6 +5,7 @@
 #define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.4f]			// UIColor
 #define kDCIntrospectFlashOnRedrawFlashLength 0.03f													// NSTimeInterval
 #define kDCIntrospectOpaqueColor [UIColor redColor]													// UIColor
+#define kDCIntrospectTemporaryDisableDuration 10.                           // Seconds
 
 //////////////////
 // Key Bindings //
@@ -52,4 +53,4 @@
 #define kDCIntrospectKeysMoveToPrevSiblingView			@"g"
 
 #define kDCIntrospectKeysEnterGDB						@"`"			// enters GDB
-
+#define kDCIntrospectKeysDisableForPeriod		@"~"			// disables DCIntrospect for a given period (see kDCIntrospectTemporaryDisableDuration)

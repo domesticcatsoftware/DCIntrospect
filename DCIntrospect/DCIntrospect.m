@@ -222,6 +222,14 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 																	 afterDelay:0.1];
 												  }];
 	
+  // dirty hack for UIWebView keyboard problems
+  [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification
+                                                    object:nil
+                                                     queue:nil
+                                                usingBlock:^(NSNotification *notification) {
+                                                  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(takeFirstResponder) object:nil];
+                                                }];
+
 	// listen for device orientation changes to adjust the status bar
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -259,9 +267,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	[mainWindow addGestureRecognizer:invokeGestureRecognizer];
 }
 
-- (void)setKeyboardBindingsOn:(BOOL)newKeyboardBindingsOn
+- (void)setKeyboardBindingsOn:(BOOL)areKeyboardBindingsOn
 {
-	keyboardBindingsOn = newKeyboardBindingsOn;
+	keyboardBindingsOn = areKeyboardBindingsOn;
 	if (self.keyboardBindingsOn)
 		[self.inputTextView becomeFirstResponder];
 	else
@@ -413,6 +421,15 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string
 {
+	if ([string isEqualToString:kDCIntrospectKeysDisableForPeriod])
+  {
+    [self setKeyboardBindingsOn:NO];
+    [[self inputTextView] resignFirstResponder];
+    NSLog(@"DCIntrospect: Disabled for %.1f seconds", kDCIntrospectTemporaryDisableDuration);
+    [self performSelector:@selector(setKeyboardBindingsOn:) withObject:[NSNumber numberWithFloat:YES] afterDelay:kDCIntrospectTemporaryDisableDuration];
+    return NO;
+  }
+
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
 		[self invokeIntrospector];
@@ -428,7 +445,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		return NO;
 	}
 	
-	if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
+  if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
 	{
 		[self toggleOutlines];
 		return NO;
