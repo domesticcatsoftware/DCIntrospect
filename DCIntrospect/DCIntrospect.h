@@ -108,6 +108,7 @@
 
 - (void)logRecursiveDescriptionForCurrentView;
 - (void)logRecursiveDescriptionForView:(UIView *)view;
+- (void)createSnapshotImage:(UIView *)view;
 - (void)forceSetNeedsDisplay;
 - (void)forceSetNeedsLayout;
 - (void)forceReloadOfView;
