@@ -499,6 +499,11 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			[self logRecursiveDescriptionForView:self.currentView];
 			return NO;
 		}
+		else if ([string isEqualToString:kDCIntrospectKeysCreateSnapshotImage])
+		{
+			[self createSnapshotImage:self.currentView];
+			return NO;
+		}
 		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsDisplay])
 		{
 			[self forceSetNeedsDisplay];
@@ -846,6 +851,33 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	// [UIView recursiveDescription] is a private method.  This should probably be re-written to avoid any potential problems.
 	NSLog(@"DCIntrospect: %@", [view recursiveDescription]);
 #endif
+}
+
+- (void)createSnapshotImage:(UIView *)view
+{
+  UIGraphicsBeginImageContextWithOptions([view frame].size, NO, 0.);
+  [[view layer] renderInContext:UIGraphicsGetCurrentContext()];
+  UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  if (!viewImage)
+  {
+    return;
+  }
+  
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  if (![paths count])
+  {
+    return;
+  }
+  NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"DCIntrospect"];
+  [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+
+  NSDateFormatter *date_formatter = [[NSDateFormatter alloc] init];
+  [date_formatter  setDateFormat:@"yyyy-MM-d_H-mm-ss.SS"];
+  NSString *date = [date_formatter stringFromDate:[NSDate date]];
+  [date_formatter release];
+  path = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"Snapshot_%@.png", date]];
+  [UIImagePNGRepresentation(viewImage) writeToFile:path atomically:YES];
 }
 
 - (void)forceSetNeedsDisplay
@@ -1335,6 +1367,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Accessibility Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogAccessibilityProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
+		[helpString appendFormat:@"<div><span class='name'>Take Snapshot of View</span><div class='key'>%@</div></div>", kDCIntrospectKeysCreateSnapshotImage];
 		[helpString appendFormat:@"<div><span class='name'>Enter GDB</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterGDB];
 		[helpString appendFormat:@"<div><span class='name'>Move up in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveUpInViewHierarchy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysMoveUpInViewHierarchy];
 		[helpString appendFormat:@"<div><span class='name'>Move back down in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveBackInViewHierarchy isEqualToString:@""]) ? @"page down" : kDCIntrospectKeysMoveBackInViewHierarchy];
