@@ -62,7 +62,6 @@
 // Custom Setters //
 ////////////////////
 
-- (void)setInvokeGestureRecognizer:(UIGestureRecognizer *)newGestureRecognizer;
 - (void)setKeyboardBindingsOn:(BOOL)keyboardBindingsOn;
 
 //////////////////
