@@ -1233,7 +1233,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		NSString *type = [NSString stringWithUTF8String:[value objCType]];
 		if ([type isEqualToString:@"c"])
 		{
-			return ([value boolValue]) ? @"YES" : @"NO";
+			return NSStringFromBOOL([value boolValue]);
 		}
 		else if ([type isEqualToString:@"{CGSize=ff}"])
 		{
@@ -1442,18 +1442,19 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(view.center)];
 		[outputString appendFormat:@"    transform: %@\n", NSStringFromCGAffineTransform(view.transform)];
 		[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" value:[NSNumber numberWithInt:view.autoresizingMask]]];
-		[outputString appendFormat:@"    autoresizesSubviews: %@\n", (view.autoresizesSubviews) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"    autoresizesSubviews: %@\n", NSStringFromBOOL(view.autoresizesSubviews)];
 		[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" value:[NSNumber numberWithInt:view.contentMode]]];
 		[outputString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(view.contentStretch)];
 		[outputString appendFormat:@"    backgroundColor: %@\n", [self describeColor:view.backgroundColor]];
 		[outputString appendFormat:@"    alpha: %.2f | ", view.alpha];
-		[outputString appendFormat:@"opaque: %@ | ", (view.opaque) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"hidden: %@ | ", (view.hidden) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"clips to bounds: %@ | ", (view.clipsToBounds) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", (view.clearsContextBeforeDrawing) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", (view.userInteractionEnabled) ? @"YES" : @"NO"];
-		[outputString appendFormat:@"multipleTouchEnabled: %@\n", (view.multipleTouchEnabled) ? @"YES" : @"NO"];
+		[outputString appendFormat:@"opaque: %@ | ", NSStringFromBOOL(view.opaque)];
+		[outputString appendFormat:@"hidden: %@ | ", NSStringFromBOOL(view.hidden)];
+		[outputString appendFormat:@"clipsToBounds: %@ | ", NSStringFromBOOL(view.clipsToBounds)];
+		[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", NSStringFromBOOL(view.clearsContextBeforeDrawing)];
+		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", NSStringFromBOOL(view.userInteractionEnabled)];
+		[outputString appendFormat:@"multipleTouchEnabled: %@\n", NSStringFromBOOL(view.multipleTouchEnabled)];
 		[outputString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
+        [outputString appendFormat:@"    subviews: %d view%@\n", view.subviews.count, (view.subviews.count == 1 ? @"" : @"s")];
 		
 		[outputString appendString:@"\n"];
 	}
