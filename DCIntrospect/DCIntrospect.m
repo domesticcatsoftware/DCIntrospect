@@ -1454,6 +1454,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", NSStringFromBOOL(view.userInteractionEnabled)];
 		[outputString appendFormat:@"multipleTouchEnabled: %@\n", NSStringFromBOOL(view.multipleTouchEnabled)];
 		[outputString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
+        [outputString appendFormat:@"    superview: %@\n", view.superview];
         [outputString appendFormat:@"    subviews: %d view%@\n", view.subviews.count, (view.subviews.count == 1 ? @"" : @"s")];
 		
 		[outputString appendString:@"\n"];
