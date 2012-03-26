@@ -4,6 +4,12 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+// Returns the NSString representation of the specified BOOL value
+static inline NSString * NSStringFromBOOL(BOOL value)
+{
+    return value ? @"YES" : @"NO";
+}
+
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 #define kDCIntrospectAnimationDuration 0.08
