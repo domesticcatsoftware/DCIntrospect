@@ -762,10 +762,12 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (!self.frameView)
 	{
 		self.frameView = [[[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self] autorelease];
-		[mainWindow addSubview:self.frameView];
 		self.frameView.alpha = 0.0f;
 		[self updateViews];
 	}
+    
+    //window can be changed
+    [mainWindow addSubview:self.frameView];
 	
 	[mainWindow bringSubviewToFront:self.frameView];
 	
@@ -1648,11 +1650,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (UIWindow *)mainWindow
 {
-	NSArray *windows = [[UIApplication sharedApplication] windows];
-	if (windows.count == 0)
-		return nil;
-	
-	return [windows objectAtIndex:0];
+    return [UIApplication sharedApplication].keyWindow;
 }
 
 - (NSMutableArray *)viewsAtPoint:(CGPoint)touchPoint inView:(UIView *)view
