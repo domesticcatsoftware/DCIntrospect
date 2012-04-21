@@ -820,7 +820,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	}
 	
 	if (self.showStatusBarOverlay)
+    {
+        [self.statusBarOverlay updateBarFrame];
 		self.statusBarOverlay.hidden = NO;
+    }
 	else
 		self.statusBarOverlay.hidden = YES;
 }
