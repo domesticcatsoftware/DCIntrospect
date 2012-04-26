@@ -1455,7 +1455,16 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[outputString appendFormat:@"multipleTouchEnabled: %@\n", NSStringFromBOOL(view.multipleTouchEnabled)];
 		[outputString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
         [outputString appendFormat:@"    superview: %@\n", view.superview];
-        [outputString appendFormat:@"    subviews: %d view%@\n", view.subviews.count, (view.subviews.count == 1 ? @"" : @"s")];
+        
+        // get subviews instance info
+        NSMutableArray *subviewsArray = [NSMutableArray arrayWithCapacity:view.subviews.count];
+        for (UIView *subview in view.subviews) 
+        {
+            [subviewsArray addObject:[NSString stringWithFormat:@"<%@: 0x%x>", NSStringFromClass([subview class]), subview]];
+        }
+        
+        // ex: subviews: 3 views [<UIView: 0x23f434f>, <UIButton: 0x43f4ffe>]
+        [outputString appendFormat:@"    subviews: %d view%@ [%@]\n", view.subviews.count, (view.subviews.count == 1 ? @"" : @"s"), [subviewsArray componentsJoinedByString:@", "]];
 		
 		[outputString appendString:@"\n"];
 	}
