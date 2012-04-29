@@ -29,7 +29,6 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 
 @end
 
-#endif
 
 @interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextViewDelegate, UIWebViewDelegate>
 {
@@ -38,6 +37,7 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 @property (nonatomic) BOOL keyboardBindingsOn;									// default: YES
 @property (nonatomic) BOOL showStatusBarOverlay;								// default: YES
 @property (nonatomic, retain) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
+@property (nonatomic) BOOL enableShakeToActivate; // default: YES
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL handleArrowKeys;
@@ -159,3 +159,4 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 - (BOOL)shouldIgnoreView:(UIView *)view;
 
 @end
+#endif

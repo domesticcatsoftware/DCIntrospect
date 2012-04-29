@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		625780B0138A052F004DA77B /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
 		625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
+		92F947A0154D05F400C4E4F8 /* UIWindow+Introspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */; };
 		AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D4136A778000962171 /* UIKit.framework */; };
 		AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D6136A778000962171 /* Foundation.framework */; };
 		AB0D01D9136A778000962171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D8136A778000962171 /* CoreGraphics.framework */; };
@@ -26,6 +27,8 @@
 /* Begin PBXFileReference section */
 		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; name = "UIWindow+Introspector.h"; path = "../../DCIntrospect/UIWindow+Introspector.h"; sourceTree = "<group>"; };
+		92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIWindow+Introspector.m"; path = "../../DCIntrospect/UIWindow+Introspector.m"; sourceTree = "<group>"; };
 		AB0D01D0136A778000962171 /* DCIntrospectDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCIntrospectDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0D01D4136A778000962171 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB0D01D6136A778000962171 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -65,6 +68,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9252A108154D00C7006D47D1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AB0D01E6136A778000962171 /* MainWindow.xib */,
+				625780AF138A052F004DA77B /* circle.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		AB0D01C5136A778000962171 = {
 			isa = PBXGroup;
 			children = (
@@ -99,8 +111,6 @@
 				AB0D01F7136A79A800962171 /* DCIntrospect */,
 				AB0D01E3136A778000962171 /* DCIntrospectDemoAppDelegate.h */,
 				AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */,
-				AB0D01E6136A778000962171 /* MainWindow.xib */,
-				625780AF138A052F004DA77B /* circle.png */,
 				AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */,
 				AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */,
 				AB0D01DB136A778000962171 /* Supporting Files */,
@@ -111,6 +121,7 @@
 		AB0D01DB136A778000962171 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9252A108154D00C7006D47D1 /* Resources */,
 				AB0D01DC136A778000962171 /* DCIntrospectDemo-Info.plist */,
 				AB0D01DD136A778000962171 /* InfoPlist.strings */,
 				AB0D01E0136A778000962171 /* DCIntrospectDemo-Prefix.pch */,
@@ -131,6 +142,8 @@
 				AB0D021E136A9FE000962171 /* DCFrameView.m */,
 				ABDA509E136FDD9300339835 /* DCCrossHairView.h */,
 				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
+				92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */,
+				92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */,
 			);
 			name = DCIntrospect;
 			sourceTree = "<group>";
@@ -205,6 +218,7 @@
 				AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */,
 				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
 				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
+				92F947A0154D05F400C4E4F8 /* UIWindow+Introspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
