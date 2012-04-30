@@ -7,14 +7,13 @@
 //
 
 #import "UIWindow+Introspector.h"
-#import <objc/objc-class.h>
 #import "DCIntrospect.h"
 
 @interface UIWindow (Custom)
 - (void)_sendEvent:(UIEvent *)evt;
 @end
 
-static int gShakeCount = 0; // needs 2 to start/stop (begin/end events)
+static int gShakeCount = 0; // needs 2 to start/stop (motion begin/end events)
 static IMP gOrigSendEvent = nil;
 
 @implementation UIWindow (Introspector)
@@ -24,7 +23,7 @@ static IMP gOrigSendEvent = nil;
     SEL mySendEventSelector = @selector(_sendEvent:);
 
     Method mySendEventMethod = class_getInstanceMethod([UIWindow class], mySendEventSelector);
-     gOrigSendEvent = class_replaceMethod([UIWindow class], origSendEventSelector, method_getImplementation(mySendEventMethod), method_getTypeEncoding(mySendEventMethod));
+    gOrigSendEvent = class_replaceMethod([UIWindow class], origSendEventSelector, method_getImplementation(mySendEventMethod), method_getTypeEncoding(mySendEventMethod));
 }
 
 - (void)_sendEvent:(UIEvent *)event
