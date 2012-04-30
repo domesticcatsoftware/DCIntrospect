@@ -28,6 +28,7 @@ static IMP gOrigSendEvent = nil;
 
 - (void)_sendEvent:(UIEvent *)event
 {
+#ifdef DEBUG
     gOrigSendEvent(self, @selector(sendEvent:), event);
     
     DCIntrospect *introspector = [DCIntrospect sharedIntrospector];
@@ -45,5 +46,6 @@ static IMP gOrigSendEvent = nil;
             }
         }
     }
+#endif
 }
 @end
