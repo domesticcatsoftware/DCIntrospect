@@ -57,6 +57,7 @@ static bool AmIBeingDebugged(void)
 #else
 #define DEBUGGER do { int trapSignal = AmIBeingDebugged () ? SIGINT : SIGSTOP; __asm__ __volatile__ ("pushl %0\npushl %1\npush $0\nmovl %2, %%eax\nint $0x80\nadd $12, %%esp" : : "g" (trapSignal), "g" (getpid ()), "n" (37) : "eax", "cc"); } while (false);
 #endif
+#endif
 
 #ifdef DEBUG
 #define DCLog(M, ...) NSLog(M, ##__VA_ARGS__)
@@ -69,9 +70,6 @@ static bool AmIBeingDebugged(void)
 - (void)takeFirstResponder;
 
 @end
-
-
-DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
 @synthesize keyboardBindingsOn, showStatusBarOverlay, invokeGestureRecognizer;
@@ -91,6 +89,7 @@ DCIntrospect *sharedInstance = nil;
 
 + (void)load
 {
+#ifdef DEBUG
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     NSString *simulatorRoot = [[[NSProcessInfo processInfo] environment] objectForKey:@"IPHONE_SIMULATOR_ROOT"];
     if (simulatorRoot)
@@ -109,6 +108,7 @@ DCIntrospect *sharedInstance = nil;
         }
     }
     [pool drain];
+#endif
 }
 
 static void *originalValueForKeyIMPKey = &originalValueForKeyIMPKey;
@@ -170,6 +170,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 + (DCIntrospect *)sharedIntrospector
 {
+    static DCIntrospect *sharedInstance = nil;
+    
 #ifdef DEBUG
 	if (!sharedInstance)
 	{
@@ -630,11 +632,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysEnterGDB])
 		{
+#ifdef DEBUG
 			UIView *view = self.currentView;
 			view.tag = view.tag;	// suppress the xcode warning about an unused variable.
 			DCLog(@"DCIntrospect: access current view using local 'view' variable.");
 			DEBUGGER;
 			return NO;
+#endif
 		}
 		
 		self.currentView.frame = CGRectMake(floorf(frame.origin.x),
@@ -1664,4 +1668,3 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 }
 
 @end
-#endif
