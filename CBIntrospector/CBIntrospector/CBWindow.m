@@ -9,7 +9,6 @@
 #import "CBWindow.h"
 #import "CBUIViewManager.h"
 #import "CBUIView.h"
-#import "CBSharedConstants.h"
 #import "JSONKit.h"
 
 @interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate>

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UIApplication (Introspector)
-
++ (void)replaceCanonicalSendEvent;
 @end

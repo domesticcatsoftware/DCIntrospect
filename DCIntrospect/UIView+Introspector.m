@@ -9,7 +9,6 @@
 #import "UIView+Introspector.h"
 #import "DCUtility.h"
 #import "JSONKit.h"
-#import "CBSharedConstants.h"
 
 @interface UIView (Custom)
 + (NSString *)filePathWithView:(UIView *)view;

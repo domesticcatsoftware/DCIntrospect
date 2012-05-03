@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/sysctl.h>
-#import "UIWindow+Introspector.h"
+#import "UIApplication+Introspector.h"
 #import "UIView+Introspector.h"
 #import "CBIntrospect.h"
 
@@ -182,7 +182,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
 //		[self workaroundUITextInputTraitsPropertiesBug];
-        [UIWindow replaceCanonicalSendEvent];
+        [UIApplication replaceCanonicalSendEvent];
 	}
 #endif
 	return sharedInstance;

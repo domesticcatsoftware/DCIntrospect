@@ -35,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
 		92CBB0A115521B3C00F2217D /* CBIntrospector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBIntrospector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92CBB0A515521B3C00F2217D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		92CBB0A815521B3C00F2217D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -58,7 +59,6 @@
 		92CBB0FB15521C1100F2217D /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = ../../DCIntrospect/JSONKit.m; sourceTree = "<group>"; };
 		92CBB10015521D3100F2217D /* CBUIViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBUIViewManager.h; sourceTree = "<group>"; };
 		92CBB10115521D3100F2217D /* CBUIViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUIViewManager.m; sourceTree = "<group>"; };
-		92CBB10315521D4900F2217D /* CBSharedConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSharedConstants.h; path = ../../DCIntrospect/CBSharedConstants.h; sourceTree = "<group>"; };
 		92CBB10415521E6100F2217D /* CBUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBUIView.h; sourceTree = "<group>"; };
 		92CBB10515521E6100F2217D /* CBUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUIView.m; sourceTree = "<group>"; };
 		92CBB1071552260400F2217D /* CBWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBWindow.h; sourceTree = "<group>"; };
@@ -178,7 +178,7 @@
 		92CBB0FD15521C1B00F2217D /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				92CBB10315521D4900F2217D /* CBSharedConstants.h */,
+				9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */,
 				92CBB0FE15521C2800F2217D /* Third Party */,
 			);
 			name = "Other Sources";
@@ -499,6 +499,7 @@
 				92CBB0D515521B3C00F2217D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		92CBB0D615521B3C00F2217D /* Build configuration list for PBXNativeTarget "CBIntrospectorTests" */ = {
 			isa = XCConfigurationList;
@@ -507,6 +508,7 @@
 				92CBB0D815521B3C00F2217D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

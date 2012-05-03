@@ -7,7 +7,6 @@
 //
 
 #import "CBUIView.h"
-#import "CBSharedConstants.h"
 #import "JSONKit.h"
 
 @interface CBUIView ()

@@ -10,6 +10,7 @@
 		625780B0138A052F004DA77B /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
 		625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
 		920C426D154DDA38001BC855 /* UIView+Introspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 920C426C154DDA38001BC855 /* UIView+Introspector.m */; };
+		9233AA591552F26D000BFF5F /* UIApplication+Introspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 9233AA581552F26D000BFF5F /* UIApplication+Introspector.m */; };
 		92D478A7154F991E00AD49BE /* DCUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D478A6154F991E00AD49BE /* DCUtility.m */; };
 		92D950621551F80300C87FD7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D478A9154F9C6E00AD49BE /* JSONKit.m */; };
 		92D950691551FDF400C87FD7 /* CBIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D950681551FDF400C87FD7 /* CBIntrospect.m */; };
@@ -33,7 +34,9 @@
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		920C426B154DDA38001BC855 /* UIView+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Introspector.h"; path = "../../DCIntrospect/UIView+Introspector.h"; sourceTree = "<group>"; };
 		920C426C154DDA38001BC855 /* UIView+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Introspector.m"; path = "../../DCIntrospect/UIView+Introspector.m"; sourceTree = "<group>"; };
-		92CBB0FF15521CA200F2217D /* CBSharedConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSharedConstants.h; path = ../../DCIntrospect/CBSharedConstants.h; sourceTree = "<group>"; };
+		9233AA571552F26D000BFF5F /* UIApplication+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIApplication+Introspector.h"; path = "../../DCIntrospect/UIApplication+Introspector.h"; sourceTree = "<group>"; };
+		9233AA581552F26D000BFF5F /* UIApplication+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+Introspector.m"; path = "../../DCIntrospect/UIApplication+Introspector.m"; sourceTree = "<group>"; };
+		92CBB0FF15521CA200F2217D /* CBSharedHeader.h */ = {isa = PBXFileReference; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
 		92D478A5154F991E00AD49BE /* DCUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUtility.h; path = ../../DCIntrospect/DCUtility.h; sourceTree = "<group>"; };
 		92D478A6154F991E00AD49BE /* DCUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUtility.m; path = ../../DCIntrospect/DCUtility.m; sourceTree = "<group>"; };
 		92D478A8154F9C6E00AD49BE /* JSONKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../DCIntrospect/JSONKit.h; sourceTree = "<group>"; };
@@ -88,6 +91,8 @@
 				92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */,
 				920C426B154DDA38001BC855 /* UIView+Introspector.h */,
 				920C426C154DDA38001BC855 /* UIView+Introspector.m */,
+				9233AA571552F26D000BFF5F /* UIApplication+Introspector.h */,
+				9233AA581552F26D000BFF5F /* UIApplication+Introspector.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -104,7 +109,7 @@
 		92D478AA154F9C7700AD49BE /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				92CBB0FF15521CA200F2217D /* CBSharedConstants.h */,
+				92CBB0FF15521CA200F2217D /* CBSharedHeader.h */,
 				92D478A8154F9C6E00AD49BE /* JSONKit.h */,
 				92D478A9154F9C6E00AD49BE /* JSONKit.m */,
 			);
@@ -262,6 +267,7 @@
 				92D478A7154F991E00AD49BE /* DCUtility.m in Sources */,
 				92D950621551F80300C87FD7 /* JSONKit.m in Sources */,
 				92D950691551FDF400C87FD7 /* CBIntrospect.m in Sources */,
+				9233AA591552F26D000BFF5F /* UIApplication+Introspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
