@@ -13,7 +13,6 @@
 - (void)_sendEvent:(UIEvent *)evt;
 @end
 
-static int gShakeCount = 0; // needs 2 to start/stop (motion begin/end events)
 static IMP gOrigSendEvent = nil;
 
 @implementation UIWindow (Introspector)
@@ -29,6 +28,8 @@ static IMP gOrigSendEvent = nil;
 - (void)_sendEvent:(UIEvent *)event
 {
 #ifdef DEBUG
+    static int gShakeCount = 0; // needs 2 to start/stop (motion begin/end events)
+    
     gOrigSendEvent(self, @selector(sendEvent:), event);
     
     DCIntrospect *introspector = [DCIntrospect sharedIntrospector];

@@ -62,7 +62,7 @@ static bool AmIBeingDebugged(void)
 #ifdef DEBUG
 #define DCLog(M, ...) NSLog(M, ##__VA_ARGS__)
 #else
-#define DCLog ;
+#define DCLog(M, ...) ({});
 #endif
 
 @interface DCIntrospect ()
@@ -676,7 +676,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	}
 	
 	if (outputString.length == 0)
+    {
 		DCLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
+    }
 	else
 		printf("\n\n%s\n", [outputString UTF8String]);
 }
