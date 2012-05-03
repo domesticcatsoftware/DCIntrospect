@@ -33,6 +33,7 @@
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		920C426B154DDA38001BC855 /* UIView+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Introspector.h"; path = "../../DCIntrospect/UIView+Introspector.h"; sourceTree = "<group>"; };
 		920C426C154DDA38001BC855 /* UIView+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Introspector.m"; path = "../../DCIntrospect/UIView+Introspector.m"; sourceTree = "<group>"; };
+		92CBB0FF15521CA200F2217D /* CBSharedConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSharedConstants.h; path = ../../DCIntrospect/CBSharedConstants.h; sourceTree = "<group>"; };
 		92D478A5154F991E00AD49BE /* DCUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUtility.h; path = ../../DCIntrospect/DCUtility.h; sourceTree = "<group>"; };
 		92D478A6154F991E00AD49BE /* DCUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUtility.m; path = ../../DCIntrospect/DCUtility.m; sourceTree = "<group>"; };
 		92D478A8154F9C6E00AD49BE /* JSONKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../DCIntrospect/JSONKit.h; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 		92D478AA154F9C7700AD49BE /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				92CBB0FF15521CA200F2217D /* CBSharedConstants.h */,
 				92D478A8154F9C6E00AD49BE /* JSONKit.h */,
 				92D478A9154F9C6E00AD49BE /* JSONKit.m */,
 			);

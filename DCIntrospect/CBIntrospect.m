@@ -52,7 +52,7 @@
 {
     BOOL doSync = NO;
     // check the mod time
-    const char *filepath = [[self.currentView syncFilePath] cStringUsingEncoding:NSASCIIStringEncoding];
+    const char *filepath = [[self.currentView syncFilePath] cStringUsingEncoding:NSUTF8StringEncoding];
     struct stat sb;
     if (stat(filepath, &sb) == 0)
     {

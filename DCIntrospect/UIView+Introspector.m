@@ -9,15 +9,7 @@
 #import "UIView+Introspector.h"
 #import "DCUtility.h"
 #import "JSONKit.h"
-
-// stored json keys
-static NSString * const kUIViewClassNameKey = @"class";
-static NSString * const kUIViewMemoryAddressKey = @"memaddress";
-static NSString * const kUIViewHiddenKey = @"hidden";
-static NSString * const kUIViewAlphaKey = @"alpha";
-static NSString * const kUIViewBoundsKey = @"bounds";
-static NSString * const kUIViewCenterKey = @"center";
-static NSString * const kUIViewFrameKey = @"frame";
+#import "CBSharedConstants.h"
 
 @interface UIView (Custom)
 + (NSString *)filePathWithView:(UIView *)view;
@@ -29,7 +21,7 @@ static NSString * const kUIViewFrameKey = @"frame";
 + (NSString *)filePathWithView:(UIView *)view;
 {
 //    NSString *filename = [NSString stringWithFormat:@"%@.%x.view.json", NSStringFromClass([view class]), view]; // gen unique filenames
-    NSString *filename = @"current.view.json";
+    NSString *filename = kUIViewFileName;
     return [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:filename];
 }
 
