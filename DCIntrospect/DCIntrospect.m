@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <sys/sysctl.h>
 #import "UIWindow+Introspector.h"
+#import "UIView+Introspector.h"
+#import "CBIntrospect.h"
 
 #ifdef DEBUG
 // break into GDB code complied from following sources: 
@@ -79,7 +81,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize handleArrowKeys;
 @synthesize viewOutlines, highlightNonOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
-@synthesize inputTextView;
+@synthesize inputTextView = _inputTextView;
 @synthesize frameView;
 @synthesize objectNames;
 @synthesize currentView, originalFrame, originalAlpha;
@@ -173,7 +175,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 #ifdef DEBUG
 	if (!sharedInstance)
 	{
-		sharedInstance = [[DCIntrospect alloc] init];
+		sharedInstance = [[[self class] alloc] init];
         sharedInstance.enableShakeToActivate = YES;
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
@@ -184,29 +186,33 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	return sharedInstance;
 }
 
+- (UITextView *)inputTextView
+{
+    if (_inputTextView == nil)
+    {
+        _inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
+		_inputTextView.delegate = self;
+		_inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+		_inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		_inputTextView.inputView = [[[UIView alloc] init] autorelease];
+		_inputTextView.scrollsToTop = NO;
+		[[self mainWindow] addSubview:_inputTextView];
+    }
+    return _inputTextView;
+}
+
 - (void)start
 {
 	UIWindow *mainWindow = [self mainWindow];
 	if (!mainWindow)
 	{
-		DCLog(@"DCIntrospect: Couldn't setup.  No main window?");
+		DCLog(@"DCIntrospect: Couldn't setup. No main window?");
 		return;
 	}
 	
 	if (!self.statusBarOverlay)
 	{
 		self.statusBarOverlay = [[[DCStatusBarOverlay alloc] init] autorelease];
-	}
-	
-	if (!self.inputTextView)
-	{
-		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
-		self.inputTextView.delegate = self;
-		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
-		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
-		self.inputTextView.scrollsToTop = NO;
-		[mainWindow addSubview:self.inputTextView];
 	}
 	
 	if (self.keyboardBindingsOn)
@@ -322,7 +328,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
-		self.currentView = nil;
+        [self selectView:nil];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidEnd
 															object:nil];
@@ -347,7 +353,14 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (void)selectView:(UIView *)view
 {
+    [self onWillDeselectView:self.currentView];
+    [self onWillSelectView:view];
 	self.currentView = view;
+    [self onDidSelectView:view];
+    
+    if (view == nil)
+        return; // nil, if deactivating introspector
+    
 	self.originalFrame = self.currentView.frame;
 	self.originalAlpha = self.currentView.alpha;
 	
@@ -357,7 +370,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[self.frameView setNeedsDisplay];
 		self.viewOutlines = NO;
 	}
-	
+
 	[self updateFrameView];
 	[self updateStatusBar];
 	
@@ -435,13 +448,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string
 {
 	if ([string isEqualToString:kDCIntrospectKeysDisableForPeriod])
-  {
-    [self setKeyboardBindingsOn:NO];
-    [[self inputTextView] resignFirstResponder];
-    DCLog(@"DCIntrospect: Disabled for %.1f seconds", kDCIntrospectTemporaryDisableDuration);
-    [self performSelector:@selector(setKeyboardBindingsOn:) withObject:[NSNumber numberWithFloat:YES] afterDelay:kDCIntrospectTemporaryDisableDuration];
-    return NO;
-  }
+    {
+        [self setKeyboardBindingsOn:NO];
+        [[self inputTextView] resignFirstResponder];
+        DCLog(@"DCIntrospect: Disabled for %.1f seconds", kDCIntrospectTemporaryDisableDuration);
+        [self performSelector:@selector(setKeyboardBindingsOn:) withObject:[NSNumber numberWithFloat:YES] afterDelay:kDCIntrospectTemporaryDisableDuration];
+        return NO;
+    }
 
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
@@ -690,7 +703,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (NSString *)nameForObject:(id)object
 {
-	__block NSString *objectName = [NSString stringWithFormat:@"%@", [object class]];
+	__block NSString *objectName = NSStringFromClass([object class]);
 	if (!self.objectNames)
 		return objectName;
 	
@@ -1661,6 +1674,23 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (view == self.frameView || view == self.inputTextView)
 		return YES;
 	return NO;
+}
+
+#pragma mark - Select View Delegate
+
+- (void)onDidSelectView:(UIView *)view
+{
+    // empty
+}
+
+- (void)onWillSelectView:(UIView *)view
+{
+    // empty
+}
+
+- (void)onWillDeselectView:(UIView *)view
+{
+    // empty
 }
 
 @end

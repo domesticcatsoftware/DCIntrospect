@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		625780B0138A052F004DA77B /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
 		625780B2138A0EBD004DA77B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
+		920C426D154DDA38001BC855 /* UIView+Introspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 920C426C154DDA38001BC855 /* UIView+Introspector.m */; };
+		92D478A7154F991E00AD49BE /* DCUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D478A6154F991E00AD49BE /* DCUtility.m */; };
+		92D950621551F80300C87FD7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D478A9154F9C6E00AD49BE /* JSONKit.m */; };
+		92D950691551FDF400C87FD7 /* CBIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = 92D950681551FDF400C87FD7 /* CBIntrospect.m */; };
 		92F947A0154D05F400C4E4F8 /* UIWindow+Introspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */; };
 		AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D4136A778000962171 /* UIKit.framework */; };
 		AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D6136A778000962171 /* Foundation.framework */; };
@@ -27,7 +31,15 @@
 /* Begin PBXFileReference section */
 		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; name = "UIWindow+Introspector.h"; path = "../../DCIntrospect/UIWindow+Introspector.h"; sourceTree = "<group>"; };
+		920C426B154DDA38001BC855 /* UIView+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Introspector.h"; path = "../../DCIntrospect/UIView+Introspector.h"; sourceTree = "<group>"; };
+		920C426C154DDA38001BC855 /* UIView+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Introspector.m"; path = "../../DCIntrospect/UIView+Introspector.m"; sourceTree = "<group>"; };
+		92D478A5154F991E00AD49BE /* DCUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUtility.h; path = ../../DCIntrospect/DCUtility.h; sourceTree = "<group>"; };
+		92D478A6154F991E00AD49BE /* DCUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUtility.m; path = ../../DCIntrospect/DCUtility.m; sourceTree = "<group>"; };
+		92D478A8154F9C6E00AD49BE /* JSONKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../DCIntrospect/JSONKit.h; sourceTree = "<group>"; };
+		92D478A9154F9C6E00AD49BE /* JSONKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = ../../DCIntrospect/JSONKit.m; sourceTree = "<group>"; };
+		92D950671551FDF400C87FD7 /* CBIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBIntrospect.h; path = ../../DCIntrospect/CBIntrospect.h; sourceTree = "<group>"; };
+		92D950681551FDF400C87FD7 /* CBIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBIntrospect.m; path = ../../DCIntrospect/CBIntrospect.m; sourceTree = "<group>"; };
+		92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIWindow+Introspector.h"; path = "../../DCIntrospect/UIWindow+Introspector.h"; sourceTree = "<group>"; };
 		92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIWindow+Introspector.m"; path = "../../DCIntrospect/UIWindow+Introspector.m"; sourceTree = "<group>"; };
 		AB0D01D0136A778000962171 /* DCIntrospectDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCIntrospectDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0D01D4136A778000962171 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -68,6 +80,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		920C426F154DDA3D001BC855 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */,
+				92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */,
+				920C426B154DDA38001BC855 /* UIView+Introspector.h */,
+				920C426C154DDA38001BC855 /* UIView+Introspector.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		9252A108154D00C7006D47D1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +98,15 @@
 				625780AF138A052F004DA77B /* circle.png */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		92D478AA154F9C7700AD49BE /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				92D478A8154F9C6E00AD49BE /* JSONKit.h */,
+				92D478A9154F9C6E00AD49BE /* JSONKit.m */,
+			);
+			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 		AB0D01C5136A778000962171 = {
@@ -113,6 +145,7 @@
 				AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */,
 				AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */,
 				AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */,
+				92D478AA154F9C7700AD49BE /* Other Sources */,
 				AB0D01DB136A778000962171 /* Supporting Files */,
 			);
 			path = DCIntrospectDemo;
@@ -136,14 +169,17 @@
 				ABDA51091370E79100339835 /* DCIntrospectSettings.h */,
 				AB0D0212136A9E8D00962171 /* DCIntrospect.h */,
 				AB0D0213136A9E8D00962171 /* DCIntrospect.m */,
+				92D950671551FDF400C87FD7 /* CBIntrospect.h */,
+				92D950681551FDF400C87FD7 /* CBIntrospect.m */,
 				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
 				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
 				AB0D021D136A9FE000962171 /* DCFrameView.h */,
 				AB0D021E136A9FE000962171 /* DCFrameView.m */,
 				ABDA509E136FDD9300339835 /* DCCrossHairView.h */,
 				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
-				92F9479E154D05F400C4E4F8 /* UIWindow+Introspector.h */,
-				92F9479F154D05F400C4E4F8 /* UIWindow+Introspector.m */,
+				92D478A5154F991E00AD49BE /* DCUtility.h */,
+				92D478A6154F991E00AD49BE /* DCUtility.m */,
+				920C426F154DDA3D001BC855 /* Extensions */,
 			);
 			name = DCIntrospect;
 			sourceTree = "<group>";
@@ -174,7 +210,8 @@
 		AB0D01C7136A778000962171 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Christopher Bess";
 			};
 			buildConfigurationList = AB0D01CA136A778000962171 /* Build configuration list for PBXProject "DCIntrospectDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -219,6 +256,10 @@
 				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
 				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
 				92F947A0154D05F400C4E4F8 /* UIWindow+Introspector.m in Sources */,
+				920C426D154DDA38001BC855 /* UIView+Introspector.m in Sources */,
+				92D478A7154F991E00AD49BE /* DCUtility.m in Sources */,
+				92D950621551F80300C87FD7 /* JSONKit.m in Sources */,
+				92D950691551FDF400C87FD7 /* CBIntrospect.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +332,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
@@ -306,6 +348,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";

@@ -158,5 +158,9 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 - (BOOL)view:(UIView *)view containsSubview:(UIView *)subview;
 - (BOOL)shouldIgnoreView:(UIView *)view;
 
+#pragma mark - Select View Delegate
+- (void)onWillDeselectView:(UIView *)view;
+- (void)onWillSelectView:(UIView *)view;
+- (void)onDidSelectView:(UIView *)view;
 @end
 #endif

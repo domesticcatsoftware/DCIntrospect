@@ -6,7 +6,7 @@
 
 #import "DCIntrospectDemoAppDelegate.h"
 #import "DCIntrospectDemoViewController.h"
-#import "DCIntrospect.h"
+#import "CBIntrospect.h"
 
 @implementation DCIntrospectDemoAppDelegate
 
@@ -30,7 +30,7 @@
 	[self.window makeKeyAndVisible];
 
 	// always insert this AFTER makeKeyAndVisible so statusBarOrientation is reported correctly.
-	[[DCIntrospect sharedIntrospector] start];
+	[[CBIntrospect sharedIntrospector] start];
 
 	return YES;
 }
