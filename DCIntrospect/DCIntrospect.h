@@ -21,8 +21,6 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
 
-#ifdef DEBUG
-
 @interface UIView (debug)
 
 - (NSString *)recursiveDescription;
@@ -163,4 +161,3 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 - (void)onWillSelectView:(UIView *)view;
 - (void)onDidSelectView:(UIView *)view;
 @end
-#endif
