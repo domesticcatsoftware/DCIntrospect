@@ -378,6 +378,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	
 	if (![self.currentViewHistory containsObject:self.currentView])
 		[self.currentViewHistory addObject:self.currentView];
+    
+    // resign then activate/focus to ensure keyboard events are consumed
+    [self.inputTextView resignFirstResponder]; // or call in application inactive notification
+    [self.inputTextView becomeFirstResponder];
 }
 
 - (void)statusBarTapped
@@ -460,7 +464,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
-		[self invokeIntrospector];
+        // disabled so as not to conflict with UIApplication override
+//		[self invokeIntrospector];
 		return NO;
 	}
 	
