@@ -4,6 +4,12 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
+// Returns the NSString representation of the specified BOOL value
+static inline NSString * NSStringFromBOOL(BOOL value)
+{
+    return value ? @"YES" : @"NO";
+}
+
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 #define kDCIntrospectAnimationDuration 0.08
@@ -15,15 +21,12 @@
 #import "DCFrameView.h"
 #import "DCStatusBarOverlay.h"
 
-#ifdef DEBUG
-
 @interface UIView (debug)
 
 - (NSString *)recursiveDescription;
 
 @end
 
-#endif
 
 @interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextViewDelegate, UIWebViewDelegate>
 {
@@ -32,6 +35,7 @@
 @property (nonatomic) BOOL keyboardBindingsOn;									// default: YES
 @property (nonatomic) BOOL showStatusBarOverlay;								// default: YES
 @property (nonatomic, retain) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
+@property (nonatomic) BOOL enableShakeToActivate; // default: YES
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL handleArrowKeys;
