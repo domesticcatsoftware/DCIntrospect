@@ -7,6 +7,7 @@
 //
 
 #import "CBUtility.h"
+#import "JSONKit.h"
 
 @implementation CBUtility
 + (CBUtility *)sharedInstance
@@ -27,5 +28,18 @@
 	
 	[alert runModal];
 	[alert release];
+}
+
+- (NSDictionary *)dictionaryWithJSONFilePath:(NSString *)path
+{
+    NSError *error = nil;
+    NSString *jsonString = [[[NSString alloc] initWithContentsOfFile:path
+                                                            encoding:NSUTF8StringEncoding
+                                                               error:&error] autorelease];
+    if (error)
+        return nil;
+    
+    NSDictionary *jsonInfo = [jsonString objectFromJSONString];
+    return jsonInfo;
 }
 @end

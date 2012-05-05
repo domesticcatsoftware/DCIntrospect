@@ -11,7 +11,7 @@
 #import "CBUIView.h"
 #import "JSONKit.h"
 
-@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate>
+@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
 @property (assign) IBOutlet NSOutlineView *treeView;
 @property (assign) IBOutlet NSButton *headerButton;
 @property (assign) IBOutlet NSButton *hiddenSwitch;
@@ -21,7 +21,8 @@
 @property (assign) IBOutlet NSTextField *topPositionTextField;
 @property (assign) IBOutlet NSTextField *leftPositionTextField;
 @property (nonatomic, readonly) CBUIViewManager *viewManager;
-- (void)loadControls;
+@property (nonatomic, copy) NSString *syncDirectoryPath;
+- (void)loadCurrentViewControls;
 @end
 
 @implementation CBWindow
@@ -34,12 +35,18 @@
 @synthesize topPositionTextField;
 @synthesize leftPositionTextField;
 @synthesize viewManager = _viewManager;
+@synthesize treeContents = _treeContents;
+@synthesize syncDirectoryPath;
 
 - (void)dealloc
 {
+    [_treeContents release];
     [_viewManager release];
+    self.syncDirectoryPath = nil;
     [super dealloc];
 }
+
+#pragma mark - Properties
 
 - (CBUIViewManager *)viewManager
 {
@@ -50,6 +57,8 @@
     }
     return _viewManager;
 }
+
+#pragma mark - General Overrides
 
 - (void)awakeFromNib
 {
@@ -88,6 +97,8 @@
     return YES;
 }
 
+#pragma mark - Drag & Drop
+
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
     return NSDragOperationCopy;
@@ -106,19 +117,26 @@
         BOOL isDir;
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && isDir)
         {
+            self.syncDirectoryPath = filePath;
+            
             // process file
             NSString *syncFilePath = [filePath stringByAppendingPathComponent:kCBCurrentViewFileName];
-            NSError *error = nil;
-            NSString *jsonString = [NSString stringWithContentsOfFile:syncFilePath
-                                                             encoding:NSUTF8StringEncoding
-                                                                error:&error];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:syncFilePath])
+            {
+                NSError *error = nil;
+                NSString *jsonString = [NSString stringWithContentsOfFile:syncFilePath
+                                                                 encoding:NSUTF8StringEncoding
+                                                                    error:&error];
+                
+                NSDictionary *jsonInfo = [jsonString objectFromJSONString];
+                self.viewManager.currentView = [[CBUIView alloc] initWithJSON:jsonInfo];
+                self.viewManager.currentView.syncFilePath = syncFilePath;
+                [self.viewManager sync];
+                
+                [self loadCurrentViewControls];
+            }
             
-            NSDictionary *jsonInfo = [jsonString objectFromJSONString];
-            self.viewManager.currentView = [[CBUIView alloc] initWithJSON:jsonInfo];
-            self.viewManager.currentView.syncFilePath = syncFilePath;
-            [self.viewManager sync];
-            
-            [self loadControls];
+            [self reloadTree];
         }
         else
         {
@@ -129,7 +147,9 @@
     return NO;
 }
 
-- (void)loadControls
+#pragma mark - Misc
+
+- (void)loadCurrentViewControls
 {
     CBUIView *view = self.viewManager.currentView;
     
@@ -144,6 +164,15 @@
     self.alphaSlider.floatValue = view.alpha * 100;
 }
 
+- (void)reloadTree
+{
+    // load json dictionary from disk
+    NSString *filePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBTreeDumpFileName];
+    NSDictionary *treeInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:filePath];
+    self.treeContents = treeInfo;
+    [self.treeView reloadData];
+}
+
 #pragma mark - CBUIViewManagerDelegate
 
 - (void)viewManagerSavedViewToDisk:(CBUIViewManager *)manager
@@ -153,7 +182,7 @@
 
 - (void)viewManagerUpdatedViewFromDisk:(CBUIViewManager *)manager
 {
-    [self loadControls];
+    [self loadCurrentViewControls];
 }
 
 - (void)viewManagerClearedView:(CBUIViewManager *)manager
@@ -163,5 +192,43 @@
     
     self.alphaSlider.floatValue = 100;
     self.hiddenSwitch.state = NSOffState;
+}
+
+#pragma mark - NSOutlineDataSource
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
+    if (!item)
+        item = self.treeContents;
+    
+    return [[item valueForKey:kUIViewSubviewsKey] count];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
+    if (!item)
+        item = self.treeContents;
+    
+    int count = [[item valueForKey:kUIViewSubviewsKey] count];
+    return count != 0;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+    if (!item)
+        item = self.treeContents;
+    
+    NSArray *items = [item valueForKey:kUIViewSubviewsKey];
+    return [items objectAtIndex:index];
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    if (!item)
+        item = self.treeContents;
+    
+    NSString *name = [item valueForKey:kUIViewClassNameKey];
+    if ([name hasPrefix:@"UI"])
+        name = [name substringFromIndex:2];
+    return name;
 }
 @end

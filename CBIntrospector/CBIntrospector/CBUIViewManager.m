@@ -70,11 +70,7 @@
     else if (doSync)
     {
         // get the view info
-        NSError *error = nil;
-        NSString *jsonString = [[NSString alloc] initWithContentsOfFile:[self.currentView syncFilePath]
-                                                               encoding:NSUTF8StringEncoding
-                                                                  error:&error];
-        NSDictionary *jsonInfo = [jsonString objectFromJSONString];
+        NSDictionary *jsonInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:self.currentView.syncFilePath];
         
         // update the current view
         if ([self.currentView updateWithJSON:jsonInfo])
@@ -82,8 +78,6 @@
             // success
             [self.delegate viewManagerUpdatedViewFromDisk:self];
         }
-        
-        [jsonString release];
     }
     
     // store last mod time

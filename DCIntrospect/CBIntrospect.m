@@ -12,11 +12,26 @@
 #import "JSONKit.h"
 
 @interface CBIntrospect ()
+{
+    NSArray *_ignoreDumpSubviews;
+}
 - (void)sync;
 @end
 
 @implementation CBIntrospect
 @synthesize syncFileSystemState = _syncFileSystemState;
+
+- (id)init
+{
+    self = [super init];
+    if (self) 
+    {
+        
+    }
+    return self;
+}
+
+#pragma mark - Properties
 
 - (void)setSyncFileSystemState:(CBIntrospectSyncFileSystemState)syncFileSystemState
 {
@@ -38,6 +53,8 @@
             break;
     }
 }
+
+#pragma mark - Sync
 
 - (void)sync
 {
@@ -86,6 +103,8 @@
     _lastModTime = sb.st_mtimespec;
 }
 
+#pragma mark - Misc
+
 - (BOOL)updateCurrentViewWithMemoryAddress:(NSString *)memAddress
 {
     // if mem address different than current view, then get mem address of the target view
@@ -102,6 +121,16 @@
     }
     
     return NO;
+}
+
+- (void)setupIgnoreDumpViews
+{
+    // an array of NSString objects that represent the class name of each
+    // UIView class that will NOT be traversed during a view tree dump
+    _ignoreDumpSubviews = [NSArray arrayWithObjects:
+                           @"UISlider",
+                           @"UITableViewCell",
+                           nil];
 }
 
 #pragma mark - Overrides
@@ -147,12 +176,30 @@
     }
 }
 
-#pragma mark - Traverse Subview
+#pragma mark - Traverse Subviews
+
+- (BOOL)canDumpView:(UIView *)view
+{
+    NSString *className = NSStringFromClass([view class]);
+    if ([className hasPrefix:@"_"])
+        return YES;
+    return NO;
+}
+
+- (BOOL)canDumpSubviewsOfView:(UIView *)view
+{
+    NSString *className = NSStringFromClass([view class]);
+    for (NSString *name in _ignoreDumpSubviews)
+    {
+        if ([name isEqualToString:className])
+            return NO;
+    }
+    return YES;
+}
 
 - (void)dumpWindowViewTree
 {
-    NSMutableDictionary *treeDictionary = [NSMutableDictionary dictionaryWithCapacity:10];
-    [treeDictionary setObject:self.mainWindow.dictionaryRepresentation forKey:self.mainWindow.memoryAddress];
+    NSMutableDictionary *treeDictionary = [self.mainWindow.dictionaryRepresentation mutableCopy];
     
     [self dumpSubviewsOfRootView:self.mainWindow toDictionary:treeDictionary];
     
@@ -160,6 +207,7 @@
     NSString *jsonString = [treeDictionary JSONString];
     NSString *path = [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
     [[DCUtility sharedInstance] writeString:jsonString toPath:path];
+    [treeDictionary release];
 }
 
 - (void)dumpSubviewsOfRootView:(UIView *)rootView toDictionary:(NSMutableDictionary *)treeInfo
@@ -172,11 +220,17 @@
         if ([self shouldIgnoreView:view])
             continue;
         
+        if ([self canDumpView:view])
+            continue;
+        
         // add subview info to root view dictionary
-        NSMutableDictionary *viewInfo = [NSMutableDictionary dictionaryWithObject:view.dictionaryRepresentation forKey:view.memoryAddress];
+        NSMutableDictionary *viewInfo = [view.dictionaryRepresentation mutableCopy];
         [viewArray addObject:viewInfo];
         
-        [self dumpSubviewsOfRootView:view toDictionary:viewInfo];
+        if ([self canDumpSubviewsOfView:view])
+            [self dumpSubviewsOfRootView:view toDictionary:viewInfo];
+        
+        [viewInfo release];
     }
     
     [treeInfo setObject:viewArray forKey:kUIViewSubviewsKey];

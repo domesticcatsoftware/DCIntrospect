@@ -9,5 +9,5 @@
 #import <Cocoa/Cocoa.h>
 
 @interface CBWindow : NSWindow
-
+@property (nonatomic, retain) NSDictionary *treeContents;
 @end

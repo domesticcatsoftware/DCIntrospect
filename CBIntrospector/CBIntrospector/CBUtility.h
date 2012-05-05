@@ -12,4 +12,5 @@
 + (CBUtility *)sharedInstance;
 
 - (void)showMessageBoxWithString:(NSString *)msg;
+- (NSDictionary *)dictionaryWithJSONFilePath:(NSString *)path;
 @end
