@@ -12,6 +12,7 @@
 #import "JSONKit.h"
 
 @interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate>
+@property (assign) IBOutlet NSOutlineView *treeView;
 @property (assign) IBOutlet NSButton *headerButton;
 @property (assign) IBOutlet NSButton *hiddenSwitch;
 @property (assign) IBOutlet NSSlider *alphaSlider;
@@ -24,6 +25,7 @@
 @end
 
 @implementation CBWindow
+@synthesize treeView;
 @synthesize headerButton;
 @synthesize hiddenSwitch;
 @synthesize alphaSlider;
@@ -105,7 +107,7 @@
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && isDir)
         {
             // process file
-            NSString *syncFilePath = [filePath stringByAppendingPathComponent:kUIViewFileName];
+            NSString *syncFilePath = [filePath stringByAppendingPathComponent:kCBCurrentViewFileName];
             NSError *error = nil;
             NSString *jsonString = [NSString stringWithContentsOfFile:syncFilePath
                                                              encoding:NSUTF8StringEncoding
