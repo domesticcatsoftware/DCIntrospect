@@ -68,10 +68,15 @@
                                                                   error:&error];
         NSDictionary *jsonInfo = [jsonString objectFromJSONString];
         
-        // update the current view
-        if ([self.currentView updateWithJSON:jsonInfo])
-        {
-            [self updateFrameView];
+        // if the mem address in the current view json is different, then point `self.currentView`
+        // to the target memory address
+        if (![self updateCurrentViewWithMemoryAddress:[jsonInfo valueForKey:kUIViewMemoryAddressKey]])
+        { // the current view did not change, then update the current view
+            // update the current view
+            if ([self.currentView updateWithJSON:jsonInfo])
+            {
+                [self updateFrameView];
+            }
         }
         
         [jsonString release];
@@ -79,6 +84,24 @@
     
     // store last mod time
     _lastModTime = sb.st_mtimespec;
+}
+
+- (BOOL)updateCurrentViewWithMemoryAddress:(NSString *)memAddress
+{
+    // if mem address different than current view, then get mem address of the target view
+    if (![memAddress isEqualToString:self.currentView.memoryAddress])
+    {
+        // convert the memaddres to a pointer
+        unsigned addr = 0;
+        [[NSScanner scannerWithString:memAddress] scanHexInt:&addr];
+        
+        UIView *view = (id)addr;
+        
+        [self selectView:view];
+        return YES;
+    }
+    
+    return NO;
 }
 
 #pragma mark - Overrides
@@ -106,5 +129,56 @@
     {
         [UIView storeView:self.currentView];
     }
+}
+
+- (void)invokeIntrospector
+{
+    [super invokeIntrospector];
+    
+    if (self.on)
+    {
+        [self dumpWindowViewTree];
+    }
+    else
+    {
+        // remove the view tree json
+        NSString *path = [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
+        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+    }
+}
+
+#pragma mark - Traverse Subview
+
+- (void)dumpWindowViewTree
+{
+    NSMutableDictionary *treeDictionary = [NSMutableDictionary dictionaryWithCapacity:10];
+    [treeDictionary setObject:self.mainWindow.dictionaryRepresentation forKey:self.mainWindow.memoryAddress];
+    
+    [self dumpSubviewsOfRootView:self.mainWindow toDictionary:treeDictionary];
+    
+    // write json to disk
+    NSString *jsonString = [treeDictionary JSONString];
+    NSString *path = [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
+    [[DCUtility sharedInstance] writeString:jsonString toPath:path];
+}
+
+- (void)dumpSubviewsOfRootView:(UIView *)rootView toDictionary:(NSMutableDictionary *)treeInfo
+{
+    NSMutableArray *viewArray = [NSMutableArray arrayWithCapacity:rootView.subviews.count];
+    
+    // traverse subviews
+    for (UIView *view in rootView.subviews)
+    {
+        if ([self shouldIgnoreView:view])
+            continue;
+        
+        // add subview info to root view dictionary
+        NSMutableDictionary *viewInfo = [NSMutableDictionary dictionaryWithObject:view.dictionaryRepresentation forKey:view.memoryAddress];
+        [viewArray addObject:viewInfo];
+        
+        [self dumpSubviewsOfRootView:view toDictionary:viewInfo];
+    }
+    
+    [treeInfo setObject:viewArray forKey:kUIViewSubviewsKey];
 }
 @end

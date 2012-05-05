@@ -9,9 +9,11 @@
 #ifndef CBIntrospector_CBSharedConstants_h
 #define CBIntrospector_CBSharedConstants_h
 
-static NSString *const kUIViewFileName = @"current.view.json";
+static NSString *const kCBCurrentViewFileName = @"current.view.json";
+static NSString * const kCBTreeDumpFileName = @"viewtree.dump.json";
 
 // stored json keys
+static NSString * const kUIViewSubviewsKey = @"subviews";
 static NSString * const kUIViewClassNameKey = @"class";
 static NSString * const kUIViewMemoryAddressKey = @"memaddress";
 static NSString * const kUIViewHiddenKey = @"hidden";

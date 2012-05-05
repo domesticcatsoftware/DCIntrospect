@@ -27,4 +27,19 @@
 	
 	return libraryDirectory;
 }
+
+- (BOOL)writeString:(NSString *)string toPath:(NSString *)path
+{
+    NSError *error = nil;
+    
+    // store the json file
+    [string writeToFile:path
+             atomically:NO
+               encoding:NSUTF8StringEncoding
+                  error:&error];
+    
+    NSAssert(error == nil, @"error storing string: %@", error);
+    
+    return error == nil;
+}
 @end

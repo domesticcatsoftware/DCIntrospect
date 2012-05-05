@@ -1448,7 +1448,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 - (void)logPropertiesForObject:(id)object
 {
 	Class objectClass = [object class];
-	NSString *className = [NSString stringWithFormat:@"%@", objectClass];
+	NSString *className = [NSString stringWithFormat:@"%@:0x%x", objectClass, object];
 	
 	unsigned int count;
 	objc_property_t *properties = class_copyPropertyList(objectClass, &count);

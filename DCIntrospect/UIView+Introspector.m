@@ -15,12 +15,14 @@
 @end
 
 @implementation UIView (Introspector)
+@dynamic memoryAddress;
 
 #pragma mark - Persistence
 + (NSString *)filePathWithView:(UIView *)view;
 {
+    // uncomment below line to create unique filenames for each selected view
 //    NSString *filename = [NSString stringWithFormat:@"%@.%x.view.json", NSStringFromClass([view class]), view]; // gen unique filenames
-    NSString *filename = kUIViewFileName;
+    NSString *filename = kCBCurrentViewFileName;
     return [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:filename];
 }
 
@@ -92,9 +94,15 @@
     // check class and mem address    
     NSString *memAddress = [jsonInfo valueForKey:kUIViewMemoryAddressKey];
     if (![[NSString stringWithFormat:@"%x", self] isEqualToString:memAddress])
+    {
+        DebugLog(@"Bad memory address for current view from JSON: 0x%@", memAddress);
         return NO;
+    }
     else if (![[jsonInfo valueForKey:kUIViewClassNameKey] isEqualToString:NSStringFromClass([self class])])
+    {
+        DebugLog(@"Bad class name for memory address: 0x%@", memAddress);
         return NO;
+    }
     
     self.hidden = [[jsonInfo valueForKey:kUIViewHiddenKey] boolValue];
     self.alpha = [[jsonInfo valueForKey:kUIViewAlphaKey] floatValue];
@@ -124,5 +132,10 @@
 - (NSString *)syncFilePath
 {
     return [UIView filePathWithView:self];
+}
+
+- (NSString *)memoryAddress
+{
+    return nssprintf(@"%x", self);
 }
 @end

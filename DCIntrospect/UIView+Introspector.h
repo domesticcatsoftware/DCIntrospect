@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface UIView (Introspector)
+@property (nonatomic, readonly) NSString *memoryAddress;
+
 #pragma mark - Persistence
 /**
  * Stores the specified view in the file store.

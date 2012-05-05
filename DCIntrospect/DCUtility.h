@@ -16,4 +16,5 @@
  */
 - (NSString *)cacheDirectoryPath;
 
+- (BOOL)writeString:(NSString *)string toPath:(NSString *)path;
 @end
