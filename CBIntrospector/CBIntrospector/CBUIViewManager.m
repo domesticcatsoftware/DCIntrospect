@@ -79,10 +79,12 @@
         if (self.currentView == nil)
         {
             self.currentView = [[[CBUIView alloc] initWithJSON:jsonInfo] autorelease];
-        }
-        
+            
+            if (self.currentView)
+                [self.delegate viewManagerUpdatedViewFromDisk:self];
+        } 
         // update the current view
-        if ([self.currentView updateWithJSON:jsonInfo])
+        else if ([self.currentView updateWithJSON:jsonInfo])
         {
             // success
             [self.delegate viewManagerUpdatedViewFromDisk:self];

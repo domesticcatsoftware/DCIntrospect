@@ -11,7 +11,7 @@
 #import "CBUIView.h"
 #import "JSONKit.h"
 
-@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
+@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate>
 @property (assign) IBOutlet NSOutlineView *treeView;
 @property (assign) IBOutlet NSButton *headerButton;
 @property (assign) IBOutlet NSButton *hiddenSwitch;
@@ -22,6 +22,7 @@
 @property (assign) IBOutlet NSTextField *leftPositionTextField;
 @property (nonatomic, readonly) CBUIViewManager *viewManager;
 @property (nonatomic, readonly) NSString *syncDirectoryPath;
+@property (nonatomic, assign) NSTextField *focusedTextField;
 - (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
 @end
@@ -38,6 +39,7 @@
 @synthesize viewManager = _viewManager;
 @synthesize treeContents = _treeContents;
 @synthesize syncDirectoryPath;
+@synthesize focusedTextField;
 
 - (void)dealloc
 {
@@ -74,21 +76,28 @@
 - (BOOL)performKeyEquivalent:(NSEvent *)evt
 { // handles key down events
 	int key = [evt keyCode];
+	int modFlag = [evt modifierFlags];
     NSLog(@"main window key event: %d", key);
+    BOOL shiftKey = (modFlag | NSShiftKeyMask);
     
     switch (key)
     {
 		case 36: // enter key
             break;
             
-        // up/down arrow
-        case 125:
-        case 126:
-            return NO;
+        // arrow keys
+        case 125: // down
+            [[CBUtility sharedInstance] updateIntValueWithTextField:self.focusedTextField addValue:(shiftKey ? -10 : -1)];
+            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
+            return YES;
+            
+        case 126: // up
+            [[CBUtility sharedInstance] updateIntValueWithTextField:self.focusedTextField addValue:(shiftKey ? 10 : 1)];
+            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
+            return YES;
     }
     
-	int modFlag = [evt modifierFlags];
-	if (modFlag & NSCommandKeyMask) switch (key)
+	if (modFlag | NSCommandKeyMask) switch (key)
 	{		
 		case 12: // Q (quit application)
             // confirm closing
@@ -99,14 +108,14 @@
             return YES;
     }
     
-    return YES;
+    return NO;
 }
 
 #pragma mark - Drag & Drop
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
-    return NSDragOperationCopy;
+    return NSDragOperationLink;
 }
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
@@ -149,6 +158,16 @@
 }
 
 #pragma mark - Events
+
+- (IBAction)alphaSliderChanged:(id)sender 
+{
+    self.viewManager.currentView.alpha = self.alphaSlider.floatValue / 100;
+}
+
+- (IBAction)hiddenSwitchChanged:(id)sender 
+{
+    self.viewManager.currentView.hidden = self.hiddenSwitch.state;
+}
 
 - (IBAction)treeNodeClicked:(id)sender 
 {
@@ -221,6 +240,7 @@
 }
 
 #pragma mark - NSOutlineDataSource
+
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
     if (!item)
@@ -255,6 +275,7 @@
     NSString *name = [item valueForKey:kUIViewClassNameKey];
     if ([name hasPrefix:@"UI"])
         name = [name substringFromIndex:2]; // remove the class prefix
+    
     return name;
 }
 
@@ -265,4 +286,36 @@
     return YES;
 }
 
+#pragma mark - NSTextFieldDelegate
+
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+    NSTextField *textField = notification.object;
+    CBUIView *view = self.viewManager.currentView;
+    NSRect frame = view.frame;
+    
+    if (self.leftPositionTextField == textField)
+    {
+        frame.origin.x = textField.intValue;
+    }
+    else if (self.topPositionTextField == textField)
+    {
+        frame.origin.y = textField.intValue;
+    }
+    else if (self.widthTextField == textField)
+    {
+        frame.size.width = textField.intValue;
+    }
+    else if (self.heightTextField == textField)
+    {
+        frame.size.height = textField.intValue;
+    }
+    
+    view.frame = frame;
+}
+
+- (void)controlDidBecomeFirstResponder:(NSResponder *)responder
+{
+    self.focusedTextField = (NSTextField*) responder;
+}
 @end

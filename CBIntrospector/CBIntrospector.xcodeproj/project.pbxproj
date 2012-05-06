@@ -22,6 +22,7 @@
 		92CBB10615521E6100F2217D /* CBUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB10515521E6100F2217D /* CBUIView.m */; };
 		92CBB1091552260400F2217D /* CBWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB1081552260400F2217D /* CBWindow.m */; };
 		92CBB10D155254DB00F2217D /* CBUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB10C155254DB00F2217D /* CBUtility.m */; };
+		92DF8887155653B800D63CCC /* CBTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 92DF8886155653B800D63CCC /* CBTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,8 @@
 		92CBB1081552260400F2217D /* CBWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBWindow.m; sourceTree = "<group>"; };
 		92CBB10B155254DA00F2217D /* CBUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBUtility.h; sourceTree = "<group>"; };
 		92CBB10C155254DB00F2217D /* CBUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUtility.m; sourceTree = "<group>"; };
+		92DF8885155653B800D63CCC /* CBTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBTextField.h; sourceTree = "<group>"; };
+		92DF8886155653B800D63CCC /* CBTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBTextField.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +203,8 @@
 				92CBB1081552260400F2217D /* CBWindow.m */,
 				92CBB10415521E6100F2217D /* CBUIView.h */,
 				92CBB10515521E6100F2217D /* CBUIView.m */,
+				92DF8885155653B800D63CCC /* CBTextField.h */,
+				92DF8886155653B800D63CCC /* CBTextField.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -328,6 +333,7 @@
 				92CBB10615521E6100F2217D /* CBUIView.m in Sources */,
 				92CBB1091552260400F2217D /* CBWindow.m in Sources */,
 				92CBB10D155254DB00F2217D /* CBUtility.m in Sources */,
+				92DF8887155653B800D63CCC /* CBTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

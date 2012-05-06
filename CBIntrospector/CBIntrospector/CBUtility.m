@@ -42,4 +42,13 @@
     NSDictionary *jsonInfo = [jsonString objectFromJSONString];
     return jsonInfo;
 }
+
+- (int)updateIntValueWithTextField:(NSTextField *)textField addValue:(NSInteger)addValue
+{
+    if (!textField)
+        return 0;
+    
+    textField.intValue = textField.intValue + addValue;
+    return textField.intValue;
+}
 @end

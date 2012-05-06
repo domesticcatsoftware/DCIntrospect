@@ -64,6 +64,9 @@
 
 - (void)setFrame:(CGRect)frame
 {
+    if (NSEqualRects(_frame, frame))
+        return;
+    
     _frame = frame;
     self.isDirty = YES;
 }
