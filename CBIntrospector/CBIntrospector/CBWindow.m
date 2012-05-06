@@ -21,7 +21,8 @@
 @property (assign) IBOutlet NSTextField *topPositionTextField;
 @property (assign) IBOutlet NSTextField *leftPositionTextField;
 @property (nonatomic, readonly) CBUIViewManager *viewManager;
-@property (nonatomic, copy) NSString *syncDirectoryPath;
+@property (nonatomic, readonly) NSString *syncDirectoryPath;
+- (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
 @end
 
@@ -42,7 +43,6 @@
 {
     [_treeContents release];
     [_viewManager release];
-    self.syncDirectoryPath = nil;
     [super dealloc];
 }
 
@@ -56,6 +56,11 @@
         _viewManager.delegate = self;
     }
     return _viewManager;
+}
+
+- (NSString *)syncDirectoryPath
+{
+    return self.viewManager.syncDirectoryPath;
 }
 
 #pragma mark - General Overrides
@@ -117,7 +122,7 @@
         BOOL isDir;
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && isDir)
         {
-            self.syncDirectoryPath = filePath;
+            self.viewManager.syncDirectoryPath = filePath;
             
             // process file
             NSString *syncFilePath = [filePath stringByAppendingPathComponent:kCBCurrentViewFileName];
@@ -129,11 +134,7 @@
                                                                     error:&error];
                 
                 NSDictionary *jsonInfo = [jsonString objectFromJSONString];
-                self.viewManager.currentView = [[CBUIView alloc] initWithJSON:jsonInfo];
-                self.viewManager.currentView.syncFilePath = syncFilePath;
-                [self.viewManager sync];
-                
-                [self loadCurrentViewControls];
+                [self loadControlsWithJSON:jsonInfo];
             }
             
             [self reloadTree];
@@ -147,7 +148,27 @@
     return NO;
 }
 
+#pragma mark - Events
+
+- (IBAction)treeNodeClicked:(id)sender 
+{
+    NSDictionary *viewInfo = [self.treeView itemAtRow:self.treeView.selectedRow];
+    DebugLog(@"selected: %@", [viewInfo valueForKey:kUIViewClassNameKey]);
+    [self loadControlsWithJSON:viewInfo];
+}
+
 #pragma mark - Misc
+
+- (void)loadControlsWithJSON:(NSDictionary *)jsonInfo
+{
+    self.viewManager.currentView = [[CBUIView alloc] initWithJSON:jsonInfo];
+    self.viewManager.currentView.syncFilePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBCurrentViewFileName];
+    
+    [self.viewManager.currentView saveJSON];
+    [self.viewManager sync];
+    
+    [self loadCurrentViewControls];
+}
 
 - (void)loadCurrentViewControls
 {
@@ -187,11 +208,16 @@
 
 - (void)viewManagerClearedView:(CBUIViewManager *)manager
 {
+    [self.headerButton setTitle:@"CBIntrospector"];
     self.leftPositionTextField.stringValue = self.topPositionTextField.stringValue = // below
-    self.widthTextField.stringValue = self.heightTextField.stringValue = nil;
+    self.widthTextField.stringValue = self.heightTextField.stringValue = @"";
     
     self.alphaSlider.floatValue = 100;
     self.hiddenSwitch.state = NSOffState;
+    
+    // clear tree view
+    self.treeContents = nil;
+    [self.treeView reloadData];
 }
 
 #pragma mark - NSOutlineDataSource
@@ -228,7 +254,15 @@
     
     NSString *name = [item valueForKey:kUIViewClassNameKey];
     if ([name hasPrefix:@"UI"])
-        name = [name substringFromIndex:2];
+        name = [name substringFromIndex:2]; // remove the class prefix
     return name;
 }
+
+#pragma mark - NSOutlineViewDelegate
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
+{
+    return YES;
+}
+
 @end

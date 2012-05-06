@@ -68,9 +68,11 @@
 - (void)syncNow
 {
     BOOL doSync = NO;
-    // check the mod time
-    const char *filepath = [[self.currentView syncFilePath] cStringUsingEncoding:NSUTF8StringEncoding];
+    // only one view json file at a time
+    NSString *syncFilePath = [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBCurrentViewFileName];
+    const char *filepath = [syncFilePath cStringUsingEncoding:NSUTF8StringEncoding];
     struct stat sb;
+    // check the mod time
     if (stat(filepath, &sb) == 0)
     {
         doSync = (_lastModTime.tv_sec != sb.st_mtimespec.tv_sec);
@@ -80,7 +82,7 @@
     {
         // get the view info
         NSError *error = nil;
-        NSString *jsonString = [[NSString alloc] initWithContentsOfFile:[self.currentView syncFilePath]
+        NSString *jsonString = [[NSString alloc] initWithContentsOfFile:syncFilePath
                                                                encoding:NSUTF8StringEncoding
                                                                   error:&error];
         NSDictionary *jsonInfo = [jsonString objectFromJSONString];
@@ -163,16 +165,19 @@
 - (void)invokeIntrospector
 {
     [super invokeIntrospector];
+   
+    // remove the current view file
+    [[NSFileManager defaultManager] removeItemAtPath:[[DCUtility sharedInstance] currentViewJSONFilePath] error:nil];
     
     if (self.on)
     {
         [self dumpWindowViewTree];
+        self.syncFileSystemState = CBIntrospectSyncFileSystemStarted;
     }
     else
     {
         // remove the view tree json
-        NSString *path = [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
-        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[[DCUtility sharedInstance] viewTreeJSONFilePath] error:nil];
     }
 }
 

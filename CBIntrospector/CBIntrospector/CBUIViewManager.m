@@ -21,9 +21,11 @@
 @implementation CBUIViewManager
 @synthesize currentView;
 @synthesize delegate;
+@synthesize syncDirectoryPath;
 
 - (void)dealloc
 {
+    self.syncDirectoryPath = nil;
     self.currentView = nil;
     self.delegate = nil;
     [super dealloc];
@@ -40,12 +42,13 @@
 - (void)syncNow
 {
     BOOL doSync = NO;
-    NSString *syncFilePath = [self.currentView syncFilePath];
+    NSString *syncFilePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBCurrentViewFileName];
     if (!syncFilePath)
         return;
     
     if (self.currentView && ![[NSFileManager defaultManager] fileExistsAtPath:syncFilePath])
     {
+        DebugLog(@"Cleared current view");
         self.currentView = nil;
         [self.delegate viewManagerClearedView:self];
         return;
@@ -70,7 +73,13 @@
     else if (doSync)
     {
         // get the view info
-        NSDictionary *jsonInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:self.currentView.syncFilePath];
+        NSDictionary *jsonInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:syncFilePath];
+        
+        // if no current view, then load it
+        if (self.currentView == nil)
+        {
+            self.currentView = [[[CBUIView alloc] initWithJSON:jsonInfo] autorelease];
+        }
         
         // update the current view
         if ([self.currentView updateWithJSON:jsonInfo])

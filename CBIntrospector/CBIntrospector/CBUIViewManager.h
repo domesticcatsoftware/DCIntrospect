@@ -14,6 +14,7 @@
 @interface CBUIViewManager : NSObject
 @property (nonatomic, assign) id<CBUIViewManagerDelegate> delegate;
 @property (nonatomic, retain) CBUIView *currentView;
+@property (nonatomic, copy) NSString *syncDirectoryPath; // the last known sync directory
 - (void)sync;
 @end
 

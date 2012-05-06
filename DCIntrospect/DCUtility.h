@@ -16,5 +16,8 @@
  */
 - (NSString *)cacheDirectoryPath;
 
+- (NSString *)currentViewJSONFilePath;
+- (NSString *)viewTreeJSONFilePath;
+
 - (BOOL)writeString:(NSString *)string toPath:(NSString *)path;
 @end

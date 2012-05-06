@@ -42,4 +42,14 @@
     
     return error == nil;
 }
+
+- (NSString *)currentViewJSONFilePath
+{
+    return [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBCurrentViewFileName];
+}
+
+- (NSString *)viewTreeJSONFilePath
+{
+    return [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
+}
 @end
