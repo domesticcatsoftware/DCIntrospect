@@ -10,6 +10,8 @@
 #import "UIView+Introspector.h"
 #import <sys/stat.h>
 #import "JSONKit.h"
+#import "DCUtility.h"
+#import "CBSharedHeader.h"
 
 @interface CBIntrospect ()
 {

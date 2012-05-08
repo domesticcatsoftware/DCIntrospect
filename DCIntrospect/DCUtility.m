@@ -7,6 +7,7 @@
 //
 
 #import "DCUtility.h"
+#import "CBSharedHeader.h"
 
 @implementation DCUtility
 + (DCUtility *)sharedInstance

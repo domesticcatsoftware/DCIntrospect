@@ -9,6 +9,7 @@
 #import "UIView+Introspector.h"
 #import "DCUtility.h"
 #import "JSONKit.h"
+#import "CBSharedHeader.h"
 
 @interface UIView (Custom)
 + (NSString *)filePathWithView:(UIView *)view;
@@ -57,7 +58,7 @@
     }
     
     NSAssert(error == nil, @"error reading view: %@", error);
-    [jsonString release];
+    NO_ARC([jsonString release];)
 }
 
 + (void)unlinkView:(UIView *)view

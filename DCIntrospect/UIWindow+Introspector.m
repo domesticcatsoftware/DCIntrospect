@@ -7,14 +7,15 @@
 //
 
 #import "UIWindow+Introspector.h"
-#import <objc/objc-class.h>
 #import "DCIntrospect.h"
 
 @interface UIWindow (Custom)
 - (void)_sendEvent:(UIEvent *)evt;
 @end
 
+#ifdef DEBUG
 static IMP gOrigSendEvent = nil;
+#endif
 
 @implementation UIWindow (Introspector)
 + (void)replaceCanonicalSendEvent
