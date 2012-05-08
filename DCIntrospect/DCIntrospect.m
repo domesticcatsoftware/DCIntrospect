@@ -65,7 +65,7 @@ static bool AmIBeingDebugged(void)
 #ifdef DEBUG
 #define DCLog(M, ...) NSLog(M, ##__VA_ARGS__)
 #else
-#define DCLog ;
+#define DCLog(M, ...) ;
 #endif
 
 @interface DCIntrospect ()
