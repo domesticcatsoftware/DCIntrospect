@@ -12,8 +12,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/sysctl.h>
-#import "UIApplication+Introspector.h"
+//#import "UIApplication+Introspector.h" // disabled for now, consumes all keyboard events
 #import "UIView+Introspector.h"
+#import "UIWindow+Introspector.h"
 #import "CBIntrospect.h"
 
 #ifdef DEBUG
@@ -181,8 +182,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
         sharedInstance.enableShakeToActivate = YES;
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
-//		[self workaroundUITextInputTraitsPropertiesBug];
-        [UIApplication replaceCanonicalSendEvent];
+		[self workaroundUITextInputTraitsPropertiesBug];
+//        [UIApplication replaceCanonicalSendEvent];
+        [UIWindow replaceCanonicalSendEvent];
 	}
 #endif
 	return sharedInstance;
@@ -464,8 +466,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
-        // disabled so as not to conflict with UIApplication override
-//		[self invokeIntrospector];
+        // below line needs to be disabled if you are using the UIApplication sendEvents: override
+		[self invokeIntrospector];
 		return NO;
 	}
 	
@@ -895,8 +897,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (void)forceReloadOfView
 {
-	if ([self.currentView class] == [UITableView class])
-		[(UITableView *)self.currentView reloadData];
+	if ([self.currentView respondsToSelector:@selector(reloadData)])
+		[(id)self.currentView reloadData];
 }
 
 - (void)toggleOutlines

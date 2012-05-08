@@ -14,21 +14,25 @@
 - (void)_sendEvent:(UIEvent *)evt;
 @end
 
-static int gShakeCount = 0; // needs 2 to start/stop (begin/end events)
 static IMP gOrigSendEvent = nil;
 
 @implementation UIWindow (Introspector)
 + (void)replaceCanonicalSendEvent
 {
+#ifdef DEBUG
     SEL origSendEventSelector = @selector(sendEvent:);
     SEL mySendEventSelector = @selector(_sendEvent:);
 
     Method mySendEventMethod = class_getInstanceMethod([UIWindow class], mySendEventSelector);
      gOrigSendEvent = class_replaceMethod([UIWindow class], origSendEventSelector, method_getImplementation(mySendEventMethod), method_getTypeEncoding(mySendEventMethod));
+#endif
 }
 
 - (void)_sendEvent:(UIEvent *)event
 {
+#ifdef DEBUG
+    static int gShakeCount = 0; // needs 2 to start/stop (begin/end events)
+    
     gOrigSendEvent(self, @selector(sendEvent:), event);
     
     DCIntrospect *introspector = [DCIntrospect sharedIntrospector];
@@ -46,5 +50,6 @@ static IMP gOrigSendEvent = nil;
             }
         }
     }
+#endif
 }
 @end
