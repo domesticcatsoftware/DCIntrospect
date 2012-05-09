@@ -16,13 +16,13 @@
     int nRow = visibleRowIndexes.location;
     int nEndRow = nRow + visibleRowIndexes.length;
     
-    NSColor *color = [NSColor colorWithCalibratedRed:0.929 green:0.953 blue:0.996 alpha:1.0];
+    NSColor *color = [NSColor colorWithCalibratedRed:0.929 green:0.953 blue:0.996 alpha:0.7];
     [color set];
     
     // draw highlight for the visible, selected rows
     for ( ; nRow < nEndRow; ++nRow)
     {
-        if([selectedRowIndexes containsIndex:nRow])
+        if ([selectedRowIndexes containsIndex:nRow])
         {
             NSRect aRowRect = NSInsetRect([self rectOfRow:nRow], 2, 1);
             NSRectFill(aRowRect);
