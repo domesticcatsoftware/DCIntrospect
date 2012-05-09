@@ -10,9 +10,12 @@
 #import "CBUIViewManager.h"
 #import "CBUIView.h"
 #import "JSONKit.h"
+#import "CBTreeView.h"
 
-@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate>
-@property (assign) IBOutlet NSOutlineView *treeView;
+@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
+    NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSSplitViewDelegate>
+@property (assign) IBOutlet NSSplitView *splitView;
+@property (assign) IBOutlet CBTreeView *treeView;
 @property (assign) IBOutlet NSButton *headerButton;
 @property (assign) IBOutlet NSButton *hiddenSwitch;
 @property (assign) IBOutlet NSSlider *alphaSlider;
@@ -28,6 +31,7 @@
 @end
 
 @implementation CBWindow
+@synthesize splitView;
 @synthesize treeView;
 @synthesize headerButton;
 @synthesize hiddenSwitch;
@@ -71,6 +75,8 @@
 {
 	// user can drag a string to create a new note from the initially dropped data
 	[self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+    [self.splitView setPosition:500 ofDividerAtIndex:0];
+    [self.splitView adjustSubviews];
 }
 
 - (BOOL)performKeyEquivalent:(NSEvent *)evt
@@ -176,6 +182,14 @@
     [self loadControlsWithJSON:viewInfo];
 }
 
+- (IBAction)headerButtonClicked:(id)sender 
+{
+    if (self.viewManager.currentView)
+    {
+        [self selectTreeItemWithMemoryAddress:self.viewManager.currentView.memoryAddress];
+    }
+}
+
 #pragma mark - Misc
 
 - (void)loadControlsWithJSON:(NSDictionary *)jsonInfo
@@ -211,6 +225,46 @@
     NSDictionary *treeInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:filePath];
     self.treeContents = treeInfo;
     [self.treeView reloadData];
+    
+    [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
+}
+
+#pragma mark - Find in tree
+
+- (NSDictionary *)itemFromJSON:(NSDictionary *)jsonInfo withMemoryAddress:(NSString *)memAddress
+{
+    if ([[jsonInfo valueForKey:kUIViewMemoryAddressKey] isEqualToString:memAddress])
+        return jsonInfo;
+    
+    // check the subviews
+    NSArray *subviewsInfo = [jsonInfo valueForKey:kUIViewSubviewsKey];
+    for (NSDictionary *subviewInfo in subviewsInfo)
+    {
+        NSDictionary *info = [self itemFromJSON:subviewInfo withMemoryAddress:memAddress];
+        if (info)
+            return info;
+    }
+    
+    return nil;
+}
+
+- (void)selectTreeItemWithMemoryAddress:(NSString *)memAddress
+{
+    // traverse tree
+    NSDictionary *itemInfo = [self itemFromJSON:self.treeContents withMemoryAddress:memAddress];
+    if (itemInfo == nil)
+        return;
+    
+    int nRow = [self.treeView rowForItem:itemInfo];
+    
+    // expand its parent to make sure it is visible
+    NSDictionary *parentInfo = [self.treeView parentForItem:itemInfo];
+    [self.treeView expandItem:parentInfo];
+    
+    // select it
+    [self.treeView selectRowIndexes:[NSIndexSet indexSetWithIndex:nRow] byExtendingSelection:NO];
+    
+    [self.treeView scrollRowToVisible:nRow];
 }
 
 #pragma mark - CBUIViewManagerDelegate
@@ -220,9 +274,13 @@
     
 }
 
+// typically called when the user selects a view in the simulator
 - (void)viewManagerUpdatedViewFromDisk:(CBUIViewManager *)manager
 {
     [self loadCurrentViewControls];
+    
+    // locate the view in the tree
+    [self selectTreeItemWithMemoryAddress:manager.currentView.memoryAddress];
 }
 
 - (void)viewManagerClearedView:(CBUIViewManager *)manager
@@ -318,4 +376,18 @@
 {
     self.focusedTextField = (NSTextField*) responder;
 }
+
+#pragma mark - NSSplitView Delegate
+
+#if 0
+- (CGFloat)splitView:(NSSplitView *)splitView constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)dividerIndex
+{
+    return 450;
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView shouldAdjustSizeOfSubview:(NSView *)view
+{
+    return NO;
+}
+#endif
 @end

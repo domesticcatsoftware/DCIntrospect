@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E9245C7155AABE600CE32D3 /* CBTreeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9245C6155AABE600CE32D3 /* CBTreeView.m */; };
 		92CBB0A615521B3C00F2217D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92CBB0A515521B3C00F2217D /* Cocoa.framework */; };
 		92CBB0B015521B3C00F2217D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92CBB0AE15521B3C00F2217D /* InfoPlist.strings */; };
 		92CBB0B215521B3C00F2217D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB0B115521B3C00F2217D /* main.m */; };
@@ -36,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E9245C5155AABE600CE32D3 /* CBTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBTreeView.h; sourceTree = "<group>"; };
+		1E9245C6155AABE600CE32D3 /* CBTreeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBTreeView.m; sourceTree = "<group>"; };
 		9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
 		92CBB0A115521B3C00F2217D /* CBIntrospector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBIntrospector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92CBB0A515521B3C00F2217D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -205,6 +208,8 @@
 				92CBB10515521E6100F2217D /* CBUIView.m */,
 				92DF8885155653B800D63CCC /* CBTextField.h */,
 				92DF8886155653B800D63CCC /* CBTextField.m */,
+				1E9245C5155AABE600CE32D3 /* CBTreeView.h */,
+				1E9245C6155AABE600CE32D3 /* CBTreeView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -334,6 +339,7 @@
 				92CBB1091552260400F2217D /* CBWindow.m in Sources */,
 				92CBB10D155254DB00F2217D /* CBUtility.m in Sources */,
 				92DF8887155653B800D63CCC /* CBTextField.m in Sources */,
+				1E9245C7155AABE600CE32D3 /* CBTreeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
