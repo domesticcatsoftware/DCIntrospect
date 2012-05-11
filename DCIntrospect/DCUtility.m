@@ -53,4 +53,27 @@
 {
     return [[[DCUtility sharedInstance] cacheDirectoryPath] stringByAppendingPathComponent:kCBTreeDumpFileName];
 }
+
+- (NSString *)describeColor:(UIColor *)color
+{
+	if (!color)
+		return @"nil";
+	
+	NSString *returnString = nil;
+	if (CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor)) == kCGColorSpaceModelRGB)
+	{
+		const CGFloat *components = CGColorGetComponents(color.CGColor);
+		returnString = [NSString stringWithFormat:@"R: %.0f G: %.0f B: %.0f A: %.2f",
+						components[0] * 256,
+						components[1] * 256,
+						components[2] * 256,
+						components[3]];
+	}
+	else
+	{
+		returnString = [NSString stringWithFormat:@"%@ (incompatible color space)", color];
+	}
+	return returnString;
+}
+
 @end

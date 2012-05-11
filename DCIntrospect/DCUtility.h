@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+// Returns the NSString representation of the specified BOOL value
+static inline NSString * NSStringFromBOOL(BOOL value)
+{
+    return value ? @"YES" : @"NO";
+}
+
 @interface DCUtility : NSObject
 + (DCUtility *)sharedInstance;
 
@@ -20,4 +26,6 @@
 - (NSString *)viewTreeJSONFilePath;
 
 - (BOOL)writeString:(NSString *)string toPath:(NSString *)path;
+
+- (NSString *)describeColor:(UIColor *)color;
 @end

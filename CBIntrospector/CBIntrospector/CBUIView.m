@@ -23,6 +23,7 @@
 @synthesize bounds = _bounds;
 @synthesize center = _center;
 @synthesize frame = _frame;
+@synthesize viewDescription;
 
 - (id)initWithJSON:(NSDictionary *)jsonInfo
 {
@@ -39,6 +40,8 @@
 {
     self.className = nil;
     self.memoryAddress = nil;
+    self.viewDescription = nil;
+    self.syncFilePath = nil;
     [super dealloc];
 }
 
@@ -83,6 +86,7 @@
 {
     self.className = [jsonInfo valueForKey:kUIViewClassNameKey];
     self.memoryAddress = [jsonInfo valueForKey:kUIViewMemoryAddressKey];
+    self.viewDescription = [[jsonInfo valueForKey:kUIViewDescriptionKey] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     self.hidden = [[jsonInfo valueForKey:kUIViewHiddenKey] boolValue];
     self.alpha = [[jsonInfo valueForKey:kUIViewAlphaKey] floatValue];

@@ -11,6 +11,8 @@
 @interface UIView (Introspector)
 @property (nonatomic, readonly) NSString *memoryAddress;
 
++ (NSString *)describeProperty:(NSString *)propertyName value:(id)value;
+
 #pragma mark - Persistence
 /**
  * Stores the specified view in the file store.
@@ -41,4 +43,6 @@
  * Returns the file path used to sync this view.
  */
 - (NSString *)syncFilePath;
+
+- (NSString *)viewDescription;
 @end

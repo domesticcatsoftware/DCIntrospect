@@ -21,6 +21,7 @@ static NSString * const kUIViewAlphaKey = @"alpha";
 static NSString * const kUIViewBoundsKey = @"bounds";
 static NSString * const kUIViewCenterKey = @"center";
 static NSString * const kUIViewFrameKey = @"frame";
+static NSString * const kUIViewDescriptionKey = @"viewdescription";
 
 #pragma mark - ARC Support
 #define HAS_ARC __has_feature(objc_arc)

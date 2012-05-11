@@ -14,6 +14,7 @@
 
 @interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
     NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSSplitViewDelegate>
+@property (assign) IBOutlet NSTextView *textView;
 @property (assign) IBOutlet NSSplitView *splitView;
 @property (assign) IBOutlet CBTreeView *treeView;
 @property (assign) IBOutlet NSButton *headerButton;
@@ -31,6 +32,7 @@
 @end
 
 @implementation CBWindow
+@synthesize textView;
 @synthesize splitView;
 @synthesize treeView;
 @synthesize headerButton;
@@ -77,6 +79,7 @@
 	[self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [self.splitView setPosition:500 ofDividerAtIndex:0];
     [self.splitView adjustSubviews];
+    self.textView.font = [NSFont fontWithName:@"Monaco" size:12];
 }
 
 - (BOOL)performKeyEquivalent:(NSEvent *)evt
@@ -186,6 +189,9 @@
 {
     if (self.viewManager.currentView)
     {
+        // expand it all to allow the 'walking' tree logic to work as expected, being able to find/select any node
+        [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
+        
         [self selectTreeItemWithMemoryAddress:self.viewManager.currentView.memoryAddress];
     }
 }
@@ -198,7 +204,7 @@
     self.viewManager.currentView.syncFilePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBCurrentViewFileName];
     
     [self.viewManager.currentView saveJSON];
-    [self.viewManager sync];
+    [self.viewManager performSelector:@selector(sync) withObject:nil afterDelay:1];
     
     [self loadCurrentViewControls];
 }
@@ -208,6 +214,8 @@
     CBUIView *view = self.viewManager.currentView;
     
     self.headerButton.title = nssprintf(@"<%@: 0x%@>", view.className, view.memoryAddress);
+    if (view.viewDescription)
+        self.textView.string = view.viewDescription;
     
     self.leftPositionTextField.stringValue = nssprintf(@"%i", (int)NSMinX(view.frame));
     self.topPositionTextField.stringValue = nssprintf(@"%i", (int)NSMinY(view.frame));
@@ -226,6 +234,7 @@
     self.treeContents = treeInfo;
     [self.treeView reloadData];
     
+    // expand it all to allow the 'walking' tree logic to work as expected, being able to find/select any node
     [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
 }
 
@@ -291,6 +300,7 @@
     
     self.alphaSlider.floatValue = 100;
     self.hiddenSwitch.state = NSOffState;
+    self.textView.string = @"";
     
     // clear tree view
     self.treeContents = nil;

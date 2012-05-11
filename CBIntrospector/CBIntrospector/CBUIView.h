@@ -13,6 +13,7 @@
 @property (nonatomic, assign) BOOL isDirty;
 @property (nonatomic, copy) NSString *className;
 @property (nonatomic, copy) NSString *memoryAddress;
+@property (nonatomic, copy) NSString *viewDescription;
 @property (nonatomic, assign) BOOL hidden;
 @property (nonatomic, assign) float alpha;
 @property (nonatomic, assign) NSRect bounds;
