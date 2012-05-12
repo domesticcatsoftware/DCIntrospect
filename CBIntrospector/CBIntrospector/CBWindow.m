@@ -79,7 +79,12 @@
 	[self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [self.splitView setPosition:500 ofDividerAtIndex:0];
     [self.splitView adjustSubviews];
+    
+    // setup text view
     self.textView.font = [NSFont fontWithName:@"Monaco" size:12];
+    self.textView.textContainer.containerSize = NSMakeSize(FLT_MAX, FLT_MAX);
+    self.textView.textContainer.widthTracksTextView = NO;
+    [self.textView setHorizontallyResizable:YES];
 }
 
 - (BOOL)performKeyEquivalent:(NSEvent *)evt
@@ -88,6 +93,10 @@
 	int modFlag = [evt modifierFlags];
     NSLog(@"main window key event: %d", key);
     BOOL shiftKey = (modFlag | NSShiftKeyMask);
+    
+    // ignore keys from the tree view
+    if (self.treeView == self.firstResponder)
+        return NO;
     
     switch (key)
     {
