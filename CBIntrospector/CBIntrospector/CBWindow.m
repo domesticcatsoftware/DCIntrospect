@@ -264,8 +264,8 @@
     
     // don't allow below class to be branches
     static NSMutableArray *items = nil;
-    if (items == nil)
-    {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         items = [[NSMutableArray alloc] initWithObjects:
                  @"UITableViewCell",
                  @"UISegmentedControl",
@@ -275,7 +275,7 @@
                  @"UIProgressView",
                  @"UIActivityIndicatorView",
                  nil];
-    }
+    });
     
     // try to find the class name
     for (NSString *name in items)
