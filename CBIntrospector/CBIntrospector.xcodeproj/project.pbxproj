@@ -37,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E3F0D98155E361C0015A478 /* CBMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBMacros.h; path = ../../DCIntrospect/CBMacros.h; sourceTree = "<group>"; };
+		1E3F0D9A155E364F0015A478 /* CBIntrospectConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBIntrospectConstants.h; path = ../../DCIntrospect/CBIntrospectConstants.h; sourceTree = "<group>"; };
 		1E9245C5155AABE600CE32D3 /* CBTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBTreeView.h; sourceTree = "<group>"; };
 		1E9245C6155AABE600CE32D3 /* CBTreeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBTreeView.m; sourceTree = "<group>"; };
 		9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
@@ -184,7 +186,9 @@
 		92CBB0FD15521C1B00F2217D /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1E3F0D9A155E364F0015A478 /* CBIntrospectConstants.h */,
 				9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */,
+				1E3F0D98155E361C0015A478 /* CBMacros.h */,
 				92CBB0FE15521C2800F2217D /* Third Party */,
 			);
 			name = "Other Sources";

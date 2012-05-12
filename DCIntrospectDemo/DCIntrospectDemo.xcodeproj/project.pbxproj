@@ -30,13 +30,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E3F0D9B155E39160015A478 /* CBIntrospectConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBIntrospectConstants.h; path = ../../DCIntrospect/CBIntrospectConstants.h; sourceTree = "<group>"; };
+		1E3F0D9D155E39690015A478 /* CBMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBMacros.h; path = ../../DCIntrospect/CBMacros.h; sourceTree = "<group>"; };
 		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		920C426B154DDA38001BC855 /* UIView+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Introspector.h"; path = "../../DCIntrospect/UIView+Introspector.h"; sourceTree = "<group>"; };
 		920C426C154DDA38001BC855 /* UIView+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Introspector.m"; path = "../../DCIntrospect/UIView+Introspector.m"; sourceTree = "<group>"; };
 		9233AA571552F26D000BFF5F /* UIApplication+Introspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIApplication+Introspector.h"; path = "../../DCIntrospect/UIApplication+Introspector.h"; sourceTree = "<group>"; };
 		9233AA581552F26D000BFF5F /* UIApplication+Introspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+Introspector.m"; path = "../../DCIntrospect/UIApplication+Introspector.m"; sourceTree = "<group>"; };
-		92CBB0FF15521CA200F2217D /* CBSharedHeader.h */ = {isa = PBXFileReference; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
+		92CBB0FF15521CA200F2217D /* CBSharedHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
 		92D478A5154F991E00AD49BE /* DCUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCUtility.h; path = ../../DCIntrospect/DCUtility.h; sourceTree = "<group>"; };
 		92D478A6154F991E00AD49BE /* DCUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCUtility.m; path = ../../DCIntrospect/DCUtility.m; sourceTree = "<group>"; };
 		92D478A8154F9C6E00AD49BE /* JSONKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../DCIntrospect/JSONKit.h; sourceTree = "<group>"; };
@@ -109,6 +111,8 @@
 		92D478AA154F9C7700AD49BE /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1E3F0D9D155E39690015A478 /* CBMacros.h */,
+				1E3F0D9B155E39160015A478 /* CBIntrospectConstants.h */,
 				92CBB0FF15521CA200F2217D /* CBSharedHeader.h */,
 				92D478A8154F9C6E00AD49BE /* JSONKit.h */,
 				92D478A9154F9C6E00AD49BE /* JSONKit.m */,

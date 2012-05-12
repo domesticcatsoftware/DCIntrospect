@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CBIntrospectConstants.h"
 
 @interface CBUIView : NSObject
 @property (nonatomic, copy) NSString *syncFilePath;
