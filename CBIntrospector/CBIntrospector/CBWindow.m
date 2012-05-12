@@ -205,6 +205,12 @@
     }
 }
 
+// menu item action
+- (IBAction)reloadViewTreeClicked:(id)sender 
+{
+    [self reloadTree];
+}
+
 #pragma mark - Misc
 
 - (void)loadControlsWithJSON:(NSDictionary *)jsonInfo
@@ -237,6 +243,11 @@
 
 - (void)reloadTree
 {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.syncDirectoryPath])
+    {
+        return;
+    }
+    
     // load json dictionary from disk
     NSString *filePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBTreeDumpFileName];
     NSDictionary *treeInfo = [[CBUtility sharedInstance] dictionaryWithJSONFilePath:filePath];

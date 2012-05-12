@@ -36,7 +36,7 @@
     [self syncNow];
     
     // create the loop (polling the file system)
-    [self performSelector:@selector(sync) withObject:nil afterDelay:0.3];
+    [self performSelector:@selector(sync) withObject:nil afterDelay:0.7];
 }
 
 - (void)syncNow
@@ -46,7 +46,11 @@
     if (!syncFilePath)
         return;
     
-    if (self.currentView && ![[NSFileManager defaultManager] fileExistsAtPath:syncFilePath])
+    if (self.currentView 
+        // no current view
+        && ![[NSFileManager defaultManager] fileExistsAtPath:syncFilePath]
+        // no tree view
+        && ![[NSFileManager defaultManager] fileExistsAtPath:[self.syncDirectoryPath stringByAppendingPathComponent:kCBTreeDumpFileName]])
     {
         DebugLog(@"Cleared current view");
         self.currentView = nil;
