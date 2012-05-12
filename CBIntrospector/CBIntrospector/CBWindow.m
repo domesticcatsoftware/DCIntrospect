@@ -258,6 +258,35 @@
     [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
 }
 
+- (BOOL)allowChildrenWithJSON:(NSDictionary *)jsonInfo
+{
+    NSString *className = [jsonInfo valueForKey:kUIViewClassNameKey];
+    
+    // don't allow below class to be branches
+    static NSMutableArray *items = nil;
+    if (items == nil)
+    {
+        items = [[NSMutableArray alloc] initWithObjects:
+                 @"UITableViewCell",
+                 @"UISegmentedControl",
+                 @"UISlider",
+                 @"UIPageControl",
+                 @"UITextField",
+                 @"UIProgressView",
+                 @"UIActivityIndicatorView",
+                 nil];
+    }
+    
+    // try to find the class name
+    for (NSString *name in items)
+    {
+        if ([name isEqualToString:className])
+            return NO;
+    }
+    
+    return YES;
+}
+
 #pragma mark - Find in tree
 
 - (NSDictionary *)itemFromJSON:(NSDictionary *)jsonInfo withMemoryAddress:(NSString *)memAddress
@@ -334,6 +363,9 @@
     if (!item)
         item = self.treeContents;
     
+    if (![self allowChildrenWithJSON:item])
+        return 0;
+    
     return [[item valueForKey:kUIViewSubviewsKey] count];
 }
 
@@ -341,6 +373,9 @@
 {
     if (!item)
         item = self.treeContents;
+    
+    if (![self allowChildrenWithJSON:item])
+        return NO;
     
     int count = [[item valueForKey:kUIViewSubviewsKey] count];
     return count != 0;
@@ -368,6 +403,16 @@
 }
 
 #pragma mark - NSOutlineViewDelegate
+
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    
+}
+
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+    DebugLog(@"changed");
+}
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
 {
