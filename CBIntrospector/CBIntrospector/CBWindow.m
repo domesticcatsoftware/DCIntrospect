@@ -91,7 +91,7 @@
 { // handles key down events
 	int key = [evt keyCode];
 	int modFlag = [evt modifierFlags];
-    NSLog(@"main window key event: %d", key);
+//    NSLog(@"main window key event: %d", key);
     BOOL shiftKey = (modFlag | NSShiftKeyMask);
     
     // ignore keys from the tree view
@@ -260,6 +260,8 @@
 {
     if (![[NSFileManager defaultManager] fileExistsAtPath:self.syncDirectoryPath])
     {
+        NSString *msg = [@"Unable to reload the tree.\nCheck path: " stringByAppendingString:self.syncDirectoryPath ?: @"None"];
+        [[CBUtility sharedInstance] showMessageBoxWithString:msg];
         return;
     }
     
