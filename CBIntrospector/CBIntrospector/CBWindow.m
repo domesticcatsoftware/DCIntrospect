@@ -409,21 +409,27 @@
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    if (!item)
-        item = self.treeContents;
-    
-    NSString *name = [item valueForKey:kUIViewClassNameKey];
-    if ([name hasPrefix:@"UI"])
-        name = [name substringFromIndex:2]; // remove the class prefix
-    
-    return name;
+    // not needed, the view is setup in [outlineView:willDisplayCell:...]
+    return nil;
 }
 
 #pragma mark - NSOutlineViewDelegate
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
+    NSDictionary *jsonInfo = item;
+    NSButtonCell *buttonCell = cell;
     
+    // get the name
+    NSString *name = [jsonInfo valueForKey:kUIViewClassNameKey];
+    if ([name hasPrefix:@"UI"])
+        name = [name substringFromIndex:2]; // remove the class prefix
+    
+    // get the image
+    NSString *imageName = @"NSView.icns";
+    
+    [buttonCell setTitle:name];
+    [buttonCell setImage:[NSImage imageNamed:imageName]];
 }
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
