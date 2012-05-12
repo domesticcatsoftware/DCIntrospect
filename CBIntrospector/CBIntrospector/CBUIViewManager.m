@@ -36,7 +36,7 @@
     [self syncNow];
     
     // create the loop (polling the file system)
-    [self performSelector:@selector(sync) withObject:nil afterDelay:0.7];
+    [self performSelector:@selector(sync) withObject:nil afterDelay:0.3];
 }
 
 - (void)syncNow

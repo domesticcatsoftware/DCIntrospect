@@ -91,12 +91,22 @@
 { // handles key down events
 	int key = [evt keyCode];
 	int modFlag = [evt modifierFlags];
-//    NSLog(@"main window key event: %d", key);
+    NSLog(@"main window key event: %d", key);
     BOOL shiftKey = (modFlag | NSShiftKeyMask);
     
     // ignore keys from the tree view
     if (self.treeView == self.firstResponder)
+    {
+        switch (key)
+        {
+            //case 49: // space
+            case 36: // enter
+                [self reselectCurrentlySelectedNode];
+                break;
+        }
+        
         return NO;
+    }
     
     switch (key)
     {
@@ -189,9 +199,7 @@
 
 - (IBAction)treeNodeClicked:(id)sender 
 {
-    NSDictionary *viewInfo = [self.treeView itemAtRow:self.treeView.selectedRow];
-    DebugLog(@"selected: %@", [viewInfo valueForKey:kUIViewClassNameKey]);
-    [self loadControlsWithJSON:viewInfo];
+    [self reselectCurrentlySelectedNode];
 }
 
 - (IBAction)headerButtonClicked:(id)sender 
@@ -213,13 +221,20 @@
 
 #pragma mark - Misc
 
+- (void)reselectCurrentlySelectedNode
+{
+    NSDictionary *viewInfo = [self.treeView itemAtRow:self.treeView.selectedRow];
+    DebugLog(@"selected: %@", [viewInfo valueForKey:kUIViewClassNameKey]);
+    [self loadControlsWithJSON:viewInfo];
+}
+
 - (void)loadControlsWithJSON:(NSDictionary *)jsonInfo
 {
     self.viewManager.currentView = [[CBUIView alloc] initWithJSON:jsonInfo];
     self.viewManager.currentView.syncFilePath = [self.syncDirectoryPath stringByAppendingPathComponent:kCBCurrentViewFileName];
     
     [self.viewManager.currentView saveJSON];
-    [self.viewManager performSelector:@selector(sync) withObject:nil afterDelay:1];
+    [self.viewManager sync];
     
     [self loadCurrentViewControls];
 }
@@ -411,7 +426,7 @@
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
-    DebugLog(@"changed");
+    [self reselectCurrentlySelectedNode];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
