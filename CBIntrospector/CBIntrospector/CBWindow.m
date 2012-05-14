@@ -206,8 +206,8 @@
 {
     if (self.viewManager.currentView)
     {
-        // expand it all to allow the 'walking' tree logic to work as expected, being able to find/select any node
-        [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
+        [self.treeView reloadData];
+        [self expandViewTree];
         
         [self selectTreeItemWithMemoryAddress:self.viewManager.currentView.memoryAddress];
     }
@@ -220,6 +220,12 @@
 }
 
 #pragma mark - Misc
+
+- (void)expandViewTree
+{
+    // expand it all to allow the 'walking' tree logic to work as expected, being able to find/select any node
+    [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
+}
 
 - (void)reselectCurrentlySelectedNode
 {
@@ -271,8 +277,7 @@
     self.treeContents = treeInfo;
     [self.treeView reloadData];
     
-    // expand it all to allow the 'walking' tree logic to work as expected, being able to find/select any node
-    [self.treeView expandItem:[self.treeView itemAtRow:0] expandChildren:YES];
+    [self expandViewTree];
 }
 
 - (BOOL)allowChildrenWithJSON:(NSDictionary *)jsonInfo
@@ -331,6 +336,13 @@
         return;
     
     int nRow = [self.treeView rowForItem:itemInfo];
+    
+    if (nRow < 0) 
+    {
+        // remove selection
+        [self.treeView deselectRow:self.treeView.selectedRow];
+        return;
+    }
     
     // expand its parent to make sure it is visible
     NSDictionary *parentInfo = [self.treeView parentForItem:itemInfo];

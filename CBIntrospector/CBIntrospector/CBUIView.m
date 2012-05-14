@@ -103,6 +103,11 @@
 {
     // build the JSON/dictionary
     NSMutableDictionary *jsonInfo = [NSMutableDictionary dictionaryWithCapacity:7];
+    if (self.className == nil)
+    {
+        DebugLog(@"Unable to build JSON view dictionary: %@", self);
+        return nil;
+    }
     
     [jsonInfo setObject:self.className forKey:kUIViewClassNameKey];
     [jsonInfo setObject:self.memoryAddress forKey:kUIViewMemoryAddressKey];
@@ -120,6 +125,11 @@
 - (BOOL)saveJSON
 {
     NSDictionary *jsonInfo = [self dictionaryRepresentation];
+    if (!jsonInfo)
+    {
+        DebugLog(@"Unable save view JSON: %@", self);
+        return NO;
+    }
     
     // save to disk
     NSError *error = nil;
