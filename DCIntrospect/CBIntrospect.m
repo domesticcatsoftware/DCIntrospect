@@ -12,6 +12,7 @@
 #import "JSONKit.h"
 #import "DCUtility.h"
 #import "CBSharedHeader.h"
+#import "CBIntrospectConstants.h"
 
 @interface CBIntrospect ()
 {

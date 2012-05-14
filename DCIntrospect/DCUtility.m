@@ -8,6 +8,7 @@
 
 #import "DCUtility.h"
 #import "CBSharedHeader.h"
+#import "CBIntrospectConstants.h"
 
 @implementation DCUtility
 + (DCUtility *)sharedInstance

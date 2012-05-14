@@ -10,6 +10,7 @@
 #import "DCUtility.h"
 #import "JSONKit.h"
 #import "CBSharedHeader.h"
+#import "CBIntrospectConstants.h"
 #include <stdbool.h>
 #include <sys/types.h>
 #import <objc/runtime.h>
