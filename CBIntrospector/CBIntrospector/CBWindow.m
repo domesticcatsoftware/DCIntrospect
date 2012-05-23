@@ -12,8 +12,11 @@
 #import "JSONKit.h"
 #import "CBTreeView.h"
 
+static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
+
 @interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
     NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSSplitViewDelegate>
+@property (assign) IBOutlet NSMenuItem *showAllSubviewsMenuItem;
 @property (assign) IBOutlet NSTextView *textView;
 @property (assign) IBOutlet NSSplitView *splitView;
 @property (assign) IBOutlet CBTreeView *treeView;
@@ -27,11 +30,13 @@
 @property (nonatomic, readonly) CBUIViewManager *viewManager;
 @property (nonatomic, readonly) NSString *syncDirectoryPath;
 @property (nonatomic, assign) NSTextField *focusedTextField;
+@property (nonatomic, assign) BOOL showAllSubviews;
 - (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
 @end
 
 @implementation CBWindow
+@synthesize showAllSubviewsMenuItem;
 @synthesize textView;
 @synthesize splitView;
 @synthesize treeView;
@@ -46,6 +51,7 @@
 @synthesize treeContents = _treeContents;
 @synthesize syncDirectoryPath;
 @synthesize focusedTextField;
+@synthesize showAllSubviews = _showAllSubviews;
 
 - (void)dealloc
 {
@@ -71,10 +77,23 @@
     return self.viewManager.syncDirectoryPath;
 }
 
+- (BOOL)showAllSubviews
+{
+    return (_showAllSubviews = [[NSUserDefaults standardUserDefaults] boolForKey:kCBUserSettingShowAllSubviewsKey]);
+}
+
+- (void)setShowAllSubviews:(BOOL)show
+{
+    _showAllSubviews = show;
+    [[NSUserDefaults standardUserDefaults] setBool:show forKey:kCBUserSettingShowAllSubviewsKey];
+}
+
 #pragma mark - General Overrides
 
 - (void)awakeFromNib
 {
+    self.showAllSubviewsMenuItem.state = (self.showAllSubviews ? NSOnState : NSOffState);
+    
 	// user can drag a string to create a new note from the initially dropped data
 	[self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [self.splitView setPosition:500 ofDividerAtIndex:0];
@@ -219,6 +238,14 @@
     [self reloadTree];
 }
 
+- (IBAction)showAllSubviewsClicked:(id)sender 
+{
+    self.showAllSubviews = !self.showAllSubviews;
+    self.showAllSubviewsMenuItem.state = (self.showAllSubviews ? NSOnState : NSOffState);
+    
+    [self reloadTree];
+}
+
 #pragma mark - Misc
 
 - (void)expandViewTree
@@ -282,6 +309,9 @@
 
 - (BOOL)allowChildrenWithJSON:(NSDictionary *)jsonInfo
 {
+    if (_showAllSubviews)
+        return YES;
+    
     NSString *className = [jsonInfo valueForKey:kUIViewClassNameKey];
     
     // don't allow below class to be branches
