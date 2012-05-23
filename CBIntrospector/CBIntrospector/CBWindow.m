@@ -13,6 +13,7 @@
 #import "CBTreeView.h"
 
 static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
+static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPhone Simulator";
 
 @interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
     NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSSplitViewDelegate>
@@ -244,6 +245,12 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     self.showAllSubviewsMenuItem.state = (self.showAllSubviews ? NSOnState : NSOffState);
     
     [self reloadTree];
+}
+
+- (IBAction)openSimulatorFolder:(id)sender 
+{
+    NSString *dirPath = [NSHomeDirectory() stringByAppendingFormat:@"/%@", kCBUserDirectoryPath];
+    [[NSWorkspace sharedWorkspace] openFile:dirPath];
 }
 
 #pragma mark - Misc
