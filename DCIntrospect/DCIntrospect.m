@@ -215,11 +215,12 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 													  object:nil
 													   queue:nil
 												  usingBlock:^(NSNotification *notification) {
-													  // needs to be done after a delay or else it doesn't work for some reason.
 													  if (self.keyboardBindingsOn)
+														{
 														  [self performSelector:@selector(takeFirstResponder)
-																	 withObject:nil
-																	 afterDelay:0.1];
+																				 withObject:nil
+																				 afterDelay:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]];
+														}
 												  }];
 	
   // dirty hack for UIWebView keyboard problems
@@ -288,7 +289,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[self updateStatusBar];
 		[self updateFrameView];
 		
-		if (keyboardBindingsOn)
+		if (self.keyboardBindingsOn)
 			[self.inputTextView becomeFirstResponder];
 		else
 			[self.inputTextView resignFirstResponder];
