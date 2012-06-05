@@ -99,6 +99,7 @@
 - (IBAction)reloadButtonClicked:(id)sender 
 {
     [self reloadTree];
+    [self.outlineView expandItem:nil expandChildren:YES];
 }
 
 #pragma mark - Outline Datasource
