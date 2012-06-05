@@ -37,6 +37,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 @property (nonatomic, copy) NSString *defaultTitle;
 - (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
+- (void)textFieldUpdated:(NSTextField *)textField;
 @end
 
 @implementation CBIntrospectorWindow
@@ -144,17 +145,19 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     switch (key)
     {
 		case 36: // enter key
+            if (self.focusedTextField)
+                [self textFieldUpdated:self.focusedTextField];
             break;
             
         // arrow keys
         case 125: // down
             [[CBUtility sharedInstance] updateIntValueWithTextField:self.focusedTextField addValue:(shiftKey ? -10 : -1)];
-            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
+//            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
             return YES;
             
         case 126: // up
             [[CBUtility sharedInstance] updateIntValueWithTextField:self.focusedTextField addValue:(shiftKey ? 10 : 1)];
-            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
+//            [self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:self.focusedTextField]];
             return YES;
     }
     
@@ -399,6 +402,31 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     return nil;
 }
 
+- (void)textFieldUpdated:(NSTextField *)textField
+{
+    CBUIView *view = self.viewManager.currentView;
+    NSRect frame = view.frame;
+    
+    if (self.leftPositionTextField == textField)
+    {
+        frame.origin.x = textField.intValue;
+    }
+    else if (self.topPositionTextField == textField)
+    {
+        frame.origin.y = textField.intValue;
+    }
+    else if (self.widthTextField == textField)
+    {
+        frame.size.width = textField.intValue;
+    }
+    else if (self.heightTextField == textField)
+    {
+        frame.size.height = textField.intValue;
+    }
+    
+    view.frame = frame;
+}
+
 #pragma mark - Find in tree
 
 - (NSDictionary *)itemFromJSON:(NSDictionary *)jsonInfo withMemoryAddress:(NSString *)memAddress
@@ -549,28 +577,8 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 
 - (void)controlTextDidChange:(NSNotification *)notification
 {
-    NSTextField *textField = notification.object;
-    CBUIView *view = self.viewManager.currentView;
-    NSRect frame = view.frame;
-    
-    if (self.leftPositionTextField == textField)
-    {
-        frame.origin.x = textField.intValue;
-    }
-    else if (self.topPositionTextField == textField)
-    {
-        frame.origin.y = textField.intValue;
-    }
-    else if (self.widthTextField == textField)
-    {
-        frame.size.width = textField.intValue;
-    }
-    else if (self.heightTextField == textField)
-    {
-        frame.size.height = textField.intValue;
-    }
-    
-    view.frame = frame;
+//    NSTextField *textField = notification.object;
+//    [self textFieldUpdated:textField];
 }
 
 - (void)controlDidBecomeFirstResponder:(NSResponder *)responder
