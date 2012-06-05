@@ -376,6 +376,8 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     // set the dir path and reload
     self.viewManager.syncDirectoryPath = path;
     [self reloadTree];
+    
+    [self makeKeyAndOrderFront:nil];
 }
 
 - (NSString *)bundleNameForPath:(NSString *)aPath
