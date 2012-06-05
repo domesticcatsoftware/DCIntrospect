@@ -35,7 +35,7 @@
 - (NSRegularExpression *)versionRegex
 {
     if (_versionRegex == nil)
-        _versionRegex = [[NSRegularExpression alloc] initWithPattern:@"[0-9]\\.[0-9]" options:0 error:nil];
+        _versionRegex = [[NSRegularExpression alloc] initWithPattern:@"^[0-9]\\.[0-9]" options:0 error:nil];
     return _versionRegex;
 }
 
