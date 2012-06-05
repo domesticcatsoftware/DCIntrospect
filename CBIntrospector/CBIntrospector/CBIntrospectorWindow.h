@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CBWindow : NSWindow
-@property (nonatomic, retain) NSDictionary *treeContents;
+@interface CBIntrospectorWindow : NSWindow
+@property (nonatomic, strong) NSDictionary *treeContents;
 @end

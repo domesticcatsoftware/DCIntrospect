@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1E3F0DA0155E54220015A478 /* NSView.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1E3F0D9F155E54220015A478 /* NSView.icns */; };
 		1E9245C7155AABE600CE32D3 /* CBTreeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9245C6155AABE600CE32D3 /* CBTreeView.m */; };
+		92C0AF61157D9E26003F13FC /* CBProjectWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 92C0AF60157D9E26003F13FC /* CBProjectWindow.m */; };
+		92C0AF64157DA0F9003F13FC /* CBPathItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 92C0AF63157DA0F9003F13FC /* CBPathItem.m */; };
 		92CBB0A615521B3C00F2217D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92CBB0A515521B3C00F2217D /* Cocoa.framework */; };
 		92CBB0B015521B3C00F2217D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92CBB0AE15521B3C00F2217D /* InfoPlist.strings */; };
 		92CBB0B215521B3C00F2217D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB0B115521B3C00F2217D /* main.m */; };
@@ -22,7 +24,7 @@
 		92CBB0FC15521C1100F2217D /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB0FB15521C1100F2217D /* JSONKit.m */; };
 		92CBB10215521D3100F2217D /* CBUIViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB10115521D3100F2217D /* CBUIViewManager.m */; };
 		92CBB10615521E6100F2217D /* CBUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB10515521E6100F2217D /* CBUIView.m */; };
-		92CBB1091552260400F2217D /* CBWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB1081552260400F2217D /* CBWindow.m */; };
+		92CBB1091552260400F2217D /* CBIntrospectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB1081552260400F2217D /* CBIntrospectorWindow.m */; };
 		92CBB10D155254DB00F2217D /* CBUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CBB10C155254DB00F2217D /* CBUtility.m */; };
 		92DF8887155653B800D63CCC /* CBTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 92DF8886155653B800D63CCC /* CBTextField.m */; };
 /* End PBXBuildFile section */
@@ -44,6 +46,10 @@
 		1E9245C5155AABE600CE32D3 /* CBTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBTreeView.h; sourceTree = "<group>"; };
 		1E9245C6155AABE600CE32D3 /* CBTreeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBTreeView.m; sourceTree = "<group>"; };
 		9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSharedHeader.h; path = ../../DCIntrospect/CBSharedHeader.h; sourceTree = "<group>"; };
+		92C0AF5F157D9E26003F13FC /* CBProjectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBProjectWindow.h; sourceTree = "<group>"; };
+		92C0AF60157D9E26003F13FC /* CBProjectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBProjectWindow.m; sourceTree = "<group>"; };
+		92C0AF62157DA0F9003F13FC /* CBPathItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBPathItem.h; sourceTree = "<group>"; };
+		92C0AF63157DA0F9003F13FC /* CBPathItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBPathItem.m; sourceTree = "<group>"; };
 		92CBB0A115521B3C00F2217D /* CBIntrospector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBIntrospector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92CBB0A515521B3C00F2217D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		92CBB0A815521B3C00F2217D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -69,8 +75,8 @@
 		92CBB10115521D3100F2217D /* CBUIViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUIViewManager.m; sourceTree = "<group>"; };
 		92CBB10415521E6100F2217D /* CBUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBUIView.h; sourceTree = "<group>"; };
 		92CBB10515521E6100F2217D /* CBUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUIView.m; sourceTree = "<group>"; };
-		92CBB1071552260400F2217D /* CBWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBWindow.h; sourceTree = "<group>"; };
-		92CBB1081552260400F2217D /* CBWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBWindow.m; sourceTree = "<group>"; };
+		92CBB1071552260400F2217D /* CBIntrospectorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBIntrospectorWindow.h; sourceTree = "<group>"; };
+		92CBB1081552260400F2217D /* CBIntrospectorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBIntrospectorWindow.m; sourceTree = "<group>"; };
 		92CBB10B155254DA00F2217D /* CBUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBUtility.h; sourceTree = "<group>"; };
 		92CBB10C155254DB00F2217D /* CBUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBUtility.m; sourceTree = "<group>"; };
 		92DF8885155653B800D63CCC /* CBTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBTextField.h; sourceTree = "<group>"; };
@@ -198,6 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				1E3F0D9A155E364F0015A478 /* CBIntrospectConstants.h */,
+				92C0AF62157DA0F9003F13FC /* CBPathItem.h */,
+				92C0AF63157DA0F9003F13FC /* CBPathItem.m */,
 				9233AA5C1552F33F000BFF5F /* CBSharedHeader.h */,
 				1E3F0D98155E361C0015A478 /* CBMacros.h */,
 				92CBB0FE15521C2800F2217D /* Third Party */,
@@ -217,9 +225,11 @@
 		92CBB10A1552436400F2217D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				92CBB1071552260400F2217D /* CBWindow.h */,
-				92CBB1081552260400F2217D /* CBWindow.m */,
+				92CBB1071552260400F2217D /* CBIntrospectorWindow.h */,
+				92CBB1081552260400F2217D /* CBIntrospectorWindow.m */,
 				92CBB10415521E6100F2217D /* CBUIView.h */,
+				92C0AF5F157D9E26003F13FC /* CBProjectWindow.h */,
+				92C0AF60157D9E26003F13FC /* CBProjectWindow.m */,
 				92CBB10515521E6100F2217D /* CBUIView.m */,
 				92DF8885155653B800D63CCC /* CBTextField.h */,
 				92DF8886155653B800D63CCC /* CBTextField.m */,
@@ -352,10 +362,12 @@
 				92CBB0FC15521C1100F2217D /* JSONKit.m in Sources */,
 				92CBB10215521D3100F2217D /* CBUIViewManager.m in Sources */,
 				92CBB10615521E6100F2217D /* CBUIView.m in Sources */,
-				92CBB1091552260400F2217D /* CBWindow.m in Sources */,
+				92CBB1091552260400F2217D /* CBIntrospectorWindow.m in Sources */,
 				92CBB10D155254DB00F2217D /* CBUtility.m in Sources */,
 				92DF8887155653B800D63CCC /* CBTextField.m in Sources */,
 				1E9245C7155AABE600CE32D3 /* CBTreeView.m in Sources */,
+				92C0AF61157D9E26003F13FC /* CBProjectWindow.m in Sources */,
+				92C0AF64157DA0F9003F13FC /* CBPathItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

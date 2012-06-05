@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 C. Bess. All rights reserved.
 //
 
-#import "CBWindow.h"
+#import "CBIntrospectorWindow.h"
 #import "CBUIViewManager.h"
 #import "CBUIView.h"
 #import "JSONKit.h"
 #import "CBTreeView.h"
+#import "CBProjectWindow.h"
 
 static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
-static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPhone Simulator";
 
-@interface CBWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
+@interface CBIntrospectorWindow () <NSDraggingDestination, CBUIViewManagerDelegate, NSOutlineViewDataSource, 
     NSOutlineViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSSplitViewDelegate>
 @property (assign) IBOutlet NSMenuItem *showAllSubviewsMenuItem;
 @property (assign) IBOutlet NSTextView *textView;
@@ -28,15 +28,17 @@ static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPh
 @property (assign) IBOutlet NSTextField *widthTextField;
 @property (assign) IBOutlet NSTextField *topPositionTextField;
 @property (assign) IBOutlet NSTextField *leftPositionTextField;
+@property (assign) IBOutlet CBProjectWindow *projectWindow;
 @property (nonatomic, readonly) CBUIViewManager *viewManager;
 @property (nonatomic, readonly) NSString *syncDirectoryPath;
 @property (nonatomic, assign) NSTextField *focusedTextField;
 @property (nonatomic, assign) BOOL showAllSubviews;
+@property (nonatomic, readonly) NSString *simulatorDirectoryPath;
 - (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
 @end
 
-@implementation CBWindow
+@implementation CBIntrospectorWindow
 @synthesize showAllSubviewsMenuItem;
 @synthesize textView;
 @synthesize splitView;
@@ -48,11 +50,13 @@ static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPh
 @synthesize widthTextField;
 @synthesize topPositionTextField;
 @synthesize leftPositionTextField;
+@synthesize projectWindow;
 @synthesize viewManager = _viewManager;
 @synthesize treeContents = _treeContents;
 @synthesize syncDirectoryPath;
 @synthesize focusedTextField;
 @synthesize showAllSubviews = _showAllSubviews;
+@synthesize simulatorDirectoryPath;
 
 - (void)dealloc
 {
@@ -76,6 +80,11 @@ static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPh
 - (NSString *)syncDirectoryPath
 {
     return self.viewManager.syncDirectoryPath;
+}
+
+- (NSString *)simulatorDirectoryPath
+{
+    return [[CBUtility sharedInstance] simulatorDirectoryPath];
 }
 
 - (BOOL)showAllSubviews
@@ -249,8 +258,12 @@ static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPh
 
 - (IBAction)openSimulatorFolder:(id)sender 
 {
-    NSString *dirPath = [NSHomeDirectory() stringByAppendingFormat:@"/%@", kCBUserDirectoryPath];
-    [[NSWorkspace sharedWorkspace] openFile:dirPath];
+    [[NSWorkspace sharedWorkspace] openFile:self.simulatorDirectoryPath];
+}
+
+- (IBAction)showProjectsWindowClicked:(id)sender 
+{
+    [projectWindow makeKeyAndOrderFront:nil];
 }
 
 #pragma mark - Misc

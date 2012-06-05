@@ -14,4 +14,5 @@
 - (void)showMessageBoxWithString:(NSString *)msg;
 - (NSDictionary *)dictionaryWithJSONFilePath:(NSString *)path;
 - (int)updateIntValueWithTextField:(NSTextField *)textField addValue:(NSInteger)addValue;
+- (NSString *)simulatorDirectoryPath;
 @end

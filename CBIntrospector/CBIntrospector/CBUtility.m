@@ -9,6 +9,8 @@
 #import "CBUtility.h"
 #import "JSONKit.h"
 
+static NSString * const kCBUserDirectoryPath = @"Library/Application Support/iPhone Simulator";
+
 @implementation CBUtility
 + (CBUtility *)sharedInstance
 {
@@ -50,5 +52,10 @@
     
     textField.intValue = textField.intValue + addValue;
     return textField.intValue;
+}
+
+- (NSString *)simulatorDirectoryPath
+{
+    return [NSHomeDirectory() stringByAppendingFormat:@"/%@", kCBUserDirectoryPath];
 }
 @end
