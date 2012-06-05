@@ -10,4 +10,5 @@
 
 @interface CBIntrospectorWindow : NSWindow
 @property (nonatomic, strong) NSDictionary *treeContents;
+- (void)switchProjectToDirectoryPath:(NSString *)path;
 @end

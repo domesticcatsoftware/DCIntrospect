@@ -34,6 +34,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 @property (nonatomic, assign) NSTextField *focusedTextField;
 @property (nonatomic, assign) BOOL showAllSubviews;
 @property (nonatomic, readonly) NSString *simulatorDirectoryPath;
+@property (nonatomic, copy) NSString *defaultTitle;
 - (IBAction)treeNodeClicked:(id)sender;
 - (void)loadCurrentViewControls;
 @end
@@ -57,11 +58,13 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 @synthesize focusedTextField;
 @synthesize showAllSubviews = _showAllSubviews;
 @synthesize simulatorDirectoryPath;
+@synthesize defaultTitle;
 
 - (void)dealloc
 {
     [_treeContents release];
     [_viewManager release];
+    self.defaultTitle = nil;
     [super dealloc];
 }
 
@@ -103,6 +106,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 - (void)awakeFromNib
 {
     self.showAllSubviewsMenuItem.state = (self.showAllSubviews ? NSOnState : NSOffState);
+    self.defaultTitle = self.title;
     
 	// user can drag a string to create a new note from the initially dropped data
 	[self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
@@ -324,6 +328,9 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     self.treeContents = treeInfo;
     [self.treeView reloadData];
     
+    // update the title, adding the bundle
+    self.title = nssprintf(@"%@ - %@", [self bundleNameForPath:self.syncDirectoryPath], self.defaultTitle);
+    
     [self expandViewTree];
 }
 
@@ -357,6 +364,37 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     }
     
     return YES;
+}
+
+- (void)switchProjectToDirectoryPath:(NSString *)bundlePath
+{
+    // strip off the last part of the path
+    NSArray *components = [bundlePath pathComponents];
+    NSString *path = [[components subarrayWithRange:NSMakeRange(0, components.count - 1)] componentsJoinedByString:@"/"];
+    path = [path stringByAppendingPathComponent:@"Library/Caches"];
+    
+    // set the dir path and reload
+    self.viewManager.syncDirectoryPath = path;
+    [self reloadTree];
+}
+
+- (NSString *)bundleNameForPath:(NSString *)aPath
+{
+    if (!aPath)
+        return nil;
+    
+    NSArray *components = [aPath pathComponents];
+    NSString *guidPath = [[components subarrayWithRange:NSMakeRange(0, components.count - 2)] componentsJoinedByString:@"/"];
+    
+    // get the bundle
+    NSArray *pathNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:guidPath error:nil];
+    for (NSString *name in pathNames)
+    {
+        if ([name hasSuffix:@".app"])
+            return name;
+    }
+    
+    return nil;
 }
 
 #pragma mark - Find in tree
@@ -433,6 +471,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     // clear tree view
     self.treeContents = nil;
     [self.treeView reloadData];
+    self.title = self.defaultTitle;
 }
 
 #pragma mark - NSOutlineDataSource

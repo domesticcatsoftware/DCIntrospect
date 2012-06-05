@@ -49,6 +49,7 @@
 
 - (void)reloadTree
 {
+    [self.progressIndicator startAnimation:nil];
     NSRegularExpression *guidRegex = [NSRegularExpression regularExpressionWithPattern:@"([A-Z0-9]{8})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{12})"
                                                                                options:0 error:nil];
     // build the path items collection
@@ -71,10 +72,29 @@
     self.pathItems = pathItems;
     [self.outlineView reloadData];
     
+    [self.progressIndicator stopAnimation:nil];
     DebugLog(@"%lu top level path items", pathItems.count);
 }
 
 #pragma mark - Events
+
+- (IBAction)openProjectClicked:(id)sender 
+{
+    CBPathItem *item = [self.outlineView itemAtRow:self.outlineView.selectedRow];
+    if (!item || [self textIsVersionString:item.name])
+        return;
+    
+    NSAlert *alert = [NSAlert alertWithMessageText:@"Open Project" 
+                                     defaultButton:@"OK" 
+                                   alternateButton:@"Cancel" 
+                                       otherButton:nil 
+                         informativeTextWithFormat:@"Open %@?", item.name];
+    if ([alert runModal])
+    {
+        [self.introspectorWindow switchProjectToDirectoryPath:item.path];
+        DebugLog(@"project opened");
+    }
+}
 
 - (IBAction)reloadButtonClicked:(id)sender 
 {
