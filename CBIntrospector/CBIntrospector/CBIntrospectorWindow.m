@@ -192,30 +192,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 		NSArray *files = [paste propertyListForType:NSFilenamesPboardType];	
         NSString *filePath = files.lastObject;
         
-        BOOL isDir;
-        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && isDir)
-        {
-            self.viewManager.syncDirectoryPath = filePath;
-            
-            // process file
-            NSString *syncFilePath = [filePath stringByAppendingPathComponent:kCBCurrentViewFileName];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:syncFilePath])
-            {
-                NSError *error = nil;
-                NSString *jsonString = [NSString stringWithContentsOfFile:syncFilePath
-                                                                 encoding:NSUTF8StringEncoding
-                                                                    error:&error];
-                
-                NSDictionary *jsonInfo = [jsonString objectFromJSONString];
-                [self loadControlsWithJSON:jsonInfo];
-            }
-            
-            [self reloadTree];
-        }
-        else
-        {
-            [[CBUtility sharedInstance] showMessageBoxWithString:NSLocalizedString(@"Unable to load a UIView from the directory.", nil)];
-        }
+        [self reloadTreeWithFilePath:filePath];
     }
     
     return NO;
@@ -337,6 +314,34 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     [self expandViewTree];
 }
 
+- (void)reloadTreeWithFilePath:(NSString *)filePath
+{
+    BOOL isDir;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && isDir)
+    {
+        self.viewManager.syncDirectoryPath = filePath;
+        
+        // process file and load into UIView controls
+        NSString *syncFilePath = [filePath stringByAppendingPathComponent:kCBCurrentViewFileName];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:syncFilePath])
+        {
+            NSError *error = nil;
+            NSString *jsonString = [NSString stringWithContentsOfFile:syncFilePath
+                                                             encoding:NSUTF8StringEncoding
+                                                                error:&error];
+            
+            NSDictionary *jsonInfo = [jsonString objectFromJSONString];
+            [self loadControlsWithJSON:jsonInfo];
+        }
+        
+        [self reloadTree];
+    }
+    else
+    {
+        [[CBUtility sharedInstance] showMessageBoxWithString:NSLocalizedString(@"Unable to load a UIView from the directory.", nil)];
+    }
+}
+
 - (BOOL)allowChildrenWithJSON:(NSDictionary *)jsonInfo
 {
     if (_showAllSubviews)
@@ -376,9 +381,8 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     NSString *path = [[components subarrayWithRange:NSMakeRange(0, components.count - 1)] componentsJoinedByString:@"/"];
     path = [path stringByAppendingPathComponent:@"Library/Caches"];
     
-    // set the dir path and reload
-    self.viewManager.syncDirectoryPath = path;
-    [self reloadTree];
+    // set the dir path and reload tree
+    [self reloadTreeWithFilePath:path];
     
     [self makeKeyAndOrderFront:nil];
 }
