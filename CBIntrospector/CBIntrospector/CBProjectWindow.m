@@ -84,16 +84,8 @@
     if (!item || [self textIsVersionString:item.name])
         return;
     
-    NSAlert *alert = [NSAlert alertWithMessageText:@"Open Project" 
-                                     defaultButton:@"OK" 
-                                   alternateButton:@"Cancel" 
-                                       otherButton:nil 
-                         informativeTextWithFormat:@"Open %@?", item.name];
-    if ([alert runModal])
-    {
-        [self.introspectorWindow switchProjectToDirectoryPath:item.path];
-        DebugLog(@"project opened");
-    }
+    [self.introspectorWindow switchProjectToDirectoryPath:item.path];
+    DebugLog(@"project opened");
 }
 
 - (IBAction)reloadButtonClicked:(id)sender 
