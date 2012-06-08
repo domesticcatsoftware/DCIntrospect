@@ -106,6 +106,7 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
 
 - (void)awakeFromNib
 {
+    self.delegate = self;
     self.showAllSubviewsMenuItem.state = (self.showAllSubviews ? NSOnState : NSOffState);
     self.defaultTitle = self.title;
     
@@ -603,4 +604,19 @@ static NSString * const kCBUserSettingShowAllSubviewsKey = @"show-subviews";
     return NO;
 }
 #endif
+
+#pragma mark - NSWindowDelegate
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    // check ahead of time to avoid the alert
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.syncDirectoryPath])
+    {
+        // assumes no selection means no tree contents loaded
+        if (self.treeView.selectedRow < 0)
+        {
+            [self reloadTree];
+        }
+    }
+}
 @end
