@@ -13,11 +13,14 @@
 - (void)_sendEvent:(UIEvent *)evt;
 @end
 
+#ifdef DEBUG
 static IMP gOrigSendEvent = nil;
+#endif
 
 @implementation UIWindow (Introspector)
 + (void)replaceCanonicalSendEvent
 {
+#ifdef DEBUG
     SEL origSendEventSelector = @selector(sendEvent:);
     SEL mySendEventSelector = @selector(_sendEvent:);
 

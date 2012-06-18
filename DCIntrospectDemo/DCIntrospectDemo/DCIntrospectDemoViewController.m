@@ -7,7 +7,7 @@
 //
 
 #import "DCIntrospectDemoViewController.h"
-#import "DCIntrospect.h"
+#import "CBIntrospect.h"
 
 @implementation DCIntrospectDemoViewController
 @synthesize activityIndicator;
@@ -15,7 +15,7 @@
 
 - (void)dealloc
 {
-	[[DCIntrospect sharedIntrospector] removeNamesForViewsInView:self.view];
+	[[CBIntrospect sharedIntrospector] removeNamesForViewsInView:self.view];
 
     [activityIndicator release];
 	[label release];
@@ -35,7 +35,7 @@
 
 	// set the activity indicator to a non-integer frame for demonstration
 	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
-	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
+	[[CBIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
 }
 
 - (void)viewDidUnload

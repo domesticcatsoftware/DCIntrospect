@@ -10,5 +10,9 @@
 
 #ifdef __OBJC__
 	#import <UIKit/UIKit.h>
-	#import <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
+#import "CBIntrospectConstants.h"
+#import "CBMacros.h"
+#import "CBSharedHeader.h"
+#import "DCUtility.h"
 #endif

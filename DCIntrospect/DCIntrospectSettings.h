@@ -15,7 +15,7 @@
 // '' is equivalent to page down (copy and paste this character to use)
 
 // Global //
-#define kDCIntrospectKeysInvoke							@" "		// starts introspector
+#define kDCIntrospectKeysInvoke							@" "		// starts introspector, [space] is always activates, this setting is ignored
 #define kDCIntrospectKeysToggleViewOutlines				@"o"		// shows outlines for all views
 #define kDCIntrospectKeysToggleNonOpaqueViews			@"O"		// changes all non-opaque view background colours to red (destructive)
 #define kDCIntrospectKeysToggleHelp						@"?"		// shows help

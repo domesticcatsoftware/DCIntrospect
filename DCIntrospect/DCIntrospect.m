@@ -12,7 +12,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/sysctl.h>
+//#import "UIApplication+Introspector.h" // disabled for now, consumes all keyboard events
+#import "UIView+Introspector.h"
 #import "UIWindow+Introspector.h"
+#import "CBIntrospect.h"
 
 #ifdef DEBUG
 // break into GDB code complied from following sources: 
@@ -77,7 +80,7 @@ static bool AmIBeingDebugged(void)
 @synthesize handleArrowKeys;
 @synthesize viewOutlines, highlightNonOpaqueViews, flashOnRedraw;
 @synthesize statusBarOverlay;
-@synthesize inputTextView;
+@synthesize inputTextView = _inputTextView;
 @synthesize frameView;
 @synthesize objectNames;
 @synthesize currentView, originalFrame, originalAlpha;
@@ -171,19 +174,34 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 + (DCIntrospect *)sharedIntrospector
 {
     static DCIntrospect *sharedInstance = nil;
-    
 #ifdef DEBUG
 	if (!sharedInstance)
 	{
-		sharedInstance = [[DCIntrospect alloc] init];
+		sharedInstance = [[[self class] alloc] init];
         sharedInstance.enableShakeToActivate = YES;
 		sharedInstance.keyboardBindingsOn = YES;
 		sharedInstance.showStatusBarOverlay = ![UIApplication sharedApplication].statusBarHidden;
-//		[self workaroundUITextInputTraitsPropertiesBug];
+		[self workaroundUITextInputTraitsPropertiesBug];
+//        [UIApplication replaceCanonicalSendEvent];
         [UIWindow replaceCanonicalSendEvent];
 	}
 #endif
 	return sharedInstance;
+}
+
+- (UITextView *)inputTextView
+{
+    if (_inputTextView == nil)
+    {
+        _inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
+		_inputTextView.delegate = self;
+		_inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+		_inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		_inputTextView.inputView = [[[UIView alloc] init] autorelease];
+		_inputTextView.scrollsToTop = NO;
+		[[self mainWindow] addSubview:_inputTextView];
+    }
+    return _inputTextView;
 }
 
 - (void)start
@@ -191,24 +209,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	UIWindow *mainWindow = [self mainWindow];
 	if (!mainWindow)
 	{
-		DCLog(@"DCIntrospect: Couldn't setup.  No main window?");
+		DCLog(@"DCIntrospect: Couldn't setup. No main window?");
 		return;
 	}
 	
 	if (!self.statusBarOverlay)
 	{
 		self.statusBarOverlay = [[[DCStatusBarOverlay alloc] init] autorelease];
-	}
-	
-	if (!self.inputTextView)
-	{
-		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
-		self.inputTextView.delegate = self;
-		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
-		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
-		self.inputTextView.scrollsToTop = NO;
-		[mainWindow addSubview:self.inputTextView];
 	}
 	
 	if (self.keyboardBindingsOn)
@@ -248,7 +255,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (!self.currentViewHistory)
 		self.currentViewHistory = [[[NSMutableArray alloc] init] autorelease];
 	
-	DCLog(@"DCIntrospect is setup. %@ to start.", [kDCIntrospectKeysInvoke isEqualToString:@" "] ? @"Push the space bar" : [NSString stringWithFormat:@"Type '%@'",  kDCIntrospectKeysInvoke]);
+	DCLog(@"%@ is setup. %@ to start.", [self class], [kDCIntrospectKeysInvoke isEqualToString:@" "] ? @"Push the space bar" : [NSString stringWithFormat:@"Type '%@'",  kDCIntrospectKeysInvoke]);
 }
 
 - (void)takeFirstResponder
@@ -324,7 +331,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		
 		self.statusBarOverlay.hidden = YES;
 		self.frameView.alpha = 0;
-		self.currentView = nil;
+        [self selectView:nil];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidEnd
 															object:nil];
@@ -349,7 +356,14 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (void)selectView:(UIView *)view
 {
+    [self onWillDeselectView:self.currentView];
+    [self onWillSelectView:view];
 	self.currentView = view;
+    [self onDidSelectView:view];
+    
+    if (view == nil)
+        return; // nil, if deactivating introspector
+    
 	self.originalFrame = self.currentView.frame;
 	self.originalAlpha = self.currentView.alpha;
 	
@@ -359,7 +373,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[self.frameView setNeedsDisplay];
 		self.viewOutlines = NO;
 	}
-	
+
 	[self updateFrameView];
 	[self updateStatusBar];
 	
@@ -441,16 +455,17 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string
 {
 	if ([string isEqualToString:kDCIntrospectKeysDisableForPeriod])
-  {
-    [self setKeyboardBindingsOn:NO];
-    [[self inputTextView] resignFirstResponder];
-    DCLog(@"DCIntrospect: Disabled for %.1f seconds", kDCIntrospectTemporaryDisableDuration);
-    [self performSelector:@selector(setKeyboardBindingsOn:) withObject:[NSNumber numberWithFloat:YES] afterDelay:kDCIntrospectTemporaryDisableDuration];
-    return NO;
-  }
+    {
+        [self setKeyboardBindingsOn:NO];
+        [[self inputTextView] resignFirstResponder];
+        DCLog(@"DCIntrospect: Disabled for %.1f seconds", kDCIntrospectTemporaryDisableDuration);
+        [self performSelector:@selector(setKeyboardBindingsOn:) withObject:[NSNumber numberWithFloat:YES] afterDelay:kDCIntrospectTemporaryDisableDuration];
+        return NO;
+    }
 
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
+        // below line needs to be disabled if you are using the UIApplication sendEvents: override
 		[self invokeIntrospector];
 		return NO;
 	}
@@ -464,7 +479,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		return NO;
 	}
 	
-  if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
+    if ([string isEqualToString:kDCIntrospectKeysToggleViewOutlines])
 	{
 		[self toggleOutlines];
 		return NO;
@@ -505,7 +520,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	{
 		if ([string isEqualToString:kDCIntrospectKeysLogProperties])
 		{
-			[self logPropertiesForObject:self.currentView];
+			[self logPropertiesForView:self.currentView];
 			return NO;
 		}
 		else if ([string isEqualToString:kDCIntrospectKeysLogAccessibilityProperties])
@@ -700,7 +715,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (NSString *)nameForObject:(id)object
 {
-	__block NSString *objectName = [NSString stringWithFormat:@"%@", [object class]];
+	__block NSString *objectName = NSStringFromClass([object class]);
 	if (!self.objectNames)
 		return objectName;
 	
@@ -883,8 +898,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (void)forceReloadOfView
 {
-	if ([self.currentView class] == [UITableView class])
-		[(UITableView *)self.currentView reloadData];
+	if ([self.currentView respondsToSelector:@selector(reloadData)])
+		[(id)self.currentView reloadData];
 }
 
 - (void)toggleOutlines
@@ -991,318 +1006,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (NSString *)describeProperty:(NSString *)propertyName value:(id)value
 {
-	if ([propertyName isEqualToString:@"contentMode"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIViewContentModeScaleToFill";
-			case 1: return @"UIViewContentModeScaleAspectFit";
-			case 2: return @"UIViewContentModeScaleAspectFill";
-			case 3: return @"UIViewContentModeRedraw";
-			case 4: return @"UIViewContentModeCenter";
-			case 5: return @"UIViewContentModeTop";
-			case 6: return @"UIViewContentModeBottom";
-			case 7: return @"UIViewContentModeLeft";
-			case 8: return @"UIViewContentModeRight";
-			case 9: return @"UIViewContentModeTopLeft";
-			case 10: return @"UIViewContentModeTopRight";
-			case 11: return @"UIViewContentModeBottomLeft";
-			case 12: return @"UIViewContentModeBottomRight";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"textAlignment"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITextAlignmentLeft";
-			case 1: return @"UITextAlignmentCenter";
-			case 2: return @"UITextAlignmentRight";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"lineBreakMode"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UILineBreakModeWordWrap";
-			case 1: return @"UILineBreakModeCharacterWrap";
-			case 2: return @"UILineBreakModeClip";
-			case 3: return @"UILineBreakModeHeadTruncation";
-			case 4: return @"UILineBreakModeTailTruncation";
-			case 5: return @"UILineBreakModeMiddleTruncation";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"activityIndicatorViewStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIActivityIndicatorViewStyleWhiteLarge";
-			case 1: return @"UIActivityIndicatorViewStyleWhite";
-			case 2: return @"UIActivityIndicatorViewStyleGray";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"returnKeyType"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIReturnKeyDefault";
-			case 1: return @"UIReturnKeyGo";
-			case 2: return @"UIReturnKeyGoogle";
-			case 3: return @"UIReturnKeyJoin";
-			case 4: return @"UIReturnKeyNext";
-			case 5: return @"UIReturnKeyRoute";
-			case 6: return @"UIReturnKeySearch";
-			case 7: return @"UIReturnKeySend";
-			case 8: return @"UIReturnKeyYahoo";
-			case 9: return @"UIReturnKeyDone";
-			case 10: return @"UIReturnKeyEmergencyCall";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"keyboardAppearance"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIKeyboardAppearanceDefault";
-			case 1: return @"UIKeyboardAppearanceAlert";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"keyboardType"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIKeyboardTypeDefault";
-			case 1: return @"UIKeyboardTypeASCIICapable";
-			case 2: return @"UIKeyboardTypeNumbersAndPunctuation";
-			case 3: return @"UIKeyboardTypeURL";
-			case 4: return @"UIKeyboardTypeNumberPad";
-			case 5: return @"UIKeyboardTypePhonePad";
-			case 6: return @"UIKeyboardTypeNamePhonePad";
-			case 7: return @"UIKeyboardTypeEmailAddress";
-			case 8: return @"UIKeyboardTypeDecimalPad";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"autocorrectionType"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIKeyboardTypeDefault";
-			case 1: return @"UITextAutocorrectionTypeDefault";
-			case 2: return @"UITextAutocorrectionTypeNo";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"autocapitalizationType"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITextAutocapitalizationTypeNone";
-			case 1: return @"UITextAutocapitalizationTypeWords";
-			case 2: return @"UITextAutocapitalizationTypeSentences";
-			case 3: return @"UITextAutocapitalizationTypeAllCharacters";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"clearButtonMode"] ||
-			 [propertyName isEqualToString:@"leftViewMode"] ||
-			 [propertyName isEqualToString:@"rightViewMode"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITextFieldViewModeNever";
-			case 1: return @"UITextFieldViewModeWhileEditing";
-			case 2: return @"UITextFieldViewModeUnlessEditing";
-			case 3: return @"UITextFieldViewModeAlways";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"borderStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITextBorderStyleNone";
-			case 1: return @"UITextBorderStyleLine";
-			case 2: return @"UITextBorderStyleBezel";
-			case 3: return @"UITextBorderStyleRoundedRect";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"progressViewStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UIProgressViewStyleBar";
-			case 1: return @"UIProgressViewStyleDefault";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"separatorStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITableViewCellSeparatorStyleNone";
-			case 1: return @"UITableViewCellSeparatorStyleSingleLine";
-			case 2: return @"UITableViewCellSeparatorStyleSingleLineEtched";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"selectionStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITableViewCellSelectionStyleNone";
-			case 1: return @"UITableViewCellSelectionStyleBlue";
-			case 2: return @"UITableViewCellSelectionStyleGray";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"editingStyle"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITableViewCellEditingStyleNone";
-			case 1: return @"UITableViewCellEditingStyleDelete";
-			case 2: return @"UITableViewCellEditingStyleInsert";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"accessoryType"] || [propertyName isEqualToString:@"editingAccessoryType"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITableViewCellAccessoryNone";
-			case 1: return @"UITableViewCellAccessoryDisclosureIndicator";
-			case 2: return @"UITableViewCellAccessoryDetailDisclosureButton";
-			case 3: return @"UITableViewCellAccessoryCheckmark";
-			default: return nil;
-		}
-	}
-	else if ([propertyName isEqualToString:@"style"])
-	{
-		switch ([value intValue])
-		{
-			case 0: return @"UITableViewStylePlain";
-			case 1: return @"UITableViewStyleGrouped";
-			default: return nil;
-		}
-		
-	}
-	else if ([propertyName isEqualToString:@"autoresizingMask"])
-	{
-		UIViewAutoresizing mask = [value intValue];
-		NSMutableString *string = [NSMutableString string];
-		if (mask & UIViewAutoresizingFlexibleLeftMargin)
-			[string appendString:@"UIViewAutoresizingFlexibleLeftMargin"];
-		if (mask & UIViewAutoresizingFlexibleRightMargin)
-			[string appendString:@" | UIViewAutoresizingFlexibleRightMargin"];
-		if (mask & UIViewAutoresizingFlexibleTopMargin)
-			[string appendString:@" | UIViewAutoresizingFlexibleTopMargin"];
-		if (mask & UIViewAutoresizingFlexibleBottomMargin)
-			[string appendString:@" | UIViewAutoresizingFlexibleBottomMargin"];
-		if (mask & UIViewAutoresizingFlexibleWidth)
-			[string appendString:@" | UIViewAutoresizingFlexibleWidthMargin"];
-		if (mask & UIViewAutoresizingFlexibleHeight)
-			[string appendString:@" | UIViewAutoresizingFlexibleHeightMargin"];
-		
-		if ([string hasPrefix:@" | "])
-			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
-		
-		return ([string length] > 0) ? string : @"UIViewAutoresizingNone";
-	}
-	else if ([propertyName isEqualToString:@"accessibilityTraits"])
-	{
-		UIAccessibilityTraits traits = [value intValue];
-		NSMutableString *string = [NSMutableString string];
-		if (traits & UIAccessibilityTraitButton)
-			[string appendString:@"UIAccessibilityTraitButton"];
-		if (traits & UIAccessibilityTraitLink)
-			[string appendString:@" | UIAccessibilityTraitLink"];
-		if (traits & UIAccessibilityTraitSearchField)
-			[string appendString:@" | UIAccessibilityTraitSearchField"];
-		if (traits & UIAccessibilityTraitImage)
-			[string appendString:@" | UIAccessibilityTraitImage"];
-		if (traits & UIAccessibilityTraitSelected)
-			[string appendString:@" | UIAccessibilityTraitSelected"];
-		if (traits & UIAccessibilityTraitPlaysSound)
-			[string appendString:@" | UIAccessibilityTraitPlaysSound"];
-		if (traits & UIAccessibilityTraitKeyboardKey)
-			[string appendString:@" | UIAccessibilityTraitKeyboardKey"];
-		if (traits & UIAccessibilityTraitStaticText)
-			[string appendString:@" | UIAccessibilityTraitStaticText"];
-		if (traits & UIAccessibilityTraitSummaryElement)
-			[string appendString:@" | UIAccessibilityTraitSummaryElement"];
-		if (traits & UIAccessibilityTraitNotEnabled)
-			[string appendString:@" | UIAccessibilityTraitNotEnabled"];
-		if (traits & UIAccessibilityTraitUpdatesFrequently)
-			[string appendString:@" | UIAccessibilityTraitUpdatesFrequently"];
-		if (traits & UIAccessibilityTraitStartsMediaSession)
-			[string appendString:@" | UIAccessibilityTraitStartsMediaSession"];
-		if (traits & UIAccessibilityTraitAdjustable)
-			[string appendFormat:@" | UIAccessibilityTraitAdjustable"];
-		if ([string hasPrefix:@" | "])
-			[string replaceCharactersInRange:NSMakeRange(0, 3) withString:@""];
-		
-		return ([string length] > 0) ? string : @"UIAccessibilityTraitNone";
-	}
-	
-	if ([value isKindOfClass:[NSValue class]])
-	{
-		// print out the return for each value depending on type
-		NSString *type = [NSString stringWithUTF8String:[value objCType]];
-		if ([type isEqualToString:@"c"])
-		{
-			return NSStringFromBOOL([value boolValue]);
-		}
-		else if ([type isEqualToString:@"{CGSize=ff}"])
-		{
-			CGSize size = [value CGSizeValue];
-			return CGSizeEqualToSize(size, CGSizeZero) ? @"CGSizeZero" : NSStringFromCGSize(size);
-		}
-		else if ([type isEqualToString:@"{UIEdgeInsets=ffff}"])
-		{
-			UIEdgeInsets edgeInsets = [value UIEdgeInsetsValue];
-			return UIEdgeInsetsEqualToEdgeInsets(edgeInsets, UIEdgeInsetsZero) ? @"UIEdgeInsetsZero" : NSStringFromUIEdgeInsets(edgeInsets);
-		}
-	}
-	else if ([value isKindOfClass:[UIColor class]])
-	{
-		UIColor *color = (UIColor *)value;
-		return [self describeColor:color];
-	}
-	else if ([value isKindOfClass:[UIFont class]])
-	{
-		UIFont *font = (UIFont *)value;
-		return [NSString stringWithFormat:@"%.0fpx %@", font.pointSize, font.fontName];
-	}
-	
-	return value ? [value description] : @"nil";
-}
-
-- (NSString *)describeColor:(UIColor *)color
-{
-	if (!color)
-		return @"nil";
-	
-	NSString *returnString = nil;
-	if (CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor)) == kCGColorSpaceModelRGB)
-	{
-		const CGFloat *components = CGColorGetComponents(color.CGColor);
-		returnString = [NSString stringWithFormat:@"R: %.0f G: %.0f B: %.0f A: %.2f",
-						components[0] * 256,
-						components[1] * 256,
-						components[2] * 256,
-						components[3]];
-	}
-	else
-	{
-		returnString = [NSString stringWithFormat:@"%@ (incompatible color space)", color];
-	}
-	return returnString;
+	return [UIView describeProperty:propertyName value:value];
 }
 
 #pragma mark DCIntrospector Help
@@ -1430,128 +1134,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (void)logPropertiesForCurrentView
 {
-	[self logPropertiesForObject:self.currentView];
+	[self logPropertiesForView:self.currentView];
 }
 
-- (void)logPropertiesForObject:(id)object
+- (void)logPropertiesForView:(UIView *)object
 {
-	Class objectClass = [object class];
-	NSString *className = [NSString stringWithFormat:@"%@", objectClass];
-	
-	unsigned int count;
-	objc_property_t *properties = class_copyPropertyList(objectClass, &count);
-    size_t buf_size = 1024;
-    char *buffer = malloc(buf_size);
-	NSMutableString *outputString = [NSMutableString stringWithFormat:@"\n\n** %@", className];
-	
-	// list the class heirachy
-	Class superClass = [objectClass superclass];
-	while (superClass)
-	{
-		[outputString appendFormat:@" : %@", superClass];
-		superClass = [superClass superclass];
-	}
-	
-	[outputString appendString:@" ** \n\n"];
-	
-	if ([objectClass isSubclassOfClass:UIView.class])
-	{
-		UIView *view = (UIView *)object;
-		// print out generic uiview properties
-		[outputString appendString:@"  ** UIView properties **\n"];
-		[outputString appendFormat:@"    tag: %i\n", view.tag];
-		[outputString appendFormat:@"    frame: %@ | ", NSStringFromCGRect(view.frame)];
-		[outputString appendFormat:@"bounds: %@ | ", NSStringFromCGRect(view.bounds)];
-		[outputString appendFormat:@"center: %@\n", NSStringFromCGPoint(view.center)];
-		[outputString appendFormat:@"    transform: %@\n", NSStringFromCGAffineTransform(view.transform)];
-		[outputString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" value:[NSNumber numberWithInt:view.autoresizingMask]]];
-		[outputString appendFormat:@"    autoresizesSubviews: %@\n", NSStringFromBOOL(view.autoresizesSubviews)];
-		[outputString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" value:[NSNumber numberWithInt:view.contentMode]]];
-		[outputString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(view.contentStretch)];
-		[outputString appendFormat:@"    backgroundColor: %@\n", [self describeColor:view.backgroundColor]];
-		[outputString appendFormat:@"    alpha: %.2f | ", view.alpha];
-		[outputString appendFormat:@"opaque: %@ | ", NSStringFromBOOL(view.opaque)];
-		[outputString appendFormat:@"hidden: %@ | ", NSStringFromBOOL(view.hidden)];
-		[outputString appendFormat:@"clipsToBounds: %@ | ", NSStringFromBOOL(view.clipsToBounds)];
-		[outputString appendFormat:@"clearsContextBeforeDrawing: %@\n", NSStringFromBOOL(view.clearsContextBeforeDrawing)];
-		[outputString appendFormat:@"    userInteractionEnabled: %@ | ", NSStringFromBOOL(view.userInteractionEnabled)];
-		[outputString appendFormat:@"multipleTouchEnabled: %@\n", NSStringFromBOOL(view.multipleTouchEnabled)];
-		[outputString appendFormat:@"    gestureRecognizers: %@\n", (view.gestureRecognizers) ? [view.gestureRecognizers description] : @"nil"];
-        [outputString appendFormat:@"    superview: %@\n", view.superview];
-        
-        // get subviews instance info
-        NSMutableArray *subviewsArray = [NSMutableArray arrayWithCapacity:view.subviews.count];
-        for (UIView *subview in view.subviews) 
-        {
-            [subviewsArray addObject:[NSString stringWithFormat:@"<%@: 0x%x>", NSStringFromClass([subview class]), subview]];
-        }
-        
-        // ex: subviews: 3 views [<UIView: 0x23f434f>, <UIButton: 0x43f4ffe>]
-        [outputString appendFormat:@"    subviews: %d view%@ [%@]\n", view.subviews.count, (view.subviews.count == 1 ? @"" : @"s"), [subviewsArray componentsJoinedByString:@", "]];
-		
-		[outputString appendString:@"\n"];
-	}
-	
-	[outputString appendFormat:@"  ** %@ properties **\n", objectClass];
-	
-	if (objectClass == UIScrollView.class || objectClass == UIButton.class)
-	{
-		[outputString appendString:@"    Logging properties not currently supported for this view.\n"];
-	}
-	else
-	{
-		
-		for (unsigned int i = 0; i < count; ++i)
-		{
-			// get the property name and selector name
-			NSString *propertyName = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding];
-			
-			SEL sel = NSSelectorFromString(propertyName);
-			if ([object respondsToSelector:sel])
-			{
-				NSString *propertyDescription;
-				@try
-				{
-					// get the return object and type for the selector
-					NSString *returnType = [NSString stringWithUTF8String:[[object methodSignatureForSelector:sel] methodReturnType]];
-					id returnObject = [object valueForKey:propertyName];
-					if ([returnType isEqualToString:@"c"])
-						returnObject = [NSNumber numberWithBool:[returnObject intValue] != 0];
-					
-					propertyDescription = [self describeProperty:propertyName value:returnObject];
-				}
-				@catch (NSException *exception)
-				{
-					// Non KVC compliant properties, see also +workaroundUITextInputTraitsPropertiesBug
-					propertyDescription = @"N/A";
-				}
-				[outputString appendFormat:@"    %@: %@\n", propertyName, propertyDescription];
-			}
-		}
-	}
-	
-	// list targets if there are any
-	if ([object respondsToSelector:@selector(allTargets)])
-	{
-		[outputString appendString:@"\n  ** Targets & Actions **\n"];
-		UIControl *control = (UIControl *)object;
-		UIControlEvents controlEvents = [control allControlEvents];
-		NSSet *allTargets = [control allTargets];
-		[allTargets enumerateObjectsUsingBlock:^(id target, BOOL *stop)
-		 {
-			 NSArray *actions = [control actionsForTarget:target forControlEvent:controlEvents];
-			 [actions enumerateObjectsUsingBlock:^(id action, NSUInteger idx, BOOL *stop2)
-			  {
-				  [outputString appendFormat:@"    target: %@ action: %@\n", target, action];
-			  }];
-		 }];
-	}
-	
-	[outputString appendString:@"\n"];
+    NSString *outputString = [object viewDescription];
 	DCLog(@"DCIntrospect: %@", outputString);
-	
-	free(properties);
-    free(buffer);
 }
 
 - (void)logAccessabilityPropertiesForObject:(id)object
@@ -1671,6 +1260,23 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (view == self.frameView || view == self.inputTextView)
 		return YES;
 	return NO;
+}
+
+#pragma mark - Select View Delegate
+
+- (void)onDidSelectView:(UIView *)view
+{
+    // empty
+}
+
+- (void)onWillSelectView:(UIView *)view
+{
+    // empty
+}
+
+- (void)onWillDeselectView:(UIView *)view
+{
+    // empty
 }
 
 @end

@@ -4,12 +4,6 @@
 //  Created by Domestic Cat on 29/04/11.
 //
 
-// Returns the NSString representation of the specified BOOL value
-static inline NSString * NSStringFromBOOL(BOOL value)
-{
-    return value ? @"YES" : @"NO";
-}
-
 #define kDCIntrospectNotificationIntrospectionDidStart @"kDCIntrospectNotificationIntrospectionDidStart"
 #define kDCIntrospectNotificationIntrospectionDidEnd @"kDCIntrospectNotificationIntrospectionDidEnd"
 #define kDCIntrospectAnimationDuration 0.08
@@ -128,7 +122,7 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 /////////////////////////////
 
 - (void)logPropertiesForCurrentView;
-- (void)logPropertiesForObject:(id)object;
+- (void)logPropertiesForView:(UIView *)view;
 - (void)logAccessabilityPropertiesForObject:(id)object;
 - (NSArray *)subclassesOfClass:(Class)parentClass;
 
@@ -137,7 +131,6 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 /////////////////////////
 
 - (NSString *)describeProperty:(NSString *)propertyName value:(id)value;
-- (NSString *)describeColor:(UIColor *)color;
 
 /////////////////////////
 // DCIntrospector Help //
@@ -156,4 +149,8 @@ static inline NSString * NSStringFromBOOL(BOOL value)
 - (BOOL)view:(UIView *)view containsSubview:(UIView *)subview;
 - (BOOL)shouldIgnoreView:(UIView *)view;
 
+#pragma mark - Select View Delegate
+- (void)onWillDeselectView:(UIView *)view;
+- (void)onWillSelectView:(UIView *)view;
+- (void)onDidSelectView:(UIView *)view;
 @end
