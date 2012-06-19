@@ -231,6 +231,15 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
                                                   [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(takeFirstResponder) object:nil];
                                                 }];
 
+  // fix for losing first responder on backgrounding app
+  [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
+                                                    object:nil 
+                                                     queue:nil 
+                                                usingBlock:^(NSNotification *note) {
+                                                  [self.inputTextView resignFirstResponder];
+                                                  [self takeFirstResponder];
+                                                }];
+  
 	// listen for device orientation changes to adjust the status bar
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
