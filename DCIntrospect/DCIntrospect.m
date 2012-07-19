@@ -60,6 +60,9 @@ static bool AmIBeingDebugged(void)
 
 - (void)takeFirstResponder;
 
+- (void)moveDownInViewStack;
+- (void)moveUpInViewStack;
+
 @end
 
 
@@ -77,6 +80,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize currentView, originalFrame, originalAlpha;
 @synthesize currentViewHistory;
 @synthesize showingHelp;
+@synthesize currentViewStack;
 
 #pragma mark Setup
 
@@ -323,14 +327,24 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	CGPoint convertedTouchPoint = [[self mainWindow] convertPoint:point fromView:self.frameView];
 	
 	// find all the views under that point – will be added in order on screen, ie mainWindow will be index 0, main view controller at index 1 etc.
-	NSMutableArray *views = [self viewsAtPoint:convertedTouchPoint inView:[self mainWindow]];
-	if (views.count == 0)
+	self.currentViewStack = [self viewsAtPoint:convertedTouchPoint inView:[self mainWindow]];
+	if (self.currentViewStack.count == 0)
 		return;
 	
-	// get the topmost view and setup the UI
+	// setup the UI and get the topmost view which has a non nil superview
 	[self.currentViewHistory removeAllObjects];
-	UIView *newView = [views lastObject];
-	[self selectView:newView];
+	
+    BOOL isViewFound = NO;
+    for( UIView* view in [self.currentViewStack reverseObjectEnumerator] )
+        if(view.superview)
+        {
+            isViewFound = YES;
+            [self selectView:view];
+            break;
+        }
+    
+    if(!isViewFound && [self.currentViewStack count])
+        [self selectView:[self.currentViewStack lastObject]];
 }
 
 - (void)selectView:(UIView *)view
@@ -583,6 +597,24 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			[self logCodeForCurrentViewChanges];
 			return NO;
 		}
+        else if([string isEqualToString:kDCIntrospectKeysMoveDownInViewStack])
+        {
+            [self moveDownInViewStack];
+            return NO;
+        }
+        else if([string isEqualToString:kDCIntrospectKeysMoveUpInViewStack])
+        {
+            [self moveUpInViewStack];
+            return NO;
+        }
+        else if( [string isEqualToString:kDCIntrospectKeysGenerateBackgroundColor] )
+        {
+            self.currentView.backgroundColor = [UIColor colorWithRed:(arc4random() % 256) / 256.0f
+                                                               green:(arc4random() % 256) / 256.0f
+                                                                blue:(arc4random() % 256) / 256.0f
+                                                               alpha:1.0f];
+            return NO;
+        }
 		
 		CGRect frame = self.currentView.frame;
 		if ([string isEqualToString:kDCIntrospectKeysNudgeViewLeft])
@@ -731,10 +763,12 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	if (!self.frameView)
 	{
 		self.frameView = [[[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self] autorelease];
-		[mainWindow addSubview:self.frameView];
 		self.frameView.alpha = 0.0f;
 		[self updateViews];
 	}
+    
+    //window can be changed
+    [mainWindow addSubview:self.frameView];
 	
 	[mainWindow bringSubviewToFront:self.frameView];
 	
@@ -787,7 +821,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	}
 	
 	if (self.showStatusBarOverlay)
+    {
+        [self.statusBarOverlay updateBarFrame];
 		self.statusBarOverlay.hidden = NO;
+    }
 	else
 		self.statusBarOverlay.hidden = YES;
 }
@@ -963,6 +1000,42 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[view.layer addSublayer:layer];
 		[layer performSelector:@selector(removeFromSuperlayer) withObject:nil afterDelay:kDCIntrospectFlashOnRedrawFlashLength];
 	}
+}
+
+- (void)moveDownInViewStack
+{
+    int indexOfCurrentView = [self.currentViewStack indexOfObject:self.currentView];
+    if(indexOfCurrentView == NSNotFound)
+    {
+        NSLog(@"DCIntrospect: The current view was changed and the view stack doesn't contain it.");
+        return;
+    }
+    
+    if (indexOfCurrentView == 0)
+    {
+        NSLog(@"DCIntrospect: At bottom of the view stack.");
+    }else
+    {
+        [self selectView:[self.currentViewStack objectAtIndex:indexOfCurrentView - 1]];
+    }
+}
+
+- (void)moveUpInViewStack
+{
+    int indexOfCurrentView = [self.currentViewStack indexOfObject:self.currentView];
+    if(indexOfCurrentView == NSNotFound)
+    {
+        NSLog(@"DCIntrospect: The current view was changed and the view stack doesn't contain it.");
+        return;
+    }
+    
+    if (indexOfCurrentView == [self.currentViewStack count]-1)
+    {
+        NSLog(@"DCIntrospect: At top of the view stack.");
+    }else
+    {
+        [self selectView:[self.currentViewStack objectAtIndex:indexOfCurrentView + 1]];
+    }
 }
 
 #pragma mark Description Methods
@@ -1339,6 +1412,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[helpString appendFormat:@"<div><span class='name'>Enter GDB</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterGDB];
 		[helpString appendFormat:@"<div><span class='name'>Move up in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveUpInViewHierarchy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysMoveUpInViewHierarchy];
 		[helpString appendFormat:@"<div><span class='name'>Move back down in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveBackInViewHierarchy isEqualToString:@""]) ? @"page down" : kDCIntrospectKeysMoveBackInViewHierarchy];
+        [helpString appendFormat:@"<div><span class='name'>Move up in a view stack</span><div class='key'>%@</div></div>",  kDCIntrospectKeysMoveUpInViewStack];
+        [helpString appendFormat:@"<div><span class='name'>Move down in a view stack</span><div class='key'>%@</div></div>",  kDCIntrospectKeysMoveDownInViewStack];
+        [helpString appendFormat:@"<div><span class='name'>Change the background color randomly</span><div class='key'>%@</div></div>",  kDCIntrospectKeysGenerateBackgroundColor];
 		[helpString appendString:@"<div class='spacer'></div>"];
 		
 		[helpString appendFormat:@"<div><span class='name'>Nudge Left</span><div class='key'>\uE235 / %@</div></div>", kDCIntrospectKeysNudgeViewLeft];
@@ -1589,11 +1665,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 
 - (UIWindow *)mainWindow
 {
-	NSArray *windows = [[UIApplication sharedApplication] windows];
-	if (windows.count == 0)
-		return nil;
-	
-	return [windows objectAtIndex:0];
+    return [UIApplication sharedApplication].keyWindow;
 }
 
 - (NSMutableArray *)viewsAtPoint:(CGPoint)touchPoint inView:(UIView *)view

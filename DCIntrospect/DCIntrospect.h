@@ -27,6 +27,29 @@
 
 @interface DCIntrospect : NSObject <DCFrameViewDelegate, UITextViewDelegate, UIWebViewDelegate>
 {
+    BOOL keyboardBindingsOn;
+    BOOL showStatusBarOverlay;
+    UIGestureRecognizer* invokeGestureRecognizer;
+    
+    BOOL on;
+    BOOL handleArrowKeys;
+    BOOL viewOutlines;
+    BOOL highlightNonOpaqueViews;
+    BOOL flashOnRedraw;
+    DCFrameView *frameView;
+    UITextView *inputTextView;
+    DCStatusBarOverlay *statusBarOverlay;
+    
+    NSMutableDictionary *objectNames;
+    
+    UIView *currentView;
+    CGRect originalFrame;
+    CGFloat originalAlpha;
+    
+    NSMutableArray *currentViewHistory;
+    NSMutableArray *currentViewStack;
+    
+    BOOL showingHelp;
 }
 
 @property (nonatomic) BOOL keyboardBindingsOn;									// default: YES
@@ -48,6 +71,7 @@
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
 @property (nonatomic, retain) NSMutableArray *currentViewHistory;
+@property (nonatomic, retain) NSMutableArray *currentViewStack;
 
 @property (nonatomic) BOOL showingHelp;
 

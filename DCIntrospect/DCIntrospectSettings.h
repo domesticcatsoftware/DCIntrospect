@@ -52,5 +52,10 @@
 #define kDCIntrospectKeysMoveToNextSiblingView			@"j"
 #define kDCIntrospectKeysMoveToPrevSiblingView			@"g"
 
+#define kDCIntrospectKeysMoveUpInViewStack              @"m"        // select view which is under the selected view and contains a clicked point
+#define kDCIntrospectKeysMoveDownInViewStack            @"n"        // select view whichg is over the selected view and contains a clicked point
+
+#define kDCIntrospectKeysGenerateBackgroundColor        @"k"        // change the selected view's background color randomly
+
 #define kDCIntrospectKeysEnterGDB						@"`"			// enters GDB
 #define kDCIntrospectKeysDisableForPeriod		@"~"			// disables DCIntrospect for a given period (see kDCIntrospectTemporaryDisableDuration)
