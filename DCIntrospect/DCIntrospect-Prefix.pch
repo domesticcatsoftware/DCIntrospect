@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of the 'DCIntrospect' target in the 'DCIntrospect' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+    #import <QuartzCore/QuartzCore.h>
+#endif

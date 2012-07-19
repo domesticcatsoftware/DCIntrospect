@@ -17,16 +17,55 @@
 		AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
 		AB0D01E8136A778000962171 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
 		AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
-		AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0213136A9E8D00962171 /* DCIntrospect.m */; };
-		AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D021E136A9FE000962171 /* DCFrameView.m */; };
-		ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */; };
-		ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA509F136FDD9300339835 /* DCCrossHairView.m */; };
+		C9E26F0C145A6472007C072D /* libDCIntrospect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E26F0B145A6472007C072D /* libDCIntrospect.a */; };
+		C9E26F0F145A679D007C072D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E1136A778000962171 /* main.m */; };
+		C9E26F10145A679D007C072D /* DCIntrospectDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */; };
+		C9E26F11145A679D007C072D /* DCIntrospectDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */; };
+		C9E26F13145A679D007C072D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625780B1138A0EBC004DA77B /* QuartzCore.framework */; };
+		C9E26F14145A679D007C072D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D4136A778000962171 /* UIKit.framework */; };
+		C9E26F15145A679D007C072D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D6136A778000962171 /* Foundation.framework */; };
+		C9E26F16145A679D007C072D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D01D8136A778000962171 /* CoreGraphics.framework */; };
+		C9E26F19145A679D007C072D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01DD136A778000962171 /* InfoPlist.strings */; };
+		C9E26F1A145A679D007C072D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB0D01E6136A778000962171 /* MainWindow.xib */; };
+		C9E26F1B145A679D007C072D /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 625780AF138A052F004DA77B /* circle.png */; };
+		C9E26F23145A6E46007C072D /* DCIntrospect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E26F22145A6E46007C072D /* DCIntrospect.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C9E26F2A145A73B6007C072D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C9183918145A3463008BF5C0;
+			remoteInfo = DCIntrospectStaticLib;
+		};
+		C9E26F2C145A73B6007C072D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C9E26EE8145A5165007C072D;
+			remoteInfo = DCIntrospectFramework;
+		};
+		C9E26F2E145A73D8007C072D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C9E26F04145A5A89007C072D;
+			remoteInfo = BundleProducts;
+		};
+		C9E26F30145A73EB007C072D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C9E26F04145A5A89007C072D;
+			remoteInfo = BundleProducts;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		625780AF138A052F004DA77B /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		625780B1138A0EBC004DA77B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		AB0D01D0136A778000962171 /* DCIntrospectDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCIntrospectDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoUsingStaticLib.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0D01D4136A778000962171 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB0D01D6136A778000962171 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AB0D01D8136A778000962171 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -39,15 +78,10 @@
 		AB0D01E7136A778000962171 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		AB0D01E9136A778000962171 /* DCIntrospectDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCIntrospectDemoViewController.h; sourceTree = "<group>"; };
 		AB0D01EA136A778000962171 /* DCIntrospectDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCIntrospectDemoViewController.m; sourceTree = "<group>"; };
-		AB0D0212136A9E8D00962171 /* DCIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospect.h; path = ../../DCIntrospect/DCIntrospect.h; sourceTree = "<group>"; };
-		AB0D0213136A9E8D00962171 /* DCIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCIntrospect.m; path = ../../DCIntrospect/DCIntrospect.m; sourceTree = "<group>"; };
-		AB0D021D136A9FE000962171 /* DCFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCFrameView.h; path = ../../DCIntrospect/DCFrameView.h; sourceTree = "<group>"; };
-		AB0D021E136A9FE000962171 /* DCFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCFrameView.m; path = ../../DCIntrospect/DCFrameView.m; sourceTree = "<group>"; };
-		ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCStatusBarOverlay.h; path = ../../DCIntrospect/DCStatusBarOverlay.h; sourceTree = "<group>"; };
-		ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCStatusBarOverlay.m; path = ../../DCIntrospect/DCStatusBarOverlay.m; sourceTree = "<group>"; };
-		ABDA509E136FDD9300339835 /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCCrossHairView.h; path = ../../DCIntrospect/DCCrossHairView.h; sourceTree = "<group>"; };
-		ABDA509F136FDD9300339835 /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCCrossHairView.m; path = ../../DCIntrospect/DCCrossHairView.m; sourceTree = "<group>"; };
-		ABDA51091370E79100339835 /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCIntrospectSettings.h; path = ../../DCIntrospect/DCIntrospectSettings.h; sourceTree = "<group>"; };
+		C9E26F0B145A6472007C072D /* libDCIntrospect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDCIntrospect.a; path = ../Products/lib/libDCIntrospect.a; sourceTree = "<group>"; };
+		C9E26F1F145A679D007C072D /* DemoUsingFramework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoUsingFramework.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E26F22145A6E46007C072D /* DCIntrospect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCIntrospect.framework; path = ../Products/DCIntrospect.framework; sourceTree = "<group>"; };
+		C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DCIntrospect.xcodeproj; path = ../DCIntrospect/DCIntrospect.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +93,19 @@
 				AB0D01D5136A778000962171 /* UIKit.framework in Frameworks */,
 				AB0D01D7136A778000962171 /* Foundation.framework in Frameworks */,
 				AB0D01D9136A778000962171 /* CoreGraphics.framework in Frameworks */,
+				C9E26F0C145A6472007C072D /* libDCIntrospect.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26F12145A679D007C072D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F13145A679D007C072D /* QuartzCore.framework in Frameworks */,
+				C9E26F14145A679D007C072D /* UIKit.framework in Frameworks */,
+				C9E26F15145A679D007C072D /* Foundation.framework in Frameworks */,
+				C9E26F16145A679D007C072D /* CoreGraphics.framework in Frameworks */,
+				C9E26F23145A6E46007C072D /* DCIntrospect.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,7 +124,8 @@
 		AB0D01D1136A778000962171 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AB0D01D0136A778000962171 /* DCIntrospectDemo.app */,
+				AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */,
+				C9E26F1F145A679D007C072D /* DemoUsingFramework.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,6 +133,9 @@
 		AB0D01D3136A778000962171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */,
+				C9E26F0B145A6472007C072D /* libDCIntrospect.a */,
+				C9E26F22145A6E46007C072D /* DCIntrospect.framework */,
 				625780B1138A0EBC004DA77B /* QuartzCore.framework */,
 				AB0D01D4136A778000962171 /* UIKit.framework */,
 				AB0D01D6136A778000962171 /* Foundation.framework */,
@@ -96,7 +147,6 @@
 		AB0D01DA136A778000962171 /* DCIntrospectDemo */ = {
 			isa = PBXGroup;
 			children = (
-				AB0D01F7136A79A800962171 /* DCIntrospect */,
 				AB0D01E3136A778000962171 /* DCIntrospectDemoAppDelegate.h */,
 				AB0D01E4136A778000962171 /* DCIntrospectDemoAppDelegate.m */,
 				AB0D01E6136A778000962171 /* MainWindow.xib */,
@@ -119,28 +169,21 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		AB0D01F7136A79A800962171 /* DCIntrospect */ = {
+		C9E26F25145A73B6007C072D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ABDA51091370E79100339835 /* DCIntrospectSettings.h */,
-				AB0D0212136A9E8D00962171 /* DCIntrospect.h */,
-				AB0D0213136A9E8D00962171 /* DCIntrospect.m */,
-				ABDA5058136E0FDD00339835 /* DCStatusBarOverlay.h */,
-				ABDA5059136E0FDD00339835 /* DCStatusBarOverlay.m */,
-				AB0D021D136A9FE000962171 /* DCFrameView.h */,
-				AB0D021E136A9FE000962171 /* DCFrameView.m */,
-				ABDA509E136FDD9300339835 /* DCCrossHairView.h */,
-				ABDA509F136FDD9300339835 /* DCCrossHairView.m */,
+				C9E26F2B145A73B6007C072D /* libDCIntrospect.a */,
+				C9E26F2D145A73B6007C072D /* DCIntrospect.framework */,
 			);
-			name = DCIntrospect;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AB0D01CF136A778000962171 /* DCIntrospectDemo */ = {
+		AB0D01CF136A778000962171 /* DemoUsingStaticLib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DCIntrospectDemo" */;
+			buildConfigurationList = AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DemoUsingStaticLib" */;
 			buildPhases = (
 				AB0D01CC136A778000962171 /* Sources */,
 				AB0D01CD136A778000962171 /* Frameworks */,
@@ -149,10 +192,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				C9E26F2F145A73D8007C072D /* PBXTargetDependency */,
 			);
-			name = DCIntrospectDemo;
+			name = DemoUsingStaticLib;
 			productName = DCIntrospectDemo;
-			productReference = AB0D01D0136A778000962171 /* DCIntrospectDemo.app */;
+			productReference = AB0D01D0136A778000962171 /* DemoUsingStaticLib.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C9E26F0D145A679D007C072D /* DemoUsingFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9E26F1C145A679D007C072D /* Build configuration list for PBXNativeTarget "DemoUsingFramework" */;
+			buildPhases = (
+				C9E26F0E145A679D007C072D /* Sources */,
+				C9E26F12145A679D007C072D /* Frameworks */,
+				C9E26F18145A679D007C072D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C9E26F31145A73EB007C072D /* PBXTargetDependency */,
+			);
+			name = DemoUsingFramework;
+			productName = DCIntrospectDemo;
+			productReference = C9E26F1F145A679D007C072D /* DemoUsingFramework.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -173,12 +235,36 @@
 			mainGroup = AB0D01C5136A778000962171;
 			productRefGroup = AB0D01D1136A778000962171 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C9E26F25145A73B6007C072D /* Products */;
+					ProjectRef = C9E26F24145A73B6007C072D /* DCIntrospect.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
-				AB0D01CF136A778000962171 /* DCIntrospectDemo */,
+				AB0D01CF136A778000962171 /* DemoUsingStaticLib */,
+				C9E26F0D145A679D007C072D /* DemoUsingFramework */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C9E26F2B145A73B6007C072D /* libDCIntrospect.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libDCIntrospect.a;
+			remoteRef = C9E26F2A145A73B6007C072D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9E26F2D145A73B6007C072D /* DCIntrospect.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = DCIntrospect.framework;
+			remoteRef = C9E26F2C145A73B6007C072D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AB0D01CE136A778000962171 /* Resources */ = {
@@ -188,6 +274,16 @@
 				AB0D01DF136A778000962171 /* InfoPlist.strings in Resources */,
 				AB0D01E8136A778000962171 /* MainWindow.xib in Resources */,
 				625780B0138A052F004DA77B /* circle.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26F18145A679D007C072D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F19145A679D007C072D /* InfoPlist.strings in Resources */,
+				C9E26F1A145A679D007C072D /* MainWindow.xib in Resources */,
+				C9E26F1B145A679D007C072D /* circle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,14 +297,33 @@
 				AB0D01E2136A778000962171 /* main.m in Sources */,
 				AB0D01E5136A778000962171 /* DCIntrospectDemoAppDelegate.m in Sources */,
 				AB0D01EB136A778000962171 /* DCIntrospectDemoViewController.m in Sources */,
-				AB0D0214136A9E8D00962171 /* DCIntrospect.m in Sources */,
-				AB0D021F136A9FE000962171 /* DCFrameView.m in Sources */,
-				ABDA505A136E0FDD00339835 /* DCStatusBarOverlay.m in Sources */,
-				ABDA50A0136FDD9400339835 /* DCCrossHairView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9E26F0E145A679D007C072D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E26F0F145A679D007C072D /* main.m in Sources */,
+				C9E26F10145A679D007C072D /* DCIntrospectDemoAppDelegate.m in Sources */,
+				C9E26F11145A679D007C072D /* DCIntrospectDemoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C9E26F2F145A73D8007C072D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BundleProducts;
+			targetProxy = C9E26F2E145A73D8007C072D /* PBXContainerItemProxy */;
+		};
+		C9E26F31145A73EB007C072D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BundleProducts;
+			targetProxy = C9E26F30145A73EB007C072D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		AB0D01DD136A778000962171 /* InfoPlist.strings */ = {
@@ -245,6 +360,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -263,6 +379,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -279,7 +396,9 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -294,8 +413,52 @@
 				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Products/lib\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C9E26F1D145A679D007C072D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Products\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				PRODUCT_NAME = DemoUsingFramework;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C9E26F1E145A679D007C072D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Products\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCIntrospectDemo/DCIntrospectDemo-Prefix.pch";
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "DCIntrospectDemo/DCIntrospectDemo-Info.plist";
+				PRODUCT_NAME = DemoUsingFramework;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -313,11 +476,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DCIntrospectDemo" */ = {
+		AB0D01F1136A778000962171 /* Build configuration list for PBXNativeTarget "DemoUsingStaticLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB0D01F2136A778000962171 /* Debug */,
 				AB0D01F3136A778000962171 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9E26F1C145A679D007C072D /* Build configuration list for PBXNativeTarget "DemoUsingFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9E26F1D145A679D007C072D /* Debug */,
+				C9E26F1E145A679D007C072D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

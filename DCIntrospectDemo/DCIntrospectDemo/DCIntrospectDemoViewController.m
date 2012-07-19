@@ -6,8 +6,8 @@
 //  Copyright 2011 Domestic Cat Software. All rights reserved.
 //
 
+#import <DCIntrospect/DCIntrospect.h>
 #import "DCIntrospectDemoViewController.h"
-#import "DCIntrospect.h"
 
 @implementation DCIntrospectDemoViewController
 @synthesize activityIndicator;
