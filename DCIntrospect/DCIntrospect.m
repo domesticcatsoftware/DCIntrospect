@@ -77,6 +77,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize currentView, originalFrame, originalAlpha;
 @synthesize currentViewHistory;
 @synthesize showingHelp;
+@synthesize delegate;
 
 #pragma mark Setup
 
@@ -431,6 +432,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
     return NO;
   }
 
+    if ([self.delegate introspect:self shouldConsumeKeyboardInput:string]) {
+        return NO;
+    }
+    
 	if ([string isEqualToString:kDCIntrospectKeysInvoke])
 	{
 		[self invokeIntrospector];

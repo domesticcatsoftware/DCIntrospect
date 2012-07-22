@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCIntrospect.h"
 
-@interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface DCIntrospectDemoViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, DCIntrospectDelegate>
 {
 }
 

@@ -16,6 +16,8 @@
 - (void)dealloc
 {
 	[[DCIntrospect sharedIntrospector] removeNamesForViewsInView:self.view];
+    // It is important for the delegate to be set as nil to prevent crashes.
+    [DCIntrospect sharedIntrospector].delegate = nil;
 
     [activityIndicator release];
 	[label release];
@@ -33,6 +35,8 @@
 {
 	[super viewDidLoad];
 
+    [DCIntrospect sharedIntrospector].delegate = self;
+    
 	// set the activity indicator to a non-integer frame for demonstration
 	self.activityIndicator.frame = CGRectOffset(self.activityIndicator.frame, 0.5, 0.0);
 	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
@@ -106,6 +110,19 @@
 
 - (IBAction)sliderChanged:(id)sender
 {
+}
+
+#pragma mark - DCIntrospectDelegate methods
+
+- (BOOL)introspect:(DCIntrospect *)theIntrospect shouldConsumeKeyboardInput:(NSString *)theInput {
+    if ([theInput isEqualToString:@"z"]) {
+        if (self.label.backgroundColor == nil) {
+            self.label.backgroundColor = [UIColor greenColor];
+        } else {
+            self.label.backgroundColor = nil;
+        }
+    }
+    return NO;
 }
 
 @end

@@ -17,6 +17,8 @@
 
 #ifdef DEBUG
 
+@protocol DCIntrospectDelegate;
+
 @interface UIView (debug)
 
 - (NSString *)recursiveDescription;
@@ -50,6 +52,9 @@
 @property (nonatomic, retain) NSMutableArray *currentViewHistory;
 
 @property (nonatomic) BOOL showingHelp;
+
+// Weak would have been better but the project is iOS 4 compatible.
+@property (nonatomic, assign) id<DCIntrospectDelegate> delegate;
 
 ///////////
 // Setup //
@@ -151,5 +156,11 @@
 - (void)fadeView:(UIView *)view toAlpha:(CGFloat)alpha;
 - (BOOL)view:(UIView *)view containsSubview:(UIView *)subview;
 - (BOOL)shouldIgnoreView:(UIView *)view;
+
+@end
+
+@protocol DCIntrospectDelegate <NSObject>
+
+- (BOOL)introspect:(DCIntrospect *)theIntrospect shouldConsumeKeyboardInput:(NSString *)theInput;
 
 @end
