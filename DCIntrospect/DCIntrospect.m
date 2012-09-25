@@ -191,12 +191,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	
 	if (!self.inputTextView)
 	{
-		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
+		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)] autorelease];
 		self.inputTextView.delegate = self;
 		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
 		self.inputTextView.scrollsToTop = NO;
+        self.inputTextView.hidden = YES;
 		[mainWindow addSubview:self.inputTextView];
 	}
 	
@@ -417,7 +418,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	[self updateFrameView];
 	[self updateStatusBar];
 	
-	[self resetInputTextView];
+    self.handleArrowKeys = NO; //option-down arrow will get handled twice if key handling isn't disabled immediately
+    [self performSelector:@selector(resetInputTextView) withObject:nil afterDelay:0.0]; //selectedRange doesn't reset correctly on iOS 6 if this isn't performed with a delay
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string
