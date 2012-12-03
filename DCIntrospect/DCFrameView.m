@@ -36,7 +36,11 @@
 		self.touchPointLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
 		self.touchPointLabel.text = @"X 320 Y 480";
 		self.touchPointLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+#if defined(__IPHONE_6_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0)
+		self.touchPointLabel.textAlignment = NSTextAlignmentCenter;
+#else
 		self.touchPointLabel.textAlignment = UITextAlignmentCenter;
+#endif
 		self.touchPointLabel.textColor = [UIColor whiteColor];
 		self.touchPointLabel.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.65f];
 		self.touchPointLabel.layer.cornerRadius = 5.5f;

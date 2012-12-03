@@ -38,6 +38,7 @@
 	[[DCIntrospect sharedIntrospector] setName:@"activityIndicator" forObject:self.activityIndicator accessedWithSelf:YES];
 }
 
+#if !defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0)
 - (void)viewDidUnload
 {
     [self setActivityIndicator:nil];
@@ -45,6 +46,7 @@
 
 	[super viewDidUnload];
 }
+#endif
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
