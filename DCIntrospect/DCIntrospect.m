@@ -322,8 +322,11 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	// convert the point into the main window
 	CGPoint convertedTouchPoint = [[self mainWindow] convertPoint:point fromView:self.frameView];
 	
-	// find all the views under that point – will be added in order on screen, ie mainWindow will be index 0, main view controller at index 1 etc.
+	// find all the views under that point – will be added in order on screen, ie mainWindow will be index 0, main view controller at index 1 etc, note that hidden views are ignored.
 	NSMutableArray *views = [self viewsAtPoint:convertedTouchPoint inView:[self mainWindow]];
+	while ([views.lastObject isHidden]) {
+		[views removeLastObject];
+	}
 	if (views.count == 0)
 		return;
 	
