@@ -44,6 +44,9 @@
 #define kDCIntrospectKeysLogProperties					@"p"		// logs all properties of the selected view
 #define kDCIntrospectKeysLogAccessibilityProperties		@"a"		// logs accessibility info (useful for automated view tests - thanks to @samsoffes for the idea)
 #define kDCIntrospectKeysLogViewRecursive				@"v"		// calls private method recursiveDescription which logs selected view heirachy
+#define kDCIntrospectKeysExerciseAmbiguityInLayout			@"m"		// logs the value of hasAmbiguousLayout and calls exerciseAmbiguityInLayout
+#define kDCIntrospectKeysConstraintsAffectingLayoutForAxisX		@"x"		// logs the value of constraintsAffectingLayoutForAxis:horizontal
+#define kDCIntrospectKeysConstraintsAffectingLayoutForAxisY 	@"X"		// logs the value of constraintsAffectingLayoutForAxis:vertical
 
 #define kDCIntrospectKeysMoveUpInViewHierarchy			@"y"		// changes the selected view to it's superview
 #define kDCIntrospectKeysMoveBackInViewHierarchy		@"t"		// changes the selected view back to the previous view selected (after using the above command)

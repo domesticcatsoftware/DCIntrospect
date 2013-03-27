@@ -118,6 +118,9 @@
 - (void)toggleRedrawFlashing;
 - (void)callDrawRectOnViewsInSubview:(UIView *)subview;
 - (void)flashRect:(CGRect)rect inView:(UIView *)view;
+- (void)exerciseAmbiguityInLayoutForView:(UIView *)view;;
+- (void)logHorizontalConstraintsForView:(UIView *)view;;
+- (void)logVerticalConstraintsForView:(UIView *)view;;
 
 /////////////////////////////
 // (Somewhat) Experimental //

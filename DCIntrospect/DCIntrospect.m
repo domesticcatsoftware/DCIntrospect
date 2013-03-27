@@ -500,6 +500,20 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			[self logRecursiveDescriptionForView:self.currentView];
 			return NO;
 		}
+                else if ([string isEqualToString:kDCIntrospectKeysExerciseAmbiguityInLayout])
+                {
+                        [self exerciseAmbiguityInLayoutForView:self.currentView];
+                        return NO;
+                }
+                else if ([string isEqualToString:kDCIntrospectKeysConstraintsAffectingLayoutForAxisX])
+                {
+                        [self logHorizontalConstraintsForView:self.currentView];
+                        return NO;
+                }
+                else if ([string isEqualToString:kDCIntrospectKeysConstraintsAffectingLayoutForAxisY]) {
+                        [self logVerticalConstraintsForView:self.currentView];
+                        return NO;
+                }
 		else if ([string isEqualToString:kDCIntrospectKeysSetNeedsDisplay])
 		{
 			[self forceSetNeedsDisplay];
@@ -965,6 +979,31 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	}
 }
 
+- (void)exerciseAmbiguityInLayoutForView:(UIView *)view
+{
+        if ([view respondsToSelector:@selector(hasAmbiguousLayout)])
+        {
+                BOOL hasAmbiguousLayout = [view hasAmbiguousLayout];
+                NSLog(@"DCIntrospect: ambiguous layout? %@", hasAmbiguousLayout ? @"YES" : @"NO");
+                if (hasAmbiguousLayout)
+                        [view exerciseAmbiguityInLayout];
+        }
+}
+
+- (void)logHorizontalConstraintsForView:(UIView *)view
+{
+        if ([view respondsToSelector:@selector(constraintsAffectingLayoutForAxis:)])
+                NSLog(@"DCIntrospect: constraints for horizontal axis: %@",
+                      [view constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
+}
+
+- (void)logVerticalConstraintsForView:(UIView *)view
+{
+        if ([view respondsToSelector:@selector(constraintsAffectingLayoutForAxis:)])
+                NSLog(@"DCIntrospect: constraints for vertical axis: %@",
+                      [view constraintsAffectingLayoutForAxis:UILayoutConstraintAxisVertical]);
+}
+
 #pragma mark Description Methods
 
 - (NSString *)describeProperty:(NSString *)propertyName value:(id)value
@@ -1336,6 +1375,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[helpString appendFormat:@"<div><span class='name'>Log Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Accessibility Properties</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogAccessibilityProperties];
 		[helpString appendFormat:@"<div><span class='name'>Log Recursive Description for View</span><div class='key'>%@</div></div>", kDCIntrospectKeysLogViewRecursive];
+		[helpString appendFormat:@"<div><span class='name'>Exercise autolayout ambiguity, if any</span><div class='key'>%@</div></div>", kDCIntrospectKeysExerciseAmbiguityInLayout];
+		[helpString appendFormat:@"<div><span class='name'>Log horizontal constraints affecting View</span><div class='key'>%@</div></div>", kDCIntrospectKeysConstraintsAffectingLayoutForAxisX];
+		[helpString appendFormat:@"<div><span class='name'>Log vertical constraints affecting View</span><div class='key'>%@</div></div>", kDCIntrospectKeysConstraintsAffectingLayoutForAxisY];
 		[helpString appendFormat:@"<div><span class='name'>Enter GDB</span><div class='key'>%@</div></div>", kDCIntrospectKeysEnterGDB];
 		[helpString appendFormat:@"<div><span class='name'>Move up in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveUpInViewHierarchy isEqualToString:@""]) ? @"page up" : kDCIntrospectKeysMoveUpInViewHierarchy];
 		[helpString appendFormat:@"<div><span class='name'>Move back down in view hierarchy</span><div class='key'>%@</div></div>", ([kDCIntrospectKeysMoveBackInViewHierarchy isEqualToString:@""]) ? @"page down" : kDCIntrospectKeysMoveBackInViewHierarchy];
