@@ -5,6 +5,7 @@
 //
 
 #import "DCFrameView.h"
+#import "ARCMacros.h"
 
 @implementation DCFrameView
 @synthesize delegate;
@@ -13,6 +14,7 @@
 @synthesize rectsToOutline;
 @synthesize touchPointView;
 
+#if !__has_feature(objc_arc)
 - (void)dealloc
 {
 	self.delegate = nil;
@@ -21,6 +23,7 @@
 
 	[super dealloc];
 }
+#endif
 
 #pragma mark - Setup
 
@@ -33,7 +36,7 @@
 		self.backgroundColor = [UIColor clearColor];
 		self.opaque = NO;
 
-		self.touchPointLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+		self.touchPointLabel = SAFE_ARC_AUTORELEASE([[UILabel alloc] initWithFrame:CGRectZero]);
 		self.touchPointLabel.text = @"X 320 Y 480";
 		self.touchPointLabel.font = [UIFont boldSystemFontOfSize:12.0f];
 		self.touchPointLabel.textAlignment = UITextAlignmentCenter;
@@ -46,7 +49,7 @@
 
 		self.rectsToOutline = [NSMutableArray array];
 
-		self.touchPointView = [[[DCCrossHairView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 17.0f, 17.0f) color:[UIColor blueColor]] autorelease];
+		self.touchPointView = SAFE_ARC_AUTORELEASE([[DCCrossHairView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 17.0f, 17.0f) color:[UIColor blueColor]]);
 		self.touchPointView.alpha = 0.0f;
 		[self addSubview:self.touchPointView];
 	}
