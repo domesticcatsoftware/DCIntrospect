@@ -63,7 +63,7 @@ static bool AmIBeingDebugged(void)
 @end
 
 
-DCIntrospect *sharedInstance = nil;
+static DCIntrospect *sharedInstance = nil;
 
 @implementation DCIntrospect
 @synthesize keyboardBindingsOn, showStatusBarOverlay, invokeGestureRecognizer;
