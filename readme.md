@@ -88,7 +88,7 @@ Pushing `p` will log out the available properties about the selected view.  DCIn
 Customizing Key Bindings
 --------------------------------------
 
-Edit the file `DCIntrospectSettings.h` to change key bindings.  You might want to change the key bindings if your using a laptop/wireless keyboard for development.
+Edit the file `DCIntrospectSettings.h` to change key bindings.  You might want to change the key bindings if you're using a laptop/wireless keyboard for development.
 
 License
 -----------
