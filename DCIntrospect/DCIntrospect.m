@@ -13,6 +13,9 @@
 #include <unistd.h>
 #include <sys/sysctl.h>
 
+#define float_epsilon 0.00001
+#define float_equal(a,b) (fabs((a) - (b)) < float_epsilon)
+
 // break into GDB code complied from following sources: 
 // http://blog.timac.org/?p=190, http://developer.apple.com/library/mac/#qa/qa1361/_index.html, http://cocoawithlove.com/2008/03/break-into-debugger.html
 
@@ -654,7 +657,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[outputString appendFormat:@"%@.frame = CGRectMake(%.1f, %.1f, %.1f, %.1f);\n", varName, self.currentView.frame.origin.x, self.currentView.frame.origin.y, self.currentView.frame.size.width, self.currentView.frame.size.height];
 	}
 	
-	if (self.originalAlpha != self.currentView.alpha)
+	if (!float_equal(self.originalAlpha,self.currentView.alpha))
 	{
 		[outputString appendFormat:@"%@.alpha = %.2f;\n", varName, self.currentView.alpha];
 	}
@@ -1448,7 +1451,6 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			[objectString appendFormat:@"    autoresizingMask: %@\n", [self describeProperty:@"autoresizingMask" value:[NSNumber numberWithInt:view.autoresizingMask]]];
 			[objectString appendFormat:@"    autoresizesSubviews: %@\n", (view.autoresizesSubviews) ? @"YES" : @"NO"];
 			[objectString appendFormat:@"    contentMode: %@ | ", [self describeProperty:@"contentMode" value:[NSNumber numberWithInt:view.contentMode]]];
-			[objectString appendFormat:@"contentStretch: %@\n", NSStringFromCGRect(view.contentStretch)];
 			[objectString appendFormat:@"    backgroundColor: %@\n", [self describeColor:view.backgroundColor]];
 			[objectString appendFormat:@"    alpha: %.2f | ", view.alpha];
 			[objectString appendFormat:@"opaque: %@ | ", (view.opaque) ? @"YES" : @"NO"];
