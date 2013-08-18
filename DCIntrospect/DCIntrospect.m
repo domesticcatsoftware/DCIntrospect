@@ -993,9 +993,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	{
 		switch ([value intValue])
 		{
-			case 0: return @"UITextAlignmentLeft";
-			case 1: return @"UITextAlignmentCenter";
-			case 2: return @"UITextAlignmentRight";
+			case 0: return @"NSTextAlignmentLeft";
+			case 1: return @"NSTextAlignmentCenter";
+			case 2: return @"NSTextAlignmentRight";
 			default: return nil;
 		}
 	}
