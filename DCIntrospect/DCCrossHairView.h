@@ -4,6 +4,7 @@
 //  Created by Domestic Cat on 3/05/11.
 //
 
+#import <UIKit/UIKit.h>
 
 @interface DCCrossHairView : UIView
 {
