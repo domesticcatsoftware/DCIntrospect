@@ -121,7 +121,7 @@
 
 	UIFont *font = [UIFont systemFontOfSize:10.0f];
 
-	float dash[2] = {3, 3};
+	CGFloat dash[2] = {3, 3};
 	CGContextSetLineDash(context, 0, dash, 2);
 
 	// edge->left side
