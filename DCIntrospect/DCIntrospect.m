@@ -153,8 +153,10 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
             
             if (!originalValueForKey)
                 originalValueForKey = (IMP)[objc_getAssociatedObject(superclass, originalValueForKeyIMPKey) pointerValue];
-            
-            while (!originalValueForKey || originalValueForKey == (IMP)UITextInputTraits_valueForKey) {
+            if (!originalValueForKey)
+            	originalValueForKey = class_getMethodImplementation(superclass, @selector(valueForKey:));
+
+            while (originalValueForKey == (IMP)UITextInputTraits_valueForKey) {
                 superclass = [superclass superclass];
                 if (!superclass) {
                     originalValueForKey = method_getImplementation(valueForKey);
