@@ -35,12 +35,15 @@ Before you start make sure the `DEBUG` environment variable is set.  DCIntrospec
 
 Add the `DCIntrospect` class files to your project, add the QuartzCore framework if needed.  To start:
 
-    [window makeKeyAndDisplay]
-    
-    // always call after makeKeyAndDisplay.
-    #if TARGET_IPHONE_SIMULATOR
-        [[DCIntrospect sharedIntrospector] start];
-    #endif
+
+```objc
+[window makeKeyAndDisplay]
+
+// always call after makeKeyAndDisplay.
+#if TARGET_IPHONE_SIMULATOR
+    [[DCIntrospect sharedIntrospector] start];
+#endif
+```
 
 The `#if` to target the simulator is not required but is a good idea to further prevent leaving it on in production code.
 
