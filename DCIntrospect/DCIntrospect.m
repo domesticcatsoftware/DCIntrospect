@@ -124,7 +124,9 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		free(properties);
 	}
 	
-	IMP valueForKey = (IMP)[objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
+	// See https://github.com/kstenerud/ObjectAL-for-iPhone/issues/73#issuecomment-64778814
+	// See http://stackoverflow.com/questions/2650190/objective-c-and-use-of-sel-imp
+	id (*valueForKey)(id, SEL, NSString*)  = (id (*)(id, SEL, NSString*))[objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
 	if ([textInputTraitsProperties containsObject:key])
 	{
 		id textInputTraits = valueForKey(self, _cmd, @"textInputTraits");
