@@ -16,10 +16,6 @@
 - (void)dealloc
 {
 	self.delegate = nil;
-	[touchPointLabel release];
-	[touchPointView release];
-
-	[super dealloc];
 }
 
 #pragma mark - Setup
@@ -33,10 +29,10 @@
 		self.backgroundColor = [UIColor clearColor];
 		self.opaque = NO;
 
-		self.touchPointLabel = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+		self.touchPointLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		self.touchPointLabel.text = @"X 320 Y 480";
 		self.touchPointLabel.font = [UIFont boldSystemFontOfSize:12.0f];
-		self.touchPointLabel.textAlignment = UITextAlignmentCenter;
+		self.touchPointLabel.textAlignment = NSTextAlignmentCenter;
 		self.touchPointLabel.textColor = [UIColor whiteColor];
 		self.touchPointLabel.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.65f];
 		self.touchPointLabel.layer.cornerRadius = 5.5f;
@@ -46,7 +42,7 @@
 
 		self.rectsToOutline = [NSMutableArray array];
 
-		self.touchPointView = [[[DCCrossHairView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 17.0f, 17.0f) color:[UIColor blueColor]] autorelease];
+		self.touchPointView = [[DCCrossHairView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 17.0f, 17.0f) color:[UIColor blueColor]];
 		self.touchPointView.alpha = 0.0f;
 		[self addSubview:self.touchPointView];
 	}
@@ -121,7 +117,7 @@
 
 	UIFont *font = [UIFont systemFontOfSize:10.0f];
 
-	float dash[2] = {3, 3};
+	CGFloat dash[2] = {3, 3};
 	CGContextSetLineDash(context, 0, dash, 2);
 
 	// edge->left side

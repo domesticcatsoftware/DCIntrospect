@@ -9,11 +9,7 @@
 @implementation DCCrossHairView
 @synthesize color;
 
-- (void)dealloc
-{
-	[color release];
-	[super dealloc];
-}
+
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)aColor
 {
@@ -38,6 +34,7 @@
 	CGContextMoveToPoint(context, 0, floorf(self.bounds.size.height / 2.0f) + 0.5f);
 	CGContextAddLineToPoint(context, self.bounds.size.width, floorf(self.bounds.size.height / 2.0f) + 0.5f);
 	CGContextStrokePath(context);
+    
 }
 
 @end

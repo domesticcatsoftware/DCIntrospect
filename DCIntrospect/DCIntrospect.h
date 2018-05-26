@@ -31,23 +31,23 @@
 
 @property (nonatomic) BOOL keyboardBindingsOn;									// default: YES
 @property (nonatomic) BOOL showStatusBarOverlay;								// default: YES
-@property (nonatomic, retain) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
+@property (nonatomic, strong) UIGestureRecognizer *invokeGestureRecognizer;		// default: nil
 
 @property (nonatomic) BOOL on;
 @property (nonatomic) BOOL handleArrowKeys;
 @property (nonatomic) BOOL viewOutlines;
 @property (nonatomic) BOOL highlightNonOpaqueViews;
 @property (nonatomic) BOOL flashOnRedraw;
-@property (nonatomic, retain) DCFrameView *frameView;
-@property (nonatomic, retain) UITextView *inputTextView;
-@property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
+@property (nonatomic, strong) DCFrameView *frameView;
+@property (nonatomic, strong) UITextView *inputTextView;
+@property (nonatomic, strong) DCStatusBarOverlay *statusBarOverlay;
 
-@property (nonatomic, retain) NSMutableDictionary *objectNames;
+@property (nonatomic, strong) NSMutableDictionary *objectNames;
 
 @property (nonatomic, assign) UIView *currentView;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) CGFloat originalAlpha;
-@property (nonatomic, retain) NSMutableArray *currentViewHistory;
+@property (nonatomic, strong) NSMutableArray *currentViewHistory;
 
 @property (nonatomic) BOOL showingHelp;
 
@@ -87,7 +87,7 @@
 
 - (void)logCodeForCurrentViewChanges;
 
-// make sure all names that are added are removed at dealloc or else they will be retained here!
+// make sure all names that are added are removed at dealloc or else they will be stronged here!
 - (void)setName:(NSString *)name forObject:(id)object accessedWithSelf:(BOOL)accessedWithSelf;
 - (NSString *)nameForObject:(id)object;
 - (void)removeNamesForViewsInView:(UIView *)view;
