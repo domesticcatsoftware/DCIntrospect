@@ -23,9 +23,9 @@
 @property (nonatomic, assign) id<DCFrameViewDelegate> delegate;
 @property (nonatomic) CGRect mainRect;
 @property (nonatomic) CGRect superRect;
-@property (nonatomic, retain) UILabel *touchPointLabel;
-@property (nonatomic, retain) NSMutableArray *rectsToOutline;
-@property (nonatomic, retain) DCCrossHairView *touchPointView;
+@property (nonatomic, strong) UILabel *touchPointLabel;
+@property (nonatomic, strong) NSMutableArray *rectsToOutline;
+@property (nonatomic, strong) DCCrossHairView *touchPointView;
 
 ///////////
 // Setup //

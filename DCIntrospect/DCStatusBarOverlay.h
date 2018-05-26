@@ -15,8 +15,8 @@
 {
 }
 
-@property (nonatomic, retain) UILabel *leftLabel;
-@property (nonatomic, retain) UILabel *rightLabel;
+@property (nonatomic, strong) UILabel *leftLabel;
+@property (nonatomic, strong) UILabel *rightLabel;
 
 ///////////
 // Setup //

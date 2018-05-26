@@ -82,29 +82,29 @@ DCIntrospect *sharedInstance = nil;
 
 + (void)load
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString *simulatorRoot = [[[NSProcessInfo processInfo] environment] objectForKey:@"IPHONE_SIMULATOR_ROOT"];
-	if (simulatorRoot)
-	{
-		void *AppSupport = dlopen([[simulatorRoot stringByAppendingPathComponent:@"/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport"] fileSystemRepresentation], RTLD_LAZY);
-		CFStringRef (*CPCopySharedResourcesPreferencesDomainForDomain)(CFStringRef domain) = (CFStringRef (*)())dlsym(AppSupport, "CPCopySharedResourcesPreferencesDomainForDomain");
-		if (CPCopySharedResourcesPreferencesDomainForDomain)
-		{
-			CFStringRef accessibilityDomain = CPCopySharedResourcesPreferencesDomainForDomain(CFSTR("com.apple.Accessibility"));
-			if (accessibilityDomain)
-			{
-				// This must be done *before* UIApplicationMain, hence +load
-				CFPreferencesSetValue(CFSTR("ApplicationAccessibilityEnabled"), kCFBooleanTrue, accessibilityDomain, kCFPreferencesAnyUser, kCFPreferencesAnyHost);
-				CFRelease(accessibilityDomain);
-			}
-		}
-	}
-	
-	[pool drain];
+    @autoreleasepool{
+        NSString *simulatorRoot = [[[NSProcessInfo processInfo] environment] objectForKey:@"IPHONE_SIMULATOR_ROOT"];
+        if (simulatorRoot)
+        {
+            void *AppSupport = dlopen([[simulatorRoot stringByAppendingPathComponent:@"/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport"] fileSystemRepresentation], RTLD_LAZY);
+            CFStringRef (*CPCopySharedResourcesPreferencesDomainForDomain)(CFStringRef domain) = (CFStringRef (*)())dlsym(AppSupport, "CPCopySharedResourcesPreferencesDomainForDomain");
+            if (CPCopySharedResourcesPreferencesDomainForDomain)
+            {
+                CFStringRef accessibilityDomain = CPCopySharedResourcesPreferencesDomainForDomain(CFSTR("com.apple.Accessibility"));
+                if (accessibilityDomain)
+                {
+                    // This must be done *before* UIApplicationMain, hence +load
+                    CFPreferencesSetValue(CFSTR("ApplicationAccessibilityEnabled"), kCFBooleanTrue, accessibilityDomain, kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+                    CFRelease(accessibilityDomain);
+                }
+            }
+        }
+    }
 }
 
 static void *originalValueForKeyIMPKey = &originalValueForKeyIMPKey;
+typedef id (* _rIMP)(id,SEL ,...);
 
 id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key);
 id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
@@ -125,14 +125,15 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	}
 	
 	IMP valueForKey = (IMP)[objc_getAssociatedObject([self class], originalValueForKeyIMPKey) pointerValue];
+    _rIMP func = (_rIMP)valueForKey;
 	if ([textInputTraitsProperties containsObject:key])
 	{
-		id textInputTraits = valueForKey(self, _cmd, @"textInputTraits");
-		return valueForKey(textInputTraits, _cmd, key);
+		id textInputTraits = func(self, _cmd, @"textInputTraits");
+		return func(textInputTraits, _cmd, key);
 	}
 	else
 	{
-		return valueForKey(self, _cmd, key);
+		return func(self, _cmd, key);
 	}
 }
 
@@ -186,16 +187,16 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	
 	if (!self.statusBarOverlay)
 	{
-		self.statusBarOverlay = [[[DCStatusBarOverlay alloc] init] autorelease];
+		self.statusBarOverlay = [[DCStatusBarOverlay alloc] init] ;
 	}
 	
 	if (!self.inputTextView)
 	{
-		self.inputTextView = [[[UITextView alloc] initWithFrame:CGRectZero] autorelease];
+		self.inputTextView = [[UITextView alloc] initWithFrame:CGRectZero];
 		self.inputTextView.delegate = self;
 		self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.inputTextView.inputView = [[[UIView alloc] init] autorelease];
+		self.inputTextView.inputView = [[UIView alloc] init];
 		self.inputTextView.scrollsToTop = NO;
 		[mainWindow addSubview:self.inputTextView];
 	}
@@ -236,7 +237,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
 	
 	if (!self.currentViewHistory)
-		self.currentViewHistory = [[[NSMutableArray alloc] init] autorelease];
+		self.currentViewHistory = [[NSMutableArray alloc] init];
 	
 	NSLog(@"DCIntrospect is setup. %@ to start.", [kDCIntrospectKeysInvoke isEqualToString:@" "] ? @"Push the space bar" : [NSString stringWithFormat:@"Type '%@'",  kDCIntrospectKeysInvoke]);
 }
@@ -261,9 +262,8 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	UIWindow *mainWindow = [self mainWindow];
 	[mainWindow removeGestureRecognizer:invokeGestureRecognizer];
 	
-	[invokeGestureRecognizer release];
 	invokeGestureRecognizer = nil;
-	invokeGestureRecognizer = [newGestureRecognizer retain];
+	invokeGestureRecognizer = newGestureRecognizer;
 	[invokeGestureRecognizer addTarget:self action:@selector(invokeIntrospector)];
 	[mainWindow addGestureRecognizer:invokeGestureRecognizer];
 }
@@ -621,7 +621,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			UIView *view = self.currentView;
 			view.tag = view.tag;	// suppress the xcode warning about an unused variable.
 			NSLog(@"DCIntrospect: access current view using local 'view' variable.");
-			DEBUGGER;
+//            DEBUGGER;
 			return NO;
 		}
 		
@@ -659,10 +659,12 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		[outputString appendFormat:@"%@.alpha = %.2f;\n", varName, self.currentView.alpha];
 	}
 	
-	if (outputString.length == 0)
-		NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
-	else
-		printf("\n\n%s\n", [outputString UTF8String]);
+    if (outputString.length == 0){
+        NSLog(@"DCIntrospect: No changes made to %@.", self.currentView.class);
+    }else{
+        printf("\n\n%s\n", [outputString UTF8String]);
+    }
+		
 }
 
 - (void)setName:(NSString *)name forObject:(id)object accessedWithSelf:(BOOL)accessedWithSelf
@@ -730,7 +732,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	UIWindow *mainWindow = [self mainWindow];
 	if (!self.frameView)
 	{
-		self.frameView = [[[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self] autorelease];
+		self.frameView = [[DCFrameView alloc] initWithFrame:(CGRect){ CGPointZero, mainWindow.frame.size } delegate:self];
 		[mainWindow addSubview:self.frameView];
 		self.frameView.alpha = 0.0f;
 		[self updateViews];
@@ -774,7 +776,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 			nameForObject = [nameForObject substringFromIndex:@"self.".length];
 		
 		if (self.currentView.tag != 0)
-			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@ (tag: %i)", nameForObject, self.currentView.tag];
+			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@ (tag: %zd)", nameForObject, self.currentView.tag];
 		else
 			self.statusBarOverlay.leftLabel.text = [NSString stringWithFormat:@"%@", nameForObject];
 		
@@ -1294,13 +1296,13 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 	{
 		self.statusBarOverlay.leftLabel.text = @"Help";
 		self.statusBarOverlay.rightLabel.text = @"Any key to close";
-		UIView *backingView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)] autorelease];
+		UIView *backingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, mainWindow.frame.size.height)];
 		backingView.tag = 1548;
 		backingView.alpha = 0;
 		backingView.backgroundColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.85f];
 		[mainWindow addSubview:backingView];
 		
-		UIWebView *webView = [[[UIWebView alloc] initWithFrame:backingView.frame] autorelease];
+		UIWebView *webView = [[UIWebView alloc] initWithFrame:backingView.frame];
 		webView.opaque = NO;
 		webView.backgroundColor = [UIColor clearColor];
 		webView.delegate = self;
@@ -1560,7 +1562,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
     int numClasses = objc_getClassList(NULL, 0);
     Class *classes = NULL;
 	
-    classes = malloc(sizeof(Class) * numClasses);
+    classes = (Class *)malloc(sizeof(Class) * numClasses);
     numClasses = objc_getClassList(classes, numClasses);
 	
     NSMutableArray *result = [NSMutableArray array];
@@ -1616,7 +1618,7 @@ id UITextInputTraits_valueForKey(id self, SEL _cmd, NSString *key)
 		}
 	}
 	
-	return [views autorelease];
+	return views;
 }
 
 - (void)fadeView:(UIView *)view toAlpha:(CGFloat)alpha
